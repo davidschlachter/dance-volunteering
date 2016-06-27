@@ -2,9 +2,9 @@
   "name": "dance-volunteering",
   "version": "1.0.0",
   "description": "Volunteering system for the Ottawa Swing Dance Society",
-  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,14 @@
   },
   "homepage": "https://github.com/davidschlachter/dance-volunteering#readme",
   "dependencies": {
-    "express": "^4.14.0"
-  }
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "morgan": "~1.7.0",
+    "node-sass-middleware": "0.8.0",
+    "pug": "^2.0.0-beta3",
+    "serve-favicon": "~2.3.0"
+  },
+  "private": "true"
 }
