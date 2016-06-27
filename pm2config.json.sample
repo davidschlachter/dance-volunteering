@@ -1,0 +1,10 @@
+
+{
+	"apps": [{
+		"name": "dance-volunteering",
+		"script": "bin/www",
+		"watch": "/var/www/schl/dance-volunteering",
+		"ignore_watch": ["/var/www/schl/dance-volunteering/.git", "/var/www/schl/dance-volunteering/node_modules"],
+		"watch_options": {"ignored": "/.*\.swp$/"}
+	}]
+}
