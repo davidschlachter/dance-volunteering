@@ -5,7 +5,7 @@ var full_url = 'https://schlachter.ca' + base_url;
 var full_path = '/var/www/schl/dance-volunteering';
 
 var opt = {
-  db_name: 'osdsvol',
+  db: 'mongodb://127.0.0.1:27017/osdsvol',
   mongoose: {
     db: { native_parser: true },
     user: 'mongo_user',

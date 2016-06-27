@@ -14,7 +14,7 @@ var app = express();
 var config = require('./config');
 
 // Connect to the database
-mongoose.connect("mongodb://127.0.0.1:27017/" + config.opt.db_name, config.opt.mongoose);
+mongoose.connect(config.opt.db, config.opt.mongoose);
 var db = mongoose.connection;
 db.on('error', function (err) {
 	console.log('Connection error to MongoDB database ', err);
