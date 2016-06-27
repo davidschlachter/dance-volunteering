@@ -9,6 +9,9 @@ var routes = require('./routes/index');
 
 var app = express();
 
+// Get options from config file
+var config = require('./config');
+
 // Use Jade for templating
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

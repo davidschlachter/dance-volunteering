@@ -1,0 +1,21 @@
+// Implementation-specific options
+
+var base_url = '/dance-volunteering';
+var full_url = 'https://schlachter.ca' + base_url;
+var full_path = '/var/www/schl/dance-volunteering';
+
+var options = {
+  db: { native_parser: true },
+  user: 'mongo_user',
+  pass: 'mongo_passwd',
+  base_url: base_url,
+  full_path: full_path,
+  facebook: {
+    clientID: 'fb_clientid',
+    clientSecret: 'fb_clientsecret',
+    callbackURL: full_url + '/auth/facebook/callback'
+  },
+  passportsecret: 'passportsecret'
+};
+
+module.exports.options = options;
