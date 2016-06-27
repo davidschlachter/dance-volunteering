@@ -5,9 +5,12 @@ var full_url = 'https://schlachter.ca' + base_url;
 var full_path = '/var/www/schl/dance-volunteering';
 
 var opt = {
-  db: { native_parser: true },
-  user: 'mongo_user',
-  pass: 'mongo_passwd',
+  db_name: 'osdsvol',
+  mongoose: {
+    db: { native_parser: true },
+    user: 'mongo_user',
+    pass: 'mongo_passwd'
+  },
   base_url: base_url,
   full_path: full_path,
   // For passport-facebook

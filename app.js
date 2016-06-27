@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 
@@ -11,6 +12,16 @@ var app = express();
 
 // Get options from config file
 var config = require('./config');
+
+// Connect to the database
+mongoose.connect("mongodb://127.0.0.1:27017/" + config.opt.db_name, config.opt.mongoose);
+var db = mongoose.connection;
+db.on('error', function (err) {
+	console.log('Connection error to MongoDB database ', err);
+});
+db.once('open', function () {
+	console.log('Connected to the MongoDB database.');
+});
 
 // Use Jade for templating
 app.set('views', path.join(__dirname, 'views'));
