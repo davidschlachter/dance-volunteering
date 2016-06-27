@@ -4,18 +4,31 @@ var base_url = '/dance-volunteering';
 var full_url = 'https://schlachter.ca' + base_url;
 var full_path = '/var/www/schl/dance-volunteering';
 
-var options = {
+var opt = {
   db: { native_parser: true },
   user: 'mongo_user',
   pass: 'mongo_passwd',
   base_url: base_url,
   full_path: full_path,
+  // For passport-facebook
   facebook: {
     clientID: 'fb_clientid',
     clientSecret: 'fb_clientsecret',
     callbackURL: full_url + '/auth/facebook/callback'
   },
-  passportsecret: 'passportsecret'
+  // For passport-google-oauth20
+  google: {
+    clientID: 'g_clientid',
+    clientSecret: 'g_clientsecret',
+    callbackURL: full_url + '/auth/google/callback'
+  },
+  // For passport-windowslive
+  live: {
+    clientID: 'live_clientid',
+    clientSecret: 'live_clientsecret',
+    callbackURL: full_url + '/auth/live/callback'
+  },
+  sessionsecret: 'secret'
 };
 
-module.exports.options = options;
+module.exports.opt = opt;
