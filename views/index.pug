@@ -3,11 +3,12 @@ extends layout
 block content
   div.container
     h1= title
-    p Welcome to #{title}
+    p#date
     table(id='shifts',class='table',data-url='getShifts')
-      tr
-        th(data-field='time')
-        th(data-field='volunteer')
+      thead
+        tr
+          th Time
+          th Volunteer(s)
       tbody
       //
         tr

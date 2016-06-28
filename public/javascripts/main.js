@@ -14,5 +14,6 @@ $(document).ready(function() {
       lines += line;
     }
     $("#shifts").append(lines);
+    $("#date").text("Volunteering shifts for " + moment(data[0].date).format("dddd MMMM D, YYYY") + ':');
   });
 });
