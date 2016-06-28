@@ -16,7 +16,9 @@ var TemplateSchema = new mongoose.Schema({
 	nExec: {   // The number of execs for the shift
 		type: Number,
 		min: 0
-	}
+	},
+	version: Number,
+	author: String
 });
 
 // Export the Mongoose model
