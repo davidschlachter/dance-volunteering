@@ -1,5 +1,28 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.container
+    h1= title
+    p Welcome to #{title}
+    table(id='shifts',class='table',data-url='getShifts')
+      tr
+        th(data-field='time')
+        th(data-field='volunteer')
+      tbody
+      //
+        tr
+          th Time
+          th Volunteer
+        tr
+          td 7:30 - 8:00
+          td <img src="https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/2/005/06d/018/2c6a451.jpg" style="vertical-align:middle;height:3em;width:3em;" /> David S.
+        tr
+          td 8:00 - 8:30
+          td <img src="https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAS4AAAAJDExZWE3YmMxLWE2YjItNGI4YS1iZGZiLTM4NjRhNDAyZjFkNA.jpg" style="vertical-align:middle;height:3em;width:3em;" /> Lillian S.
+        tr
+          td 8:30 - 9:00
+          td
+           a(href='volunteer',class='btn btn-primary') Volunteer
+        tr
+          td 9:00 - 9:30
+          td Person X.

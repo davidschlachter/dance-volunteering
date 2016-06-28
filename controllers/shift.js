@@ -6,18 +6,7 @@ var moment = require('moment');
 
 // Check if shifts have been created for the current week
 exports.checkShifts = function (req, res, next) {
-  var now = moment();
-  var query;
-  if (now.day() < 5 && now.day() > 0) {
-    query = {"date" : now.day(5).startOf('day').toDate()};
-  } else if (now.day() === 5) {
-    query = {"date" : now.startOf('day').toDate()};
-  } else if (now.day() === 6 || now.day() === 0) {
-    query = {"date" : now.day(-2).startOf('day').toDate()};
-  } else {
-    console.log("Could not interpret day of week in checkShifts. Had now.day() = ", now.day());
-    return;
-  }
+  var query = getFriday(moment());
   Shift.find(query, function (err1, results1) {
     if (err1) {console.log(err1)}
     // If there are no shifts for this week, create them
@@ -43,3 +32,26 @@ exports.checkShifts = function (req, res, next) {
   });
   return next();
 };
+
+exports.getShifts = function (req, res, next) {
+  var query = getFriday(moment());
+  Shift.find(query, function (err, results) {
+    if (err) {console.log(err)}
+    res.json(results);
+  });
+};
+
+
+function getFriday(now) {
+  if (now.day() < 5 && now.day() > 0) {
+    query = {"date" : now.day(5).startOf('day').toDate()};
+  } else if (now.day() === 5) {
+    query = {"date" : now.startOf('day').toDate()};
+  } else if (now.day() === 6 || now.day() === 0) {
+    query = {"date" : now.day(-2).startOf('day').toDate()};
+  } else {
+    console.log("Could not interpret day of week in checkShifts. Had now.day() = ", now.day());
+    return;
+  }
+	return query;
+}
