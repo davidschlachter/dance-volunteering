@@ -24,6 +24,7 @@ exports.checkShifts = function (req, res, next) {
     if (!results1.length) {
       Template.findOne({}, null, {sort: {version: -1}}, function(err2, results2) {
         if (err2) {console.log(err2);}
+        if (!results2) {console.log("No templates were found. Please create a template first");}
         Template.find({version: results2.version}, function(err3, results3) {
           var i, j, k;
           var l, m;
