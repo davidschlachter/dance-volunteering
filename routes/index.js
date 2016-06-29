@@ -20,26 +20,27 @@ router.get('/login', function(req, res, next) {
 /* POST logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
   successRedirect: config.opt.base_url + '/',
-  failureRedirect: '/login',
+  failureRedirect: config.opt.base_url + '/login',
   failureFlash: true
 }));
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook', {
-    failureRedirect: '/'
+    failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
     console.log("Facebook log-in from", req.user);
     res.redirect(config.opt.base_url + '/');
   });
   
-router.get('/loginGoogle', passport.authenticate('google-oauth20', {
+router.get('/loginGoogle', passport.authenticate('google', {
+  scope: ['profile', 'email'],
   successRedirect: config.opt.base_url + '/',
-  failureRedirect: '/login',
+  failureRedirect: config.opt.base_url + '/login',
   failureFlash: true
 }));
 router.get('/auth/google/callback',
-  passport.authenticate('google-oauth20', {
-    failureRedirect: '/'
+  passport.authenticate('google', {
+    failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
     console.log("Google log-in from", req.user);
@@ -48,12 +49,12 @@ router.get('/auth/google/callback',
 
 router.get('/loginLive', passport.authenticate('windowslive', {
   successRedirect: config.opt.base_url + '/',
-  failureRedirect: '/login',
+  failureRedirect: config.opt.base_url + '/login',
   failureFlash: true
 }));
 router.get('/auth/live/callback',
   passport.authenticate('windowslive', {
-    failureRedirect: '/'
+    failureRedirect: config.opt.base_url + '/'
   }),
   function (req, res) {
     console.log("Windows log-in from", req.user);

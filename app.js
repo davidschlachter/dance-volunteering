@@ -120,9 +120,36 @@ passport.use(new FacebookStrategy({
           email: profile.email
         });
         user.save(function (err) {
-          if (err) {
-            console.log(err);
-          } else {
+          if (err) {console.log(err);} else {
+            console.log("Added new user", profile.displayName);
+            done(null, user);
+          };
+        });
+      };
+    });
+  }
+));
+passport.use(new GoogleStrategy({
+    clientID: config.opt.google.clientID,
+    clientSecret: config.opt.google.clientSecret,
+    callbackURL: config.opt.google.callbackURL
+  },
+  function (accessToken, refreshToken, profile, done) {
+    User.findOne({
+      googleID: profile.id
+    }, function (err, user) {
+      if (err) {console.log(err);}
+      if (!err && user != null) {
+        done(null, user);
+      } else {
+        console.log("User returned by Google is", profile);
+        var user = new User({
+          googleID: profile.id,
+          userName: profile.displayName,
+          email: profile.emails[0].value
+        });
+        user.save(function (err) {
+          if (err) {console.log(err);} else {
             console.log("Added new user", profile.displayName);
             done(null, user);
           };
