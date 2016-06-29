@@ -103,7 +103,7 @@ passport.use(new FacebookStrategy({
     callbackURL: config.opt.facebook.callbackURL,
     enableProof: true,
     passReqToCallback: true,
-    profileFields: ['email', 'name', 'picture', 'displayName']
+    profileFields: ['emails', 'name', 'picture', 'displayName']
   },
   function (req, accessToken, refreshToken, profile, done) {
     User.findOne({
@@ -120,7 +120,7 @@ passport.use(new FacebookStrategy({
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
           profilePicture: profile.photos[0].value,
-          email: profile.email
+          email: profile.emails[0].value
         });
         user.save(function (err) {
           if (err) {console.log(err);} else {

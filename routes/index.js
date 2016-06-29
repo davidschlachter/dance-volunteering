@@ -19,6 +19,7 @@ router.get('/login', function(req, res, next) {
 
 /* POST logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
+  scope: [ 'email' ],
   successRedirect: config.opt.base_url + '/',
   failureRedirect: config.opt.base_url + '/login',
   failureFlash: true
