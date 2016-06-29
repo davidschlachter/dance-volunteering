@@ -117,6 +117,9 @@ passport.use(new FacebookStrategy({
         var user = new User({
           facebookID: profile.id,
           userName: profile.displayName,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          profilePicture: profile.photos[0].value,
           email: profile.email
         });
         user.save(function (err) {
@@ -146,6 +149,9 @@ passport.use(new GoogleStrategy({
         var user = new User({
           googleID: profile.id,
           userName: profile.displayName,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          profilePicture: profile.photos[0].value,
           email: profile.emails[0].value
         });
         user.save(function (err) {

@@ -10,6 +10,9 @@ var userSchema = new mongoose.Schema({
 	liveID: String,
 	// Biographical
 	userName: String,
+  firstName: String,
+  lastName: String,
+  profilePicture: String,
 	email: String,
 	emailConfirmed: { type: Boolean, default: false },
 	isNewUser: { type: Boolean, default: true },
