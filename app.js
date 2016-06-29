@@ -5,6 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var LiveStrategy = require('passport-windowslive').Strategy;
+var User = require('./models/userModel');
+var flash = require('connect-flash');
 
 var routes = require('./routes/index');
 
@@ -32,7 +40,7 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(config.opt.sessionsecret));
 app.use(require('node-sass-middleware')({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
@@ -40,6 +48,19 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+	secret: config.opt.sessionsecret,
+	cookie: {maxAge: 86400 * 180 * 1000}, // Session cookie lasts six months
+	store: new MongoStore({
+		mongooseConnection: db,
+		touchAfter: 8 * 3600 // Don't update session entry more than once in 8 hrs
+	}),
+	resave: false, // Don't save session if unmodified
+	saveUninitialized: false // Don't create session until something stored
+}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', routes);
 
@@ -72,6 +93,51 @@ app.use(function(err, req, res, next) {
     message: err.message,
     error: {}
   });
+});
+
+// Passport login strategies
+//
+passport.use(new FacebookStrategy({
+    clientID: config.opt.facebook.clientID,
+    clientSecret: config.opt.facebook.clientSecret,
+    callbackURL: config.opt.facebook.callbackURL,
+    enableProof: true,
+    passReqToCallback: true,
+    profileFields: ['email', 'name', 'picture', 'displayName']
+  },
+  function (req, accessToken, refreshToken, profile, done) {
+    User.findOne({
+      facebookID: profile.id
+    }, function (err, user) {
+      if (err) {console.log(err);}
+      if (!err && user != null) {
+        done(null, user);
+      } else {
+        console.log("User returned by Facebook is", profile);
+        var user = new User({
+          facebookID: profile.id,
+          userName: profile.displayName,
+          email: profile.email
+        });
+        user.save(function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Added new user", profile.displayName);
+            done(null, user);
+          };
+        });
+      };
+    });
+  }
+));
+
+// Serialize and deserialize
+passport.serializeUser(function (user, done) {
+	done(null, user);
+});
+passport.deserializeUser(function (obj, done) {
+	done(null, obj);
 });
 
 

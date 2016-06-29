@@ -9,10 +9,10 @@ var userSchema = new mongoose.Schema({
 	googleID: String,
 	liveID: String,
 	// Biographical
-	name: String,
+	userName: String,
 	email: String,
 	emailConfirmed: { type: Boolean, default: false },
-	isNew: { type: Boolean, default: true },
+	isNewUser: { type: Boolean, default: true },
 	isAdmin: { type: Boolean, default: false },
 	// Email preferences
 	sendReminder: { type: Boolean, default: true },
