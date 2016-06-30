@@ -50,7 +50,6 @@ function updateShifts() {
     dataType: "json",
     method: "GET"
   }).done(function(data) {
-    console.log("Got the following shifts", data);
     $("#shifts").find("tr:gt(0)").remove();
     var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText, deleteButton;
     
