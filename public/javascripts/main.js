@@ -1,5 +1,14 @@
 
 $(document).ready(function() {
+  if (typeof user === "object" && getCookie("shiftID") != false) {
+    var shiftID = getCookie("shiftID");
+    document.cookie = "shiftID" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
+    var myForm=document.createElement("form");
+    myForm.method="post",myForm.action="volunteer";
+    p = {shiftID: shiftID};
+    for(var k in p){var myInput=document.createElement("input");
+    myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
+  }
   updateShifts();
 });
 
@@ -18,6 +27,12 @@ function shouldWrite() {
     return false;
   }
 }
+
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) {return parts.pop().split(";").shift();} else {return false}
+};
 
 function deleteMyShift() { 
   $.ajax({
@@ -77,7 +92,7 @@ function updateShifts() {
           } else {
             action = 'disabled type="button"';
           }
-          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer"class="btn btn-primary" /></form>'
+          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>'
         }
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }

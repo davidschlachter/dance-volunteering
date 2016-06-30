@@ -79,11 +79,12 @@ router.get('/getShifts', shift.getShifts);
 
 /* Check if authenticated */
 function checkAuth(req, res, next) {
-    if (req.user) {
-        next();
-    } else {
-        res.redirect(config.opt.base_url + '/login');
-    }
+  if (req.user) {
+    next();
+  } else {
+    if (typeof req.body.shiftID != "undefined") {res.cookie('shiftID', req.body.shiftID, {path: '/'});}
+    res.redirect(config.opt.base_url + '/login');
+  }
 }
 
 module.exports = router;
