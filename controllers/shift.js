@@ -86,12 +86,6 @@ exports.volunteer = function (req, res, next) {
   return next;
 };
 
-function nVol(id) {
-  var promise = Shift.find({"_id":ObjectID(id)}).exec();
-  return promise;
-};
-
-
 function getFriday(now) {
   if (now.day() < 5 && now.day() > 0) {
     query = {"date" : now.day(5).startOf('day').toDate()};
