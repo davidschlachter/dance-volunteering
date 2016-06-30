@@ -8,16 +8,51 @@ $(document).ready(function() {
   }).done(function(data) {
     console.log("Got the following shifts", data);
     $("#shifts").find("tr:gt(0)").remove();
-    var i, line, lines, userName, profilePicture, tableText;
+    var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText;
+    
+    // Determine the number of columns
+    var nCol = 0;
     for (i=0; i < data.length; i++) {
-      if (data[i].Vol[0] !== null && typeof data[i].Vol[0] === 'object') {
-        userName = data[i].Vol[0].firstName + " " + data[i].Vol[0].lastNameInitial;
-        profilePicture = data[i].Vol[0].profilePicture;
-        tableText = '<img class="user" src="' + profilePicture + '" />' + userName;
-      } else {
-        tableText = "<a href='volunteer' class='btn btn-primary'>Volunteer</a>"
+      if (data[i].nVol + data[i].nExec > nCol) {
+        nCol = data[i].nVol + data[i].nExec;
       }
-      line = '<tr><td>' + data[i].time + '</td><td>' + tableText + '</td></tr>';
+    }
+    $("#volCol").attr('colspan',nCol);
+    
+    // Set up the volunteering table
+    var nSpots, nVol, nExec, colSpan;
+    for (i=0; i < data.length; i++) {
+      nVol = data[i].nVol;
+      nExec = data[i].nExec;
+      nSpots = nVol + nExec;
+      colSpan = nCol - nSpots;
+      line = '<tr><td>' + data[i].time + '</td>';
+      for (h = 0; h < nVol; h++) {
+        if (h === 0 && colSpan !== 0) {
+          colSpanText = ' colspan = "' + (colSpan + 1) + '"';
+        } else {
+          colSpanText = "";
+        }
+        if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
+          userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
+          profilePicture = data[i].Vol[h].profilePicture;
+          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
+        } else {
+          tableText = "<a href='volunteer' class='btn btn-primary'>Volunteer</a>"
+        }
+        line += '<td' + colSpanText + '>' + tableText + '</td>';
+      }
+      for (h = 0; h < nExec; h++) {
+        if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
+          userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
+          profilePicture = data[i].Exec[h].profilePicture;
+          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
+        } else {
+          tableText = "<a href='volunteer' class='btn btn-primary'>Exec</a>"
+        }
+        line += '<td>' + tableText + '</td>';
+      }
+      line+= "</tr>"
       lines += line;
     }
     $("#shifts").append(lines);
