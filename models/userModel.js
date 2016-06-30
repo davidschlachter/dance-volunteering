@@ -19,6 +19,9 @@ var userSchema = new mongoose.Schema({
 	isNewUser: { type: Boolean, default: true },
 	isAdmin: { type: Boolean, default: false },
 	// Email preferences
+  sendNewShift: { type: Boolean, default: true },
+  sendChangedShift: { type: Boolean, default: true },
+  sendDeletedShift: { type: Boolean, default: true },
 	sendReminder: { type: Boolean, default: true },
 	sendThanks: { type: Boolean, default: true },
 	sendVolunteeringCall: { type: Boolean, default: true },
