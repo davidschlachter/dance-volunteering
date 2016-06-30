@@ -77,7 +77,7 @@ function checkAuth(req, res, next) {
     if (req.user) {
         next();
     } else {
-        res.redirect('/login');
+        res.redirect(config.opt.base_url + '/login');
     }
 }
 
