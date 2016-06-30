@@ -8,17 +8,17 @@ var config = require('../config');
 var shift = require('../controllers/shift');
 
 /* GET home page. */
-router.get('/', shift.checkShifts, function(req, res, next) {
+router.get('/', shift.checkShifts, function (req, res, next) {
   res.render('index', { title: 'OSDS Volunteering' });
 });
 
 /* GET login page */
-router.get('/login', function(req, res, next) {
+router.get('/login', function (req, res, next) {
   res.render('login', { title: 'OSDS Volunteering - Login' });
 });
 
 /* POST to volunteer for a shift */
-router.post('/volunteer', checkAuth, shift.volunteer, function(req, res, next) {
+router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) {
   console.log("arrived at function");
   res.redirect(config.opt.base_url + '/');
 });

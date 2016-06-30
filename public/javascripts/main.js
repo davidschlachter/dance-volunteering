@@ -18,9 +18,12 @@ $(document).ready(function() {
       }
     }
     $("#volCol").attr('colspan',nCol);
+
+    // Are shifts open?
+    var areOpen = shouldWrite();
     
     // Set up the volunteering table
-    var nSpots, nVol, nExec, colSpan;
+    var nSpots, nVol, nExec, colSpan, action;
     for (i=0; i < data.length; i++) {
       nVol = data[i].nVol;
       nExec = data[i].nExec;
@@ -38,7 +41,12 @@ $(document).ready(function() {
           profilePicture = data[i].Vol[h].profilePicture;
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
         } else {
-          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input type="submit" value="Volunteer"class="btn btn-primary" /></form>'
+          if (areOpen) {
+            action = 'type="submit"';
+          } else {
+            action = 'disabled type="button"';
+          }
+          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer"class="btn btn-primary" /></form>'
         }
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }
@@ -59,3 +67,20 @@ $(document).ready(function() {
     $("#date").text("Volunteering shifts for " + moment(data[0].date).format("dddd MMMM D, YYYY") + ':');
   });
 });
+
+function shouldWrite() {
+  var now = moment();
+  if (now.day() < 5 && now.day() > 0) {
+    return true;
+  } else if (now.day() === 5 && now.hour() < 17) {
+    return true;
+  } else if (now.day() === 5 && now.hour() >= 17) {
+    return false;
+  } else if (now.day() === 6 || now.day() === 0) {
+    return false;
+  } else {
+    console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());
+    return false;
+  }
+}
+
