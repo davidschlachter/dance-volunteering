@@ -119,6 +119,7 @@ passport.use(new FacebookStrategy({
           userName: profile.displayName,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
+          lastNameInitial: profile.name.familyName.charAt(0) + '.',
           profilePicture: profile.photos[0].value,
           email: profile.emails[0].value
         });
