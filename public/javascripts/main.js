@@ -101,7 +101,7 @@ function updateShifts() {
           profilePicture = data[i].Exec[h].profilePicture;
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
         } else {
-          tableText = "<a href='volunteer' class='btn btn-primary'>Exec</a>"
+          tableText = "<a href='#' class='btn btn-primary'>Exec</a>"
         }
         line += '<td>' + tableText + '</td>';
       }
