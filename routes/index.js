@@ -19,6 +19,12 @@ router.get('/login', function (req, res, next) {
   res.render('login', { title: 'OSDS Volunteering - Login' });
 });
 
+/* GET logout */
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect(config.opt.base_url + '/');
+});
+
 /* POST to volunteer for a shift */
 router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');

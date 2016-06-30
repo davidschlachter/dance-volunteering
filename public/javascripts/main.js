@@ -6,9 +6,11 @@ $(document).ready(function() {
     var myForm=document.createElement("form");
     myForm.method="post",myForm.action="volunteer";
     p = {shiftID: shiftID};
-    for(var k in p){var myInput=document.createElement("input");
-    myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
+    for(var k in p){var myInput=document.createElement("input"); myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
   }
+    if (typeof user === "object") {
+      $("#user").html("Welcome " + user.userName + '! <a href="logout">(Log out)</a>');
+    }
   updateShifts();
 });
 
@@ -109,6 +111,6 @@ function updateShifts() {
       lines += line;
     }
     $("#shifts").append(lines);
-    $("#date").text("Volunteering shifts for " + moment(data[0].date).format("dddd MMMM D, YYYY") + ':');
+    $("#date").html("Volunteering shifts for <strong>" + moment(data[0].date).format("dddd MMMM D, YYYY") + '</strong>:');
   });
 };
