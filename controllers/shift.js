@@ -57,7 +57,8 @@ exports.volunteer = function (req, res, next) {
     console.log("shouldWrite was false (exiting)");
     return next;
   }
-  var query = getFriday(moment());
+  var rightNow = moment();
+  var query = getFriday(rightNow);
   query.Vol = [];
   query.Vol[0] = req.user._id;
   console.log(query);
@@ -66,14 +67,28 @@ exports.volunteer = function (req, res, next) {
     if (err) {console.log(err);}
     console.log("result was", result);
     if (!result) {
-      // db.shifts.update({"_id" : ObjectId("5774516e476b454d673904a9")}, {$push:{"Vol":ObjectId("5773ab38dda140c21bd4c35a")}});
-      Shift.update({"_id": ObjectID(shiftID)}, {$push:{"Vol":req.user._id}}, function (err1, results1) {
-        if (err1) {console.log(err1)};
-        console.log(results1);
+      // Check that there actually is a spot available
+      Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
+        var nVolNow = result0.Vol.length;
+        if (nVolNow < result0.nVol) {
+          var uQuery = getFriday(rightNow); // Ensure shift is for this week
+          uQuery["_id"] = ObjectID(shiftID);
+          Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
+            if (err1) {console.log(err1)};
+            console.log(results1);
+          });
+        } else {
+          console.log("No more volunteering spots left");
+        }
       });
     }
   });
   return next;
+};
+
+function nVol(id) {
+  var promise = Shift.find({"_id":ObjectID(id)}).exec();
+  return promise;
 };
 
 
