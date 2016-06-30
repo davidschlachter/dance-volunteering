@@ -146,17 +146,17 @@ passport.use(new GoogleStrategy({
       googleID: profile.id
     }, function (err, user) {
       if (err) {return console.log(err);}
-      console.log("Got this from Google", profile);
+      var familyName = profile.name.familyName;
       if (!err && user != null) {
         // Update the user if necessary
-        User.update({googleID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.lastName, profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
+        User.update({googleID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: familyName, profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
         done(null, user);
       } else {
         var user = new User({
           googleID: profile.id,
           userName: profile.displayName,
           firstName: profile.name.givenName,
-          lastName: profile.name.lastName,
+          lastName: familyName,
           profilePicture: profile.photos[0].value,
           email: profile.emails[0].value
         });
