@@ -31,6 +31,13 @@ var opt = {
     clientSecret: 'live_clientsecret',
     callbackURL: full_url + '/auth/live/callback'
   },
+  // For sending email
+  email: {
+    user: 'user%40gmail.com',
+    pass: 'app_password',
+    server: 'smtp.gmail.com', // SMTP
+    name: "OSDS Volunteers" // Name for the 'From' field
+  },
   sessionsecret: 'secret'
 };
 

@@ -13,6 +13,7 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var LiveStrategy = require('passport-windowslive').Strategy;
 var User = require('./models/userModel');
 var flash = require('connect-flash');
+var email = require('./controllers/email');
 
 var routes = require('./routes/index');
 
@@ -126,6 +127,7 @@ passport.use(new FacebookStrategy({
         user.save(function (err) {
           if (err) {console.log(err);} else {
             console.log("Added new user", profile.displayName);
+            email.welcome(user, config.opt.email);
             done(null, user);
           };
         });
@@ -158,6 +160,7 @@ passport.use(new GoogleStrategy({
         user.save(function (err) {
           if (err) {console.log(err);} else {
             console.log("Added new user", profile.displayName);
+            email.welcome(user, config.opt.email);
             done(null, user);
           };
         });
