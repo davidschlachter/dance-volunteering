@@ -61,6 +61,7 @@ router.get('/auth/google/callback',
   });
 
 router.get('/loginLive', passport.authenticate('windowslive', {
+  scope: ['wl.signin', 'wl.emails'],
   successRedirect: config.opt.base_url + '/',
   failureRedirect: config.opt.base_url + '/login',
   failureFlash: true

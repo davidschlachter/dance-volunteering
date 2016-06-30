@@ -172,6 +172,42 @@ passport.use(new GoogleStrategy({
     });
   }
 ));
+passport.use(new LiveStrategy({
+    clientID: config.opt.live.clientID,
+    clientSecret: config.opt.live.clientSecret,
+    callbackURL: config.opt.live.callbackURL
+  },
+  function (accessToken, refreshToken, profile, done) {
+    console.log("Got: ", profile);
+    User.findOne({
+      liveID: profile.id
+    }, function (err, user) {
+      if (err) {return console.log(err);}
+      if (!err && user != null) {
+        // Update the user if necessary
+        User.update({liveID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, lastNameInitial: profile.name.familyName.charAt(0) + '.', profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
+        done(null, user);
+      } else {
+        var user = new User({
+          liveID: profile.id,
+          userName: profile.displayName,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          lastNameInitial: profile.name.familyName.charAt(0) + '.',
+          profilePicture: profile.photos[0].value,
+          email: profile.emails[0].value
+        });
+        user.save(function (err) {
+          if (err) {return console.log(err);} else {
+            console.log("Added new user", profile.displayName);
+            email.welcome(user, config.opt.email);
+            done(null, user);
+          };
+        });
+      };
+    });
+  }
+));
 
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {
