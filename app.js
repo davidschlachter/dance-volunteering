@@ -110,11 +110,12 @@ passport.use(new FacebookStrategy({
     User.findOne({
       facebookID: profile.id
     }, function (err, user) {
-      if (err) {console.log(err);}
+      if (err) {return console.log(err);}
       if (!err && user != null) {
+         // Update the user if necessary
+        User.update({facebookID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, lastNameInitial: profile.name.familyName.charAt(0) + '.', profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
         done(null, user);
       } else {
-        console.log("User returned by Facebook is", profile);
         var user = new User({
           facebookID: profile.id,
           userName: profile.displayName,
@@ -125,7 +126,7 @@ passport.use(new FacebookStrategy({
           email: profile.emails[0].value
         });
         user.save(function (err) {
-          if (err) {console.log(err);} else {
+          if (err) {return console.log(err);} else {
             console.log("Added new user", profile.displayName);
             email.welcome(user, config.opt.email);
             done(null, user);
@@ -144,11 +145,12 @@ passport.use(new GoogleStrategy({
     User.findOne({
       googleID: profile.id
     }, function (err, user) {
-      if (err) {console.log(err);}
+      if (err) {return console.log(err);}
       if (!err && user != null) {
+        // Update the user if necessary
+        User.update({googleID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
         done(null, user);
       } else {
-        console.log("User returned by Google is", profile);
         var user = new User({
           googleID: profile.id,
           userName: profile.displayName,
@@ -158,7 +160,7 @@ passport.use(new GoogleStrategy({
           email: profile.emails[0].value
         });
         user.save(function (err) {
-          if (err) {console.log(err);} else {
+          if (err) {return console.log(err);} else {
             console.log("Added new user", profile.displayName);
             email.welcome(user, config.opt.email);
             done(null, user);
