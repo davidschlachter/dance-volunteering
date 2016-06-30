@@ -17,6 +17,13 @@ router.get('/login', function(req, res, next) {
   res.render('login', { title: 'OSDS Volunteering - Login' });
 });
 
+/* POST to volunteer for a shift */
+router.post('/volunteer', checkAuth, shift.volunteer, function(req, res, next) {
+  console.log("arrived at function");
+  res.redirect(config.opt.base_url + '/');
+});
+
+
 /* POST logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
   scope: [ 'email' ],
@@ -64,5 +71,14 @@ router.get('/auth/live/callback',
 
 /* GET the shifts */
 router.get('/getShifts', shift.getShifts);
+
+/* Check if authenticated */
+function checkAuth(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
 
 module.exports = router;

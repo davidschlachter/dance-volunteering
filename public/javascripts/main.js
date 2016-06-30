@@ -38,7 +38,7 @@ $(document).ready(function() {
           profilePicture = data[i].Vol[h].profilePicture;
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
         } else {
-          tableText = "<a href='volunteer' class='btn btn-primary'>Volunteer</a>"
+          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input type="submit" value="Volunteer"class="btn btn-primary" /></form>'
         }
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }

@@ -3,6 +3,11 @@
 var Shift = require('../models/shiftModel');
 var Template = require('../models/templateModel');
 var moment = require('moment');
+var mongoose = require('mongoose');
+var ObjectID = require('mongodb').ObjectID;
+
+// Get options from config file
+var config = require('../config');
 
 // Check if shifts have been created for the current week
 exports.checkShifts = function (req, res, next) {
@@ -39,6 +44,34 @@ exports.getShifts = function (req, res, next) {
     res.json(results);
   });
 };
+
+exports.volunteer = function (req, res, next) {
+  console.log("req.body was", req.body);
+  var shiftID = req.body.shiftID;
+  // Just quit if the ObjectID isn't valid
+  if (!mongoose.Types.ObjectId.isValid(shiftID)) {
+    console.log("shiftID was invalid")
+    return next;
+  }
+  var query = getFriday(moment());
+  query.Vol = [];
+  query.Vol[0] = req.user._id;
+  console.log(query);
+  // Check if the volunteer already has a shift this week
+  Shift.findOne(query, function (err, result) {
+    if (err) {console.log(err);}
+    console.log("result was", result);
+    if (!result) {
+      // db.shifts.update({"_id" : ObjectId("5774516e476b454d673904a9")}, {$push:{"Vol":ObjectId("5773ab38dda140c21bd4c35a")}});
+      Shift.update({"_id": ObjectID(shiftID)}, {$push:{"Vol":req.user._id}}, function (err1, results1) {
+        if (err1) {console.log(err1)};
+        console.log(results1);
+        return next;
+      });
+    }
+  });
+  return next;
+}
 
 
 function getFriday(now) {

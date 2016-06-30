@@ -26,6 +26,7 @@
     "express": "~4.13.4",
     "express-session": "^1.13.0",
     "moment": "^2.13.0",
+    "mongodb": "^2.1.18",
     "mongoose": "^4.5.2",
     "morgan": "~1.7.0",
     "node-sass-middleware": "0.8.0",
