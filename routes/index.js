@@ -24,6 +24,10 @@ router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) 
   res.redirect(config.opt.base_url + '/');
 });
 
+/* POST to delete user's own shift */
+router.post('/deleteMyShift', checkAuth, shift.deleteMyShift, function (req, res, next) {
+  res.redirect(config.opt.base_url + '/');
+});
 
 /* POST logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {

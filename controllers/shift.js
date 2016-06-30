@@ -81,6 +81,26 @@ exports.volunteer = function (req, res, next) {
   return next();
 };
 
+
+exports.deleteMyShift= function (req, res, next) {
+  // Quit if shifts aren't open
+  if (!shouldWrite()) {
+    console.log("shouldWrite was false (exiting)");
+    return next;
+  }
+  var rightNow = moment();
+  var query = getFriday(rightNow);
+  query.Vol = [];
+  query.Vol[0] = req.user._id;
+  // Check if the volunteer already has a shift this week (if yes, cancel it)
+  Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
+    if (err) {return console.log(err);}
+     console.log("Deleted shift");
+    });
+  return next();
+};
+
+
 function getFriday(now) {
   if (now.day() < 5 && now.day() > 0) {
     query = {"date" : now.day(5).startOf('day').toDate()};

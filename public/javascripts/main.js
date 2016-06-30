@@ -1,5 +1,34 @@
 
 $(document).ready(function() {
+  updateShifts();
+});
+
+function shouldWrite() {
+  var now = moment();
+  if (now.day() < 5 && now.day() > 0) {
+    return true;
+  } else if (now.day() === 5 && now.hour() < 17) {
+    return true;
+  } else if (now.day() === 5 && now.hour() >= 17) {
+    return false;
+  } else if (now.day() === 6 || now.day() === 0) {
+    return false;
+  } else {
+    console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());
+    return false;
+  }
+}
+
+function deleteMyShift() { 
+  $.ajax({
+    url: "deleteMyShift",
+    method: "POST"
+  }).done(function(data) {
+    updateShifts();
+  });
+};
+
+function updateShifts() {
   $.ajax({
     url: "getShifts",
     cache: false,
@@ -8,7 +37,7 @@ $(document).ready(function() {
   }).done(function(data) {
     console.log("Got the following shifts", data);
     $("#shifts").find("tr:gt(0)").remove();
-    var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText;
+    var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText, deleteButton;
     
     // Determine the number of columns
     var nCol = 0;
@@ -39,8 +68,10 @@ $(document).ready(function() {
         if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
           userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
           profilePicture = data[i].Vol[h].profilePicture;
-          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
+          if (user._id.toString() === data[i].Vol[h]._id.toString()) {deleteButton = '<input type="button" value="Cancel" onclick="deleteMyShift()" class="btn btn-danger" />';} else {deleteButton = ""}
+          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
         } else {
+          deleteButton = "";
           if (areOpen) {
             action = 'type="submit"';
           } else {
@@ -66,21 +97,4 @@ $(document).ready(function() {
     $("#shifts").append(lines);
     $("#date").text("Volunteering shifts for " + moment(data[0].date).format("dddd MMMM D, YYYY") + ':');
   });
-});
-
-function shouldWrite() {
-  var now = moment();
-  if (now.day() < 5 && now.day() > 0) {
-    return true;
-  } else if (now.day() === 5 && now.hour() < 17) {
-    return true;
-  } else if (now.day() === 5 && now.hour() >= 17) {
-    return false;
-  } else if (now.day() === 6 || now.day() === 0) {
-    return false;
-  } else {
-    console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());
-    return false;
-  }
-}
-
+};
