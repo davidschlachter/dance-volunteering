@@ -68,7 +68,7 @@ function updateShifts() {
         if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
           userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
           profilePicture = data[i].Vol[h].profilePicture;
-          if (user._id.toString() === data[i].Vol[h]._id.toString()) {deleteButton = '<input type="button" value="Cancel" onclick="deleteMyShift()" class="btn btn-danger" />';} else {deleteButton = ""}
+          if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {deleteButton = '<input type="button" value="Cancel" onclick="deleteMyShift()" class="btn btn-danger" />';} else {deleteButton = ""}
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
         } else {
           deleteButton = "";
