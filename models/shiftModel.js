@@ -1,6 +1,8 @@
 
 // Load required packages
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var User = require('./userModel');
 
 // Define the Shift schema
 var ShiftSchema = new mongoose.Schema({
@@ -10,8 +12,10 @@ var ShiftSchema = new mongoose.Schema({
 		min: 0
 	},
 	time: String,
-	Vol: [Number],  // userIDs of non-exec volunteers for shift
-	Exec: [Number]  // userIDs of execs for shift
+  nVol: Number,
+	Vol: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // userIDs of non-exec volunteers for shift
+	nExec: Number,
+  Exec: [{ type: Schema.Types.ObjectId, ref: 'User' }]  // userIDs of execs for shift
 });
 
 // Export the Mongoose model

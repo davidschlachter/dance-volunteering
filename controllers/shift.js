@@ -19,9 +19,7 @@ exports.checkShifts = function (req, res, next) {
           var l, m;
           for (i = 0; i < results3.length; i++) {
             j = results3[i].nSpots; k = results3[i].nExec;
-            l = Array.apply(null, Array(j-k)).map(Number.prototype.valueOf,0);
-            m = Array.apply(null, Array(k)).map(Number.prototype.valueOf,0);
-            Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, Vol: l, Exec: m}, function (err4, results4) {
+            Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k}, function (err4, results4) {
               if (err4) {console.log(err4);}
             });
           }
@@ -34,8 +32,9 @@ exports.checkShifts = function (req, res, next) {
 };
 
 exports.getShifts = function (req, res, next) {
+  // http://mongoosejs.com/docs/populate.html
   var query = getFriday(moment());
-  Shift.find(query, function (err, results) {
+  var shifts = Shift.find(query).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
     if (err) {console.log(err)}
     res.json(results);
   });

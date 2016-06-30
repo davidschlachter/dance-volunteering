@@ -9,7 +9,7 @@ var shift = require('../controllers/shift');
 
 /* GET home page. */
 router.get('/', shift.checkShifts, function(req, res, next) {
-  res.render('index', { title: 'OSDS Volunteering' });
+  res.render('index', { title: 'OSDS Volunteering' , user: JSON.stringify(req.user) });
 });
 
 /* GET login page */
