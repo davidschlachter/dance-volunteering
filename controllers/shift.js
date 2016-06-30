@@ -13,18 +13,18 @@ var config = require('../config');
 exports.checkShifts = function (req, res, next) {
   var query = getFriday(moment());
   Shift.find(query, function (err1, results1) {
-    if (err1) {console.log(err1);}
+    if (err1) {return console.log(err1);}
     // If there are no shifts for this week, create them
     if (!results1.length) {
       Template.findOne({}, null, {sort: {version: -1}}, function (err2, results2) {
-        if (err2) {console.log(err2);}
-        if (!results2) {console.log("No templates were found. Please create a template first");}
+        if (err2) {return console.log(err2);}
+        if (!results2) {return console.log("No templates were found. Please create a template first");}
         Template.find({version: results2.version}, function (err3, results3) {
           var i, j, k, l, m;
           for (i = 0; i < results3.length; i++) {
             j = results3[i].nSpots; k = results3[i].nExec;
             Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k}, function (err4, results4) {
-              if (err4) {console.log(err4);}
+              if (err4) {return console.log(err4);}
             });
           }
           console.log("Creating new shifts for this Friday");
@@ -39,13 +39,12 @@ exports.getShifts = function (req, res, next) {
   // http://mongoosejs.com/docs/populate.html
   var query = getFriday(moment());
   var shifts = Shift.find(query).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
-    if (err) {console.log(err)}
+    if (err) {return console.log(err)}
     res.json(results);
   });
 };
 
 exports.volunteer = function (req, res, next) {
-  console.log("req.body was", req.body);
   var shiftID = req.body.shiftID;
   // Just quit if the ObjectID isn't valid
   if (!mongoose.Types.ObjectId.isValid(shiftID)) {
@@ -61,11 +60,9 @@ exports.volunteer = function (req, res, next) {
   var query = getFriday(rightNow);
   query.Vol = [];
   query.Vol[0] = req.user._id;
-  console.log(query);
   // Check if the volunteer already has a shift this week
   Shift.findOne(query, function (err, result) {
-    if (err) {console.log(err);}
-    console.log("result was", result);
+    if (err) {return console.log(err);}
     if (!result) {
       // Check that there actually is a spot available
       Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
@@ -74,8 +71,8 @@ exports.volunteer = function (req, res, next) {
           var uQuery = getFriday(rightNow); // Ensure shift is for this week
           uQuery["_id"] = ObjectID(shiftID);
           Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
-            if (err1) {console.log(err1)};
-            console.log(results1);
+            if (err1) {return console.log(err1)};
+            console.log("Added shift", results1);
           });
         } else {
           console.log("No more volunteering spots left");
@@ -83,7 +80,7 @@ exports.volunteer = function (req, res, next) {
       });
     }
   });
-  return next;
+  return next();
 };
 
 function getFriday(now) {
