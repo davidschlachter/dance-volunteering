@@ -60,25 +60,23 @@ exports.volunteer = function (req, res, next) {
   var query = getFriday(rightNow);
   query.Vol = [];
   query.Vol[0] = req.user._id;
-  // Check if the volunteer already has a shift this week
-  Shift.findOne(query, function (err, result) {
+  // Check if the volunteer already has a shift this week (if yes, cancel it)
+  Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
     if (err) {return console.log(err);}
-    if (!result) {
-      // Check that there actually is a spot available
-      Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
-        var nVolNow = result0.Vol.length;
-        if (nVolNow < result0.nVol) {
-          var uQuery = getFriday(rightNow); // Ensure shift is for this week
-          uQuery["_id"] = ObjectID(shiftID);
-          Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
-            if (err1) {return console.log(err1)};
-            console.log("Added shift", results1);
-          });
-        } else {
-          console.log("No more volunteering spots left");
-        }
-      });
-    }
+    // Check that there actually is a spot available
+    Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
+      var nVolNow = result0.Vol.length;
+      if (nVolNow < result0.nVol) {
+        var uQuery = getFriday(rightNow); // Ensure shift is for this week
+        uQuery["_id"] = ObjectID(shiftID);
+        Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
+          if (err1) {return console.log(err1)};
+          console.log("Added shift", results1);
+        });
+      } else {
+        console.log("No more volunteering spots left");
+      }
+    });
   });
   return next();
 };
