@@ -7,14 +7,12 @@ Accounts
 (An account is only required to volunteer for a shift)
 ✓ A user can log in with Facebook
 ✓ A user can log in with Google
-* A user can create a local account
-* A user must validate their email addres
 
 Volunteering
 ------------
 ✓ A user can see shifts taken/available
 ✓ User can sign up for a shift (only one each week)
-* User can cancel their own shift (only their own)
+✓ User can cancel their own shift (only their own)
 * New users can only sign up for a shift with an exec
 * User can contact osdsvol@gmail.com
 
@@ -38,5 +36,5 @@ Exec
 Backend
 -------
 (Need a database for users, and a database for volunteering info)
-* Shifts become read-only Friday evening
+✓ Shifts become read-only Friday evening
 ✓ Shifts for new week become available early in the week (Monday?)
