@@ -2,6 +2,7 @@
 // Load the Shift model
 var Shift = require('../models/shiftModel');
 var Template = require('../models/templateModel');
+var email = require('./email');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
@@ -63,6 +64,7 @@ exports.volunteer = function (req, res, next) {
   // Check if the volunteer already has a shift this week (if yes, cancel it)
   Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
     if (err) {return console.log(err);}
+    var switching = false; if (result != null) {switching = true;}
     // Check that there actually is a spot available
     Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
       var nVolNow = result0.Vol.length;
@@ -71,7 +73,13 @@ exports.volunteer = function (req, res, next) {
         uQuery["_id"] = ObjectID(shiftID);
         Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
           if (err1) {return console.log(err1)};
-          console.log("Added shift", results1);
+          if (results1 != null) {
+            if (switching === true) {
+              email.switching(req.user._id, result, uQuery, config.opt.email);
+            } else {
+              email.newShift(req.user._id, uQuery, config.opt.email);
+            }
+          }
         });
       } else {
         console.log("No more volunteering spots left");
@@ -94,8 +102,10 @@ exports.deleteMyShift= function (req, res, next) {
   query.Vol[0] = req.user._id;
   // Check if the volunteer already has a shift this week (if yes, cancel it)
   Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
-    if (err) {return console.log(err);}
-     console.log("Deleted shift");
+      if (err) {return console.log(err);}
+      if (result != null) {
+        email.cancelled(req.user._id, result, config.opt.email);
+      }
     });
   return next();
 };
