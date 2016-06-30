@@ -9,7 +9,9 @@ var shift = require('../controllers/shift');
 
 /* GET home page. */
 router.get('/', shift.checkShifts, function (req, res, next) {
-  res.render('index', { title: 'OSDS Volunteering' });
+  var user;
+  if (typeof req.user == "undefined") {user = "";} else {user = req.user;}
+  res.render('index', { title: 'OSDS Volunteering', user: user });
 });
 
 /* GET login page */
@@ -19,7 +21,6 @@ router.get('/login', function (req, res, next) {
 
 /* POST to volunteer for a shift */
 router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) {
-  console.log("arrived at function");
   res.redirect(config.opt.base_url + '/');
 });
 
