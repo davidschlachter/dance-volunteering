@@ -24,7 +24,7 @@ Email
 - [ ] User can be reminded of their shift by email
 - [ ] User gets a thank-you email
 - [ ] User gets an email when shifts become available
-- [ ] Admin is notified of shifts on Friday
+- [X] Admin is notified of shifts on Friday
 - [ ] Admin can be notified of each shift taken
 
 Exec
