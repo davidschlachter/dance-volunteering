@@ -25,3 +25,26 @@ html(lang='en')
             th Time
             th#volCol Volunteer(s)
         tbody
+      #emailPrefs.modal.fade(role='dialog')
+        form(action="emailPrefs",method="post")
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal') ×
+                h4.modal-title Email preferences
+              .modal-body
+                p Receive an email for:
+                  br  
+                  <input type="checkbox" name="sendChangedShift" id="sendChangedShift" /> I change the time of my volunteering shift
+                  br
+                  <input type="checkbox" name="sendDeletedShift" id="sendDeletedShift" /> I cancel my volunteering shift
+                  br
+                  <input type="checkbox" name="sendNewShift" id="sendNewShift" /> I sign up for a new volunteering shift
+                  br
+                  <input type="checkbox" name="sendReminder" id="sendReminder" /> A reminder of my volunteering shift (Friday at 8 AM)
+                  br
+                  <input type="checkbox" name="sendThanks" id="sendThanks" /> A thank you email for volunteering
+                  br
+                  <input type="checkbox" name="sendVolunteeringCall" id="sendVolunteeringCall" /> A notification when shifts for the coming week are available (Monday morning)
+              .modal-footer
+                input.btn.btn-default(type='submit', value="Save")

@@ -6,6 +6,7 @@ var passport = require('passport');
 var config = require('../config');
 
 var shift = require('../controllers/shift');
+var userController = require('../controllers/user');
 
 /* GET home page. */
 router.get('/', shift.checkShifts, function (req, res, next) {
@@ -32,6 +33,11 @@ router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) 
 
 /* POST to delete user's own shift */
 router.post('/deleteMyShift', checkAuth, shift.deleteMyShift, function (req, res, next) {
+  res.redirect(config.opt.base_url + '/');
+});
+
+/* POST to change email preferences */
+router.post('/emailPrefs', checkAuth, userController.emailPrefs, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
@@ -83,6 +89,9 @@ router.get('/auth/live/callback',
 
 /* GET the shifts */
 router.get('/getShifts', shift.getShifts);
+
+/* GET one's own user profile */
+router.get('/getUser', checkAuth, userController.getUser);
 
 /* Check if authenticated */
 function checkAuth(req, res, next) {

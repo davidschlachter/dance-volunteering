@@ -6,11 +6,29 @@ $(document).ready(function() {
     var myForm=document.createElement("form");
     myForm.method="post",myForm.action="volunteer";
     p = {shiftID: shiftID};
-    for(var k in p){var myInput=document.createElement("input"); myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
+    for(var k in p){var myInput=document.createElement("input"); myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}
+    document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
   }
+  
+  // Fetch the actually updated user profile
+  $.ajax({
+    url: "getUser",
+    cache: false,
+    dataType: "json",
+    method: "GET"
+  }).done(function(data) {
+    user = data;
     if (typeof user === "object") {
-      $("#user").html("Welcome " + user.userName + '! <a href="logout">(Log out)</a>');
+      $("#user").html("Welcome " + user.userName + '! <a class="btn btn-info" data-toggle="modal" data-target="#emailPrefs">Email preferences</a> <a class="btn btn-default" href="logout">(Log out)</a>');
+      $("#sendChangedShift").prop('checked', user.sendChangedShift);
+      $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
+      $("#sendNewShift").prop('checked', user.sendNewShift);
+      $("#sendReminder").prop('checked', user.sendReminder);
+      $("#sendThanks").prop('checked', user.sendThanks);
+      $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
     }
+  });
+  
   updateShifts();
 });
 
