@@ -11,23 +11,29 @@ $(document).ready(function() {
   }
   
   // Fetch the actually updated user profile
-  $.ajax({
-    url: "getUser",
-    cache: false,
-    dataType: "json",
-    method: "GET"
-  }).done(function(data) {
-    user = data;
-    if (typeof user === "object") {
-      $("#drop3").html(user.userName + ' <span class="caret"></span>');
-      $("#sendChangedShift").prop('checked', user.sendChangedShift);
-      $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
-      $("#sendNewShift").prop('checked', user.sendNewShift);
-      $("#sendReminder").prop('checked', user.sendReminder);
-      $("#sendThanks").prop('checked', user.sendThanks);
-      $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
-    }
-  });
+  if (typeof user === "object") {
+    $.ajax({
+      url: "getUser",
+      cache: false,
+      dataType: "json",
+      method: "GET"
+    }).done(function(data) {
+      user = data;
+      if (typeof user === "object") {
+        $("#drop3").html(user.userName + ' <span class="caret"></span>');
+        $("#sendChangedShift").prop('checked', user.sendChangedShift);
+        $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
+        $("#sendNewShift").prop('checked', user.sendNewShift);
+        $("#sendReminder").prop('checked', user.sendReminder);
+        $("#sendThanks").prop('checked', user.sendThanks);
+        $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
+      }
+    });
+  } else {
+    $("#drop3").html('<a style="color:white;" href="login">Log in</a>');
+    $("#drop3").removeClass("dropdown-toggle");
+    $("#drop3").removeAttr("data-toggle");
+  }
   
   updateShifts();
 });
