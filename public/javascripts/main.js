@@ -19,7 +19,7 @@ $(document).ready(function() {
   }).done(function(data) {
     user = data;
     if (typeof user === "object") {
-      $("#user").html("Welcome " + user.userName + '! <a class="btn btn-info" data-toggle="modal" data-target="#emailPrefs">Email preferences</a> <a class="btn btn-default" href="logout">(Log out)</a>');
+      $("#drop3").html(user.userName + ' <span class="caret"></span>');
       $("#sendChangedShift").prop('checked', user.sendChangedShift);
       $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
       $("#sendNewShift").prop('checked', user.sendNewShift);

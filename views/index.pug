@@ -16,6 +16,16 @@ html(lang='en')
     script(src='javascripts/main.js')
   body
     div.container
+      ul.nav.pull-right
+        div.dropdown
+          button#drop3.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown')
+          ul.dropdown-menu
+            li
+              a(href='#', data-toggle="modal", data-target="#emailPrefs") Email preferences
+            li.divider
+            li
+              a(href='logout') Log out
+              
       h1= title
       p#user
       p#date
