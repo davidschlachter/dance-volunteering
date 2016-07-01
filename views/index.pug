@@ -64,3 +64,12 @@ html(lang='en')
         p
           input#otherDel1.btn.btn-default(value="Delete a shift",onclick="showDelButtons()")
           input#otherDel2.btn.btn-default(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
+          input#details1.btn.btn-default(value="See volunteer details",onclick="showDetails()")
+          input#details2.btn.btn-default(value="Hide volunteer details",onclick="showDetails()",style="display:none;")
+        table#userDetails
+          thead
+            tr
+              th Time
+              th Volunteer
+              th Email address
+          tbody

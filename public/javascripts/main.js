@@ -101,6 +101,29 @@ function deleteAnyShift(shiftID, volID) {
   });
 };
 
+function showDetails() {
+  $.ajax({
+    url: "getDetails",
+    cache: false,
+    dataType: "json",
+    method: "GET"
+  }).done(function(data) {
+    console.log("Details are:", data);
+    $("#userDetails").find("tr:gt(0)").remove();
+    var i, j, line, lines = "";
+    for (i=0; i < data.length; i++) {
+      for (j = 0; j < data[i].Vol.length; j++) {
+        line = '<tr><td>' + data[i].time + '</td><td>' + data[i].Vol[j].firstName + ' ' + data[i].Vol[j].lastName + '</td><td>' + data[i].Vol[j].email + '</td></tr>';
+        lines += line;
+      }
+    }
+    $("#userDetails").append(lines);
+    $("#userDetails").toggle();
+    $("#details1").toggle();
+    $("#details2").toggle();
+  });
+};
+
 function updateShifts() {
   $.ajax({
     url: "getShifts",

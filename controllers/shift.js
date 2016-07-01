@@ -45,6 +45,15 @@ exports.getShifts = function (req, res, next) {
   });
 };
 
+exports.getDetails = function (req, res, next) {
+  // http://mongoosejs.com/docs/populate.html
+  var query = getFriday(moment());
+  var shifts = Shift.find(query).populate({path: 'Vol', select: '_id firstName lastName email'}).populate({path: 'Exec', select: '_id firstName lastName email'}).exec(function (err, results) {
+    if (err) {return console.log(err)}
+    res.json(results);
+  });
+};
+
 exports.volunteer = function (req, res, next) {
   var shiftID = req.body.shiftID;
   // Just quit if the ObjectID isn't valid

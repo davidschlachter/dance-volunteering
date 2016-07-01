@@ -101,6 +101,9 @@ router.get('/auth/live/callback',
 /* GET the shifts */
 router.get('/getShifts', shift.getShifts);
 
+/* Get volunteer details */
+router.get('/getDetails', checkAuth, checkExec, shift.getDetails);
+
 /* GET one's own user profile */
 router.get('/getUser', checkAuth, userController.getUser);
 
