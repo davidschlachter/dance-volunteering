@@ -43,6 +43,10 @@ $(document).ready(function() {
     $("#drop3").removeAttr("data-toggle");
   }
   
+  if (typeof user === "object" && user.isAdmin === true) {
+    $("#adminTools").show();
+  }
+  
   updateShifts();
 });
 
@@ -61,6 +65,12 @@ function shouldWrite() {
     return false;
   }
 }
+
+function showDelButtons() {
+  $(".otherDel").toggle();
+  $("#otherDel1").toggle();
+  $("#otherDel2").toggle();
+};
 
 function getCookie(name) {
   var value = "; " + document.cookie;
@@ -138,7 +148,7 @@ function updateShifts() {
           if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
             deleteButton = '<input type="button" value="✘" onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
           } else if (typeof user === 'object' && user.isAdmin === true) {
-          deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          deleteButton = '<span class="otherDel"><input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
           } else {
             deleteButton = ""
           }
@@ -163,7 +173,7 @@ function updateShifts() {
           if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
             deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
           } else if (typeof user === 'object' && user.isAdmin === true) {
-          deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          deleteButton = '<span class="otherDel"><input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
           } else {
             deleteButton = ""
           }

@@ -58,3 +58,9 @@ html(lang='en')
                   <input type="checkbox" name="sendVolunteeringCall" id="sendVolunteeringCall" /> A notification when shifts for the coming week are available (Monday morning)
               .modal-footer
                 input.btn.btn-default(type='submit', value="Save")
+                
+      div#adminTools(style="display:none;")
+        h2 Exec tools:
+        p
+          input#otherDel1.btn.btn-default(value="Delete a shift",onclick="showDelButtons()")
+          input#otherDel2.btn.btn-default(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
