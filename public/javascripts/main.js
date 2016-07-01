@@ -97,13 +97,19 @@ function updateShifts() {
         }
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }
+      var execClass;
+      if (user.isAdmin === true) {
+        execClass = "btn btn-primary";
+      } else {
+        execClass = "btn btn-default";
+      }
       for (h = 0; h < nExec; h++) {
         if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
           userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
           profilePicture = data[i].Exec[h].profilePicture;
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
         } else {
-          tableText = "<a href='#' class='btn btn-primary'>Exec</a>"
+          tableText = "<a href='#' class='" + execClass + "'>Exec</a>"
         }
         line += '<td>' + tableText + '</td>';
       }
