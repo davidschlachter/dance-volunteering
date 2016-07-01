@@ -90,6 +90,39 @@ exports.volunteer = function (req, res, next) {
 };
 
 
+exports.volunteerExec = function (req, res, next) {
+  var shiftID = req.body.shiftID;
+  // Just quit if the ObjectID isn't valid
+  if (!mongoose.Types.ObjectId.isValid(shiftID)) {
+    console.log("shiftID was invalid");
+    return next;
+  }
+  // Quit if shifts aren't open
+  if (!shouldWrite()) {
+    console.log("shouldWrite was false (exiting)");
+    return next;
+  }
+  var rightNow = moment();
+    // Check that there actually is a spot available
+    Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
+      var nExecNow = result0.Exec.length;
+      if (nExecNow < result0.nExec) {
+        var uQuery = getFriday(rightNow); // Ensure shift is for this week
+        uQuery["_id"] = ObjectID(shiftID);
+        Shift.update(uQuery, {$push:{"Exec":req.user._id}}, function (err1, results1) {
+          if (err1) {return console.log(err1)};
+          if (results1 != null) {
+              email.newExecShift(req.user._id, uQuery, config.opt.email);
+          }
+        });
+      } else {
+        console.log("No spot available left");
+      }
+    });
+  return next();
+};
+
+
 exports.deleteMyShift= function (req, res, next) {
   // Quit if shifts aren't open
   if (!shouldWrite()) {
@@ -105,6 +138,50 @@ exports.deleteMyShift= function (req, res, next) {
       if (err) {return console.log(err);}
       if (result != null) {
         email.cancelled(req.user._id, result, config.opt.email);
+      }
+    });
+  return next();
+};
+
+exports.deleteAnyShift= function (req, res, next) {
+  var shiftID = req.body.shiftID;
+  var volID = req.body.volID;
+  console.log(req.body);
+  // Quit if shifts aren't open
+  if (!shouldWrite()) {
+    console.log("shouldWrite was false (exiting)");
+    return next;
+  }
+  // Just quit if the ObjectIDs aren't valid
+  if (!mongoose.Types.ObjectId.isValid(shiftID)) {
+    console.log("shiftID was invalid");
+    return next;
+  }
+  if (!mongoose.Types.ObjectId.isValid(volID)) {
+    console.log("volID was invalid");
+    return next;
+  }
+  var rightNow = moment();
+  var query = getFriday(rightNow);
+  query["_id"] = shiftID;
+  query.Vol = [];
+  query.Vol[0] = volID;
+  // Check if the volunteer already has a shift this week (if yes, cancel it)
+  Shift.findOneAndUpdate(query, {$pull:{"Vol":volID}}, function (err, result) {
+      if (err) {return console.log(err);}
+      if (result != null) {
+        email.cancelled(volID, result, config.opt.email);
+      }
+      if (result === null) {
+		delete query.Vol;
+		query.Exec = [];
+		query.Exec[0] = volID;
+        Shift.findOneAndUpdate(query, {$pull:{"Exec":volID}}, function (err, result) {
+            if (err) {return console.log(err);}
+            if (result != null) {
+              email.cancelled(volID, result, config.opt.email);
+            }
+          });
       }
     });
   return next();

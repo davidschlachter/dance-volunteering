@@ -71,6 +71,33 @@ exports.newShift = function (userid, uQuery, email) {
   });
 };
 
+exports.newExecShift = function (userid, uQuery, email) {
+  Shift.findOne({
+    _id: uQuery._id
+  }, function (err, shift) {
+    User.findOne({
+      _id: userid
+    }, function (err, user) {
+      if (user.sendNewShift != false) {
+        var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+        var date = moment(shift.date).format("MMMM D, YYYY");
+        var mailOpts = {
+          from: '"' + email.name + '" <' + email.user + '>',
+          to: user.email,
+          subject: "Exec volunteer shift on " + date,
+          text: "You've signed up for a shift at " + shift.time + " on " + date + ".",
+          html: "<p>You've signed up for a shift at " + shift.time + " on " + date + ".</p>"
+        };
+
+        transporter.sendMail(mailOpts, function (error, info) {
+          if (error) { return console.log(error); }
+          console.log('Message sent: ' + info.response);
+        });
+      }
+    });
+  });
+};
+
 exports.switching = function (userid, oldShift, uQuery, email) {
   Shift.findOne({
     _id: uQuery._id

@@ -4,10 +4,18 @@ $(document).ready(function() {
     var shiftID = getCookie("shiftID");
     document.cookie = "shiftID" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
     var myForm=document.createElement("form");
-    myForm.method="post",myForm.action="volunteer";
+    myForm.method="post";
+    myForm.action="volunteer";
     p = {shiftID: shiftID};
-    for(var k in p){var myInput=document.createElement("input"); myInput.setAttribute("name",k),myInput.setAttribute("value",p[k]),myForm.appendChild(myInput)}
-    document.body.appendChild(myForm),myForm.submit(),document.body.removeChild(myForm);
+    var k;
+    for(k in p) {
+      var myInput=document.createElement("input"); myInput.setAttribute("name",k);
+      myInput.setAttribute("value",p[k]);
+      myForm.appendChild(myInput);
+    }
+    document.body.appendChild(myForm);
+    myForm.submit();
+    document.body.removeChild(myForm);
   }
   
   // Fetch the actually updated user profile
@@ -57,12 +65,26 @@ function shouldWrite() {
 function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
-  if (parts.length == 2) {return parts.pop().split(";").shift();} else {return false}
+  if (parts.length == 2) {
+    return parts.pop().split(";").shift();} else {return false;}
 };
 
-function deleteMyShift() { 
+function deleteMyShift() {
   $.ajax({
     url: "deleteMyShift",
+    method: "POST"
+  }).done(function(data) {
+    updateShifts();
+  });
+};
+
+function deleteAnyShift(shiftID, volID) {
+  $.ajax({
+    url: "deleteAnyShift",
+    data: {
+      shiftID: shiftID,
+      volID: volID
+    },
     method: "POST"
   }).done(function(data) {
     updateShifts();
@@ -89,10 +111,15 @@ function updateShifts() {
     $("#volCol").attr('colspan',nCol);
 
     // Are shifts open?
-    var areOpen = shouldWrite();
+    var areOpen = shouldWrite(), action;
+    if (areOpen) {
+      action = 'type="submit"';
+    } else {
+      action = 'disabled type="button"';
+    }
     
     // Set up the volunteering table
-    var nSpots, nVol, nExec, colSpan, action;
+    var nSpots, nVol, nExec, colSpan;
     for (i=0; i < data.length; i++) {
       nVol = data[i].nVol;
       nExec = data[i].nExec;
@@ -108,16 +135,17 @@ function updateShifts() {
         if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
           userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
           profilePicture = data[i].Vol[h].profilePicture;
-          if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {deleteButton = '<input type="button" value="✘" onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';} else {deleteButton = ""}
+          if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
+            deleteButton = '<input type="button" value="✘" onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
+          } else if (typeof user === 'object' && user.isAdmin === true) {
+          deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          } else {
+            deleteButton = ""
+          }
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
         } else {
           deleteButton = "";
-          if (areOpen) {
-            action = 'type="submit"';
-          } else {
-            action = 'disabled type="button"';
-          }
-          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>'
+          tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
         }
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }
@@ -129,11 +157,18 @@ function updateShifts() {
       }
       for (h = 0; h < nExec; h++) {
         if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
+          if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
+            deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          } else if (typeof user === 'object' && user.isAdmin === true) {
+          deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          } else {
+            deleteButton = ""
+          }
           userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
           profilePicture = data[i].Exec[h].profilePicture;
-          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName;
+          tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
         } else {
-          tableText = "<a href='#' class='" + execClass + "'>Exec</a>"
+          tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Exec" class="btn btn-primary" /></form>'
         }
         line += '<td>' + tableText + '</td>';
       }

@@ -31,8 +31,18 @@ router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) 
   res.redirect(config.opt.base_url + '/');
 });
 
+/* POST to volunteer for an exec shift */
+router.post('/volunteerExec', checkAuth, checkExec, shift.volunteerExec, function (req, res, next) {
+  res.redirect(config.opt.base_url + '/');
+});
+
 /* POST to delete user's own shift */
 router.post('/deleteMyShift', checkAuth, shift.deleteMyShift, function (req, res, next) {
+  res.redirect(config.opt.base_url + '/');
+});
+
+/* POST to delete exec's own shift */
+router.post('/deleteAnyShift', checkAuth, checkExec, shift.deleteAnyShift, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
@@ -100,6 +110,16 @@ function checkAuth(req, res, next) {
   } else {
     if (typeof req.body.shiftID != "undefined") {res.cookie('shiftID', req.body.shiftID, {path: '/'});}
     res.redirect(config.opt.base_url + '/login');
+  }
+}
+
+/* Check if exec */
+function checkExec(req, res, next) {
+  if (req.user.isAdmin) {
+    next();
+  } else {
+    console.log("Not exec");
+    res.redirect(config.opt.base_url + '/');
   }
 }
 
