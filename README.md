@@ -1,5 +1,5 @@
 # dance-volunteering
-Volunteering system for the Ottawa Swing Dance Society
+Volunteering system for the Ottawa Swing Dance Society. Live at https://schlachter.ca/dance-vol/.
 
 
 List of features (with current status):
