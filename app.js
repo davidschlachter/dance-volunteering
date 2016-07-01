@@ -14,6 +14,7 @@ var LiveStrategy = require('passport-windowslive').Strategy;
 var User = require('./models/userModel');
 var flash = require('connect-flash');
 var email = require('./controllers/email');
+var cron = require('node-cron');
 
 var routes = require('./routes/index');
 
@@ -208,6 +209,12 @@ passport.use(new LiveStrategy({
     });
   }
 ));
+
+// Send list of volunteers to Execs Friday at 5 PM
+cron.schedule('0 17 * * 5', function(){
+  console.log('Sending schedule out');
+  email.mailOut(config.opt.email);
+});
 
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {

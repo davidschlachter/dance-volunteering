@@ -124,3 +124,70 @@ exports.switching = function (userid, oldShift, uQuery, email) {
     });
   });
 };
+
+
+
+exports.mailOut = function(email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  var query = getFriday(moment());
+  var shifts = Shift.find(query).populate({
+    path: 'Vol',
+    select: '_id firstName lastName email'
+  }).populate({
+    path: 'Exec',
+    select: '_id firstName lastName email'
+  }).exec(function(err, results) {
+    if (err) {
+      return console.log(err)
+    }
+
+    var i, j, line, lines = "<table><thead><th>Time</th><th>Volunteer</th></thead><tbody>";
+    for (i = 0; i < results.length; i++) {
+      for (j = 0; j < results[i].Vol.length; j++) {
+        line = '<tr><td>' + results[i].time + '</td><td>' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + '</td></tr>';
+        lines += line;
+      }
+    }
+    lines += "</tbody></table>"
+    console.log(lines);
+
+
+    User.find({
+      isAdmin: true
+    }, function(err, results) {
+      var i, mailOpts;
+      for (i = 0; i < results.length; i++) {
+        mailOpts = {
+          from: '"' + email.name + '" <' + email.user + '>',
+          to: results[i].email,
+          subject: "Volunteering shifts for this week",
+          text: "The shifts for this week are:" + lines,
+          html: "<p>The shifts for this week are:</p>" + lines
+        };
+        transporter.sendMail(mailOpts, function(error, info) {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message sent: ' + info.response);
+        });
+      }
+    });
+
+  });
+};
+
+
+
+function getFriday(now) {
+  if (now.day() < 5 && now.day() > 0) {
+    query = {"date" : now.day(5).startOf('day').toDate()};
+  } else if (now.day() === 5) {
+    query = {"date" : now.startOf('day').toDate()};
+  } else if (now.day() === 6 || now.day() === 0) {
+    query = {"date" : now.day(-2).startOf('day').toDate()};
+  } else {
+    console.log("Could not interpret day of week in checkShifts. Had now.day() = ", now.day());
+    return;
+  }
+	return query;
+};
