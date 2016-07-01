@@ -150,10 +150,13 @@ function updateShifts() {
         line += '<td' + colSpanText + '>' + tableText + '</td>';
       }
       var execClass;
-      if (user.isAdmin === true) {
+      var action2;
+      if (typeof user === "object" && user.isAdmin === true) {
         execClass = "btn btn-primary";
+        action2 = 'type="submit"';
       } else {
         execClass = "btn btn-default";
+        action2 = 'disabled type="button"';
       }
       for (h = 0; h < nExec; h++) {
         if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
@@ -168,7 +171,7 @@ function updateShifts() {
           profilePicture = data[i].Exec[h].profilePicture;
           tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
         } else {
-          tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Exec" class="btn btn-primary" /></form>'
+          tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
         }
         line += '<td>' + tableText + '</td>';
       }
