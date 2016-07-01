@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var User = require('./models/userModel');
 
 // Get options from config file
 var config = require('../config');
@@ -115,12 +116,19 @@ function checkAuth(req, res, next) {
 
 /* Check if exec */
 function checkExec(req, res, next) {
-  if (req.user.isAdmin) {
-    next();
-  } else {
-    console.log("Not exec");
-    res.redirect(config.opt.base_url + '/');
-  }
+  User.findById(req.user._id, function(err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect(config.opt.base_url + '/');
+    } else {
+      if (user.isAdmin === true) {
+        return next();
+      } else {
+        console.log("Not exec");
+        res.redirect(config.opt.base_url + '/');
+      }
+    }
+  });
 }
 
 module.exports = router;
