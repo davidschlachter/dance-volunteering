@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var User = require('../models/userModel');
+var Shift = require('../models/shiftModel');
+var moment = require('moment');
 
 // Get options from config file
 var config = require('../config');
@@ -10,10 +12,23 @@ var shift = require('../controllers/shift');
 var userController = require('../controllers/user');
 
 /* GET home page. */
+
 router.get('/', shift.checkShifts, function (req, res, next) {
+  // Send the userID if logged in
   var user;
   if (typeof req.user == "undefined") {user = "";} else {user = req.user;}
-  res.render('index', { title: 'OSDS Volunteering', user: user });
+  // Send the shifts
+  var query = shift.getFriday(moment());
+  var shifts = Shift.find(query).populate({
+    path: 'Vol',
+    select: '_id firstName lastNameInitial profilePicture'
+  }).populate({
+    path: 'Exec',
+    select: '_id firstName lastNameInitial profilePicture'
+  }).exec(function (err, results) {
+    if (err) {return console.log(err);}
+    res.render('index', {title: 'OSDS Volunteering', user: user, shifts: results });
+  });
 });
 
 /* GET login page */

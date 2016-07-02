@@ -197,7 +197,7 @@ exports.deleteAnyShift= function (req, res, next) {
 };
 
 
-function getFriday(now) {
+var getFriday = function (now) {
   if (now.day() < 5 && now.day() > 0) {
     query = {"date" : now.day(5).startOf('day').toDate()};
   } else if (now.day() === 5) {
@@ -210,6 +210,7 @@ function getFriday(now) {
   }
 	return query;
 };
+module.exports.getFriday = getFriday;
 
 function shouldWrite() {
   var now = moment();
