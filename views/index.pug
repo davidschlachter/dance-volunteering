@@ -71,6 +71,11 @@ html(lang='en')
                   <input type="checkbox" name="sendThanks" id="sendThanks" /> A thank you email for volunteering
                   br
                   <input type="checkbox" name="sendVolunteeringCall" id="sendVolunteeringCall" /> A notification when shifts for the coming week are available (Monday morning)
+                  br
+                  span#adminEmail(style="display:none;")
+                    <input type="checkbox" name="sendSchedule" id="sendSchedule" /> The volunteer schedule for this week (Friday at 5 PM)
+                    br
+                    <input type="checkbox" name="sendDetails" id="sendDetails" /> A notification every time any shift is added, changed, or deleted
               .modal-footer
                 input.btn.btn-default(type='submit', value="Save")
                 

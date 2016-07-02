@@ -79,6 +79,25 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendVolunteeringCall = false;
   }
+  
+  // For admins
+  // sendSchedule
+  if (req.body.hasOwnProperty('sendSchedule') && typeof req.body.sendSchedule === "string") {
+    if (req.body.sendSchedule === "on") {
+      sendSchedule = true;
+    }
+  } else {
+    sendSchedule = false;
+  }
+  
+  // sendDetails
+  if (req.body.hasOwnProperty('sendDetails') && typeof req.body.sendDetails === "string") {
+    if (req.body.sendDetails === "on") {
+      sendDetails = true;
+    }
+  } else {
+    sendDetails = false;
+  }
 
   console.log("We'll try to update userid", req.user._id);
   
@@ -88,7 +107,9 @@ exports.emailPrefs = function (req, res, next) {
     sendDeletedShift: sendDeletedShift,
     sendReminder: sendReminder,
     sendThanks: sendThanks,
-    sendVolunteeringCall: sendVolunteeringCall
+    sendVolunteeringCall: sendVolunteeringCall,
+    sendSchedule: sendSchedule,
+    sendDetails: sendDetails
   }}, function (err, result) {
     if (err) {return console.log(err);}
     console.log("Updated email preferences:", result);

@@ -38,6 +38,8 @@ $(document).ready(function() {
         $("#sendReminder").prop('checked', user.sendReminder);
         $("#sendThanks").prop('checked', user.sendThanks);
         $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
+        $("#sendSchedule").prop('checked', user.sendSchedule);
+        $("#sendDetails").prop('checked', user.sendDetails);
       }
     });
   } else {
@@ -48,6 +50,7 @@ $(document).ready(function() {
   
   if (typeof user === "object" && user.isAdmin === true) {
     $("#adminTools").show();
+    $("#adminEmail").show();
   }
   
   // Fetch the volunteer shifts

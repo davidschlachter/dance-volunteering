@@ -157,7 +157,8 @@ exports.mailOut = function(email) {
     lines += "</tbody></table>"
 
     User.find({
-      isAdmin: true
+      isAdmin: true,
+      sendSchedule: true
     }, function(err, results) {
       var i, mailOpts;
       for (i = 0; i < results.length; i++) {
