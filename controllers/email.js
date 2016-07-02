@@ -3,6 +3,7 @@ var nodemailer = require('nodemailer');
 var moment = require('moment');
 var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
+var shift = require('../controllers/shift');
 
 
 exports.welcome = function (user, email) {
@@ -129,7 +130,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 
 exports.mailOut = function(email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-  var query = getFriday(moment());
+  var query = shift.getFriday(moment());
   var shifts = Shift.find(query).populate({
     path: 'Vol',
     select: '_id firstName lastName email'
@@ -174,20 +175,4 @@ exports.mailOut = function(email) {
     });
 
   });
-};
-
-
-
-function getFriday(now) {
-  if (now.day() < 5 && now.day() > 0) {
-    query = {"date" : now.day(5).startOf('day').toDate()};
-  } else if (now.day() === 5) {
-    query = {"date" : now.startOf('day').toDate()};
-  } else if (now.day() === 6 || now.day() === 0) {
-    query = {"date" : now.day(-2).startOf('day').toDate()};
-  } else {
-    console.log("Could not interpret day of week in checkShifts. Had now.day() = ", now.day());
-    return;
-  }
-	return query;
 };

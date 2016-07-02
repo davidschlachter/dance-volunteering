@@ -202,7 +202,9 @@ var getFriday = function (now) {
     query = {"date" : now.day(5).startOf('day').toDate()};
   } else if (now.day() === 5) {
     query = {"date" : now.startOf('day').toDate()};
-  } else if (now.day() === 6 || now.day() === 0) {
+  } else if (now.day() === 6) {
+    query = {"date" : now.day(5).startOf('day').toDate()};
+  } else if (now.day() === 0) {
     query = {"date" : now.day(-2).startOf('day').toDate()};
   } else {
     console.log("Could not interpret day of week in checkShifts. Had now.day() = ", now.day());
