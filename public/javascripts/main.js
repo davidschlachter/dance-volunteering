@@ -59,8 +59,9 @@ $(document).ready(function() {
 });
 
 $(window).load(function(){
-  if (shouldWrite() === false)
+  if (shouldWrite() === false && getCookie("noShifts") === false)
     $('#noShifts').modal('show');
+    document.cookie = "noShifts=shown";
 });
 
 
