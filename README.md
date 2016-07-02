@@ -30,7 +30,7 @@ Email
 Exec
 ----
 - [X] Admin can get more information on users (to contact them)
-- [ ] Admin can add or remove other admins
+- [X] Admin can add or remove other admins
 - [ ] Admin can see previous weeks
 - [X] Admin can cancel a shift
 
