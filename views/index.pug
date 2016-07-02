@@ -37,6 +37,19 @@ html(lang='en')
             th Time
             th#volCol Volunteer(s)
         tbody
+      
+      #noShifts.modal.fade(role='dialog')
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal') ×
+              h4.modal-title Shifts closed
+            .modal-body
+              p Shifts are closed for this week! Volunteering shifts for next Friday open on Monday.
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') OK
+        
+      
       #emailPrefs.modal.fade(role='dialog')
         form(action="emailPrefs",method="post")
           .modal-dialog

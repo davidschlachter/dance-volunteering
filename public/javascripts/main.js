@@ -58,6 +58,11 @@ $(document).ready(function() {
   }
 });
 
+$(window).load(function(){
+  if (shouldWrite() === false)
+    $('#noShifts').modal('show');
+});
+
 
 // Client-side version of the server's logic for whether shifts are open. If it's Friday evening, Saturday, or Sunday, disable the volunteering buttons.
 function shouldWrite() {
