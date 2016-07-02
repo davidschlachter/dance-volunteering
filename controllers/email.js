@@ -144,14 +144,17 @@ exports.mailOut = function(email) {
 
     var i, j, line, lines = "<table><thead><th>Time</th><th>Volunteer</th></thead><tbody>";
     for (i = 0; i < results.length; i++) {
-      for (j = 0; j < results[i].Vol.length; j++) {
-        line = '<tr><td>' + results[i].time + '</td><td>' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + '</td></tr>';
+      if (results[i].Vol.length === 0) {
+        line = '<tr><td>' + results[i].time + '</td><td><strong>No volunteers</strong></td></tr>';
         lines += line;
+      } else {
+        for (j = 0; j < results[i].Vol.length; j++) {
+          line = '<tr><td>' + results[i].time + '</td><td>' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + '</td></tr>';
+          lines += line;
+        }
       }
     }
     lines += "</tbody></table>"
-    console.log(lines);
-
 
     User.find({
       isAdmin: true
