@@ -166,8 +166,10 @@ function displayShifts(data) {
   var areOpen = shouldWrite(), action;
   if (areOpen) {
     action = 'type="submit"';
+    delAction = ''
   } else {
     action = 'disabled type="button"';
+    delAction = 'disabled'
   }
   
   // Set up the volunteering table
@@ -188,9 +190,9 @@ function displayShifts(data) {
         userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
         profilePicture = data[i].Vol[h].profilePicture;
         if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
-          deleteButton = '<input type="button" value="✘" onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
+          deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
         } else if (typeof user === 'object' && user.isAdmin === true) {
-        deleteButton = '<span class="otherDel"><input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+        deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
         } else {
           deleteButton = ""
         }
@@ -213,9 +215,9 @@ function displayShifts(data) {
     for (h = 0; h < nExec; h++) {
       if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
         if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
-          deleteButton = '<input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
         } else if (typeof user === 'object' && user.isAdmin === true) {
-        deleteButton = '<span class="otherDel"><input type="button" value="✘" onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+        deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
         } else {
           deleteButton = ""
         }
