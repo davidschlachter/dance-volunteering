@@ -27,7 +27,7 @@ Email
 - [X] Users and admins can manage their email preferences
 - [ ] User can be reminded of their shift by email
 - [ ] User gets a thank-you email
-- [ ] User gets an email when shifts become available (Monday)
+- [X] User gets an email when shifts become available (Monday)
 - [X] Admin is notified of shifts on Friday
 - [ ] Admin can be notified of each shift taken
 

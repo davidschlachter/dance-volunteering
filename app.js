@@ -216,6 +216,12 @@ cron.schedule('0 17 * * 5', function(){
   email.mailOut(config.opt.email);
 });
 
+// Notify everyone that shifts are available Monday around midnight
+cron.schedule('1 0 * * 1', function(){
+  console.log('Sending reminder out');
+  email.shiftsAvailable(config.opt.email);
+});
+
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {
 	done(null, user.id);

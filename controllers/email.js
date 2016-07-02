@@ -180,3 +180,29 @@ exports.mailOut = function(email) {
 
   });
 };
+
+exports.shiftsAvailable = function(email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+    User.find({
+      sendVolunteeringCall: true
+    }, function(err, results) {
+      var i, mailOpts;
+      for (i = 0; i < results.length; i++) {
+        mailOpts = {
+          from: '"' + email.name + '" <' + email.user + '>',
+          to: results[i].email,
+          subject: "Volunteering shifts open for this Friday",
+          text: "Hi " + results[i].firstName + "! This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit https://schlachter.ca/dance-vol/",
+          html: "<p>Hi " + results[i].firstName + "! This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p>"
+        };
+        transporter.sendMail(mailOpts, function(error, info) {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message sent: ' + info.response);
+        });
+      }
+    });
+
+  });
+};
