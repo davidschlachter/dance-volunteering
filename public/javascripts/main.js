@@ -184,7 +184,7 @@ function updateShifts() {
       }
       var execClass;
       var action2;
-      if (typeof user === "object" && user.isAdmin === true) {
+      if (typeof user === "object" && user.isAdmin === true && shouldWrite()) {
         execClass = "btn btn-primary";
         action2 = 'type="submit"';
       } else {
