@@ -1,5 +1,6 @@
 
 $(document).ready(function() {
+  // If we had clicked 'Volunteer' and are now coming back from the login page, then volunteer for the shift we had clicked
   if (typeof user === "object" && getCookie("shiftID") != false) {
     var shiftID = getCookie("shiftID");
     document.cookie = "shiftID" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
@@ -18,7 +19,9 @@ $(document).ready(function() {
     document.body.removeChild(myForm);
   }
   
-  // Fetch the actually updated user profile
+  // Node passes us the userID, but we'll fetch the user's full profile (for email preferences and admin status)
+  // If logged in, autofill the email preferences and show the admin tools if applicable
+  // If not logged in, show the login button
   if (typeof user === "object") {
     $.ajax({
       url: "getUser",
@@ -47,9 +50,12 @@ $(document).ready(function() {
     $("#adminTools").show();
   }
   
+  // Fetch the volunteer shifts
   updateShifts();
 });
 
+
+// Client-side version of the server's logic for whether shifts are open. If it's Friday evening, Saturday, or Sunday, disable the volunteering buttons.
 function shouldWrite() {
   var now = moment();
   if (now.day() < 5 && now.day() > 0) {
@@ -66,19 +72,8 @@ function shouldWrite() {
   }
 }
 
-function showDelButtons() {
-  $(".otherDel").toggle();
-  $("#otherDel1").toggle();
-  $("#otherDel2").toggle();
-};
 
-function getCookie(name) {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) {
-    return parts.pop().split(";").shift();} else {return false;}
-};
-
+// Function to delete one's own shift
 function deleteMyShift() {
   $.ajax({
     url: "deleteMyShift",
@@ -88,6 +83,16 @@ function deleteMyShift() {
   });
 };
 
+
+// For admins, show the buttons to delete other users' shifts after clicking the button for this
+function showDelButtons() {
+  $(".otherDel").toggle();
+  $("#otherDel1").toggle();
+  $("#otherDel2").toggle();
+};
+
+
+// For admins, function to delete any shift
 function deleteAnyShift(shiftID, volID) {
   $.ajax({
     url: "deleteAnyShift",
@@ -101,6 +106,7 @@ function deleteAnyShift(shiftID, volID) {
   });
 };
 
+// For admins, function to show details (last names and email addresses) for this Friday's volunteers
 function showDetails() {
   $.ajax({
     url: "getDetails",
@@ -124,6 +130,8 @@ function showDetails() {
   });
 };
 
+
+// Function to display the volunteering shifts for this Friday
 function updateShifts() {
   $.ajax({
     url: "getShifts",
@@ -214,4 +222,13 @@ function updateShifts() {
     $("#shifts").append(lines);
     $("#date").html("Volunteering shifts for <strong>" + moment(data[0].date).format("dddd MMMM D, YYYY") + '</strong>:');
   });
+};
+
+
+// Function to get a cookie
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) {
+    return parts.pop().split(";").shift();} else {return false;}
 };
