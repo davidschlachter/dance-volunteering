@@ -203,6 +203,4 @@ exports.shiftsAvailable = function(email) {
         });
       }
     });
-
-  });
 };
