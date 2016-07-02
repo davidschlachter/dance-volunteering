@@ -11,6 +11,8 @@ var config = require('../config');
 var shift = require('../controllers/shift');
 var userController = require('../controllers/user');
 
+var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
+
 /* GET home page. */
 
 router.get('/', shift.checkShifts, function (req, res, next) {
@@ -79,8 +81,17 @@ router.get('/auth/facebook/callback',
     failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
-    console.log("Facebook log-in from", req.user);
-    res.redirect(config.opt.base_url + '/');
+    User.findById(req.user._id, function(err, user) {
+      if (err) {
+        console.log(err);
+        res.redirect(config.opt.base_url + '/');
+      } else {
+        console.log("Facebook log-in from", req.user);
+        res.cookie('authMethod', "Facebook", {path: '/', expires: cookieExpiryDate});
+        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.redirect(config.opt.base_url + '/');
+      }
+    });
   });
   
 router.get('/loginGoogle', passport.authenticate('google', {
@@ -94,8 +105,17 @@ router.get('/auth/google/callback',
     failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
-    console.log("Google log-in from", req.user);
-    res.redirect(config.opt.base_url + '/');
+    User.findById(req.user._id, function(err, user) {
+      if (err) {
+        console.log(err);
+        res.redirect(config.opt.base_url + '/');
+      } else {
+        console.log("Google log-in from", req.user);
+        res.cookie('authMethod', "Google", {path: '/', expires: cookieExpiryDate});
+        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.redirect(config.opt.base_url + '/');
+      }
+    });
   });
 
 router.get('/loginLive', passport.authenticate('windowslive', {
@@ -109,8 +129,17 @@ router.get('/auth/live/callback',
     failureRedirect: config.opt.base_url + '/'
   }),
   function (req, res) {
-    console.log("Windows log-in from", req.user);
-    res.redirect(config.opt.base_url + '/');
+    User.findById(req.user._id, function(err, user) {
+      if (err) {
+        console.log(err);
+        res.redirect(config.opt.base_url + '/');
+      } else {
+        console.log("Microsoft log-in from", req.user);
+        res.cookie('authMethod', "Microsoft", {path: '/', expires: cookieExpiryDate});
+        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.redirect(config.opt.base_url + '/');
+      }
+    });
   });
 
 /* GET the shifts */
