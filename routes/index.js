@@ -151,6 +151,15 @@ router.get('/getDetails', checkAuth, checkExec, shift.getDetails);
 /* Get list of admins */
 router.get('/getAdmins', checkAuth, checkExec, userController.getAdmins);
 
+/* POST to add a user as an admin */
+router.post('/makeAdmin', checkAuth, checkExec, userController.makeAdmin);
+
+/* POST to add a user as an admin */
+router.post('/removeAdmin', checkAuth, checkExec, userController.removeAdmin);
+
+/* Get users for admin adding */
+router.get('/searchAdmins', checkAuth, checkExec, userController.searchAdmins);
+
 /* GET one's own user profile */
 router.get('/getUser', checkAuth, userController.getUser);
 

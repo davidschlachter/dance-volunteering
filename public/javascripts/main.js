@@ -139,6 +139,7 @@ function showDetails() {
     $("#userDetails").toggle();
     $("#details1").toggle();
     $("#details2").toggle();
+    window.scrollTo(0,document.body.scrollHeight);
   });
 };
 
@@ -150,19 +151,90 @@ function showAdmins() {
     dataType: "json",
     method: "GET"
   }).done(function(data) {
-    $("#adminDetails").find("tr:gt(0)").remove();
+    $("#currentAdmins").find("tr:gt(0)").remove();
     var i, line, lines = "";
     for (i=0; i < data.length; i++) {
-      line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td>' + data[i].email + '</td></tr>';
+      line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '")\' class="btn btn-danger btn-xs" /></td><td>' + data[i].email + '</td></tr>';
       lines += line;
     }
-    $("#adminDetails").append(lines);
+    $("#currentAdmins").append(lines);
     $("#adminDetails").toggle();
     $("#execs1").toggle();
     $("#execs2").toggle();
+    window.scrollTo(0,document.body.scrollHeight);
+
+    // For admins, function to search users to add them as admins
+    // (Inside the AJAX callback because it didn't work outside)
+    $("#adminButton").on("click", function(e) {
+      if ($("#adminInput").val().length < 4) {
+        $("#tooShort").show();
+        return false;
+      } else {
+        $("#tooShort").hide();
+        $("#adminResults").hide();
+        e.preventDefault();
+        searchAdmins();
+      }
+    });
+ 
   });
 };
 
+// Function for finding users to add them as admins
+var searchAdmins = function() {
+  var input = $("#adminInput").val();
+  $.ajax({
+    url: "searchAdmins",
+    cache: false,
+    dataType: "json",
+    method: "GET",
+    data: {
+      adminInput: input
+    }}).done(function(data) {
+      console.log(data);
+      $("#adminResults").find("tr:gt(0)").remove();
+      var i, line, lines = "";
+      for (i=0; i < data.length; i++) {
+        line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button class="btn btn-success" onclick="makeAdmin(\'' + data[i]._id + '\')">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
+        lines += line;
+      }
+      $("#adminResults").append(lines);
+      $("#adminResults").show();
+  });
+  return false;
+};
+
+// Function to make a user an admin
+var makeAdmin = function(userid) {
+  $.ajax({
+    url: "makeAdmin",
+    dataType: "json",
+    method: "POST",
+    data: {
+      userid: userid
+    }}).done(function(data) {
+      console.log(data);
+      $("#adminResults").hide();
+      showAdmins();
+      showAdmins();
+  });
+  return false;
+};
+// Function to remove a user an admin
+var removeAdmin = function(userid) {
+  $.ajax({
+    url: "removeAdmin",
+    dataType: "json",
+    method: "POST",
+    data: {
+      userid: userid
+    }}).done(function(data) {
+      showAdmins();
+      showAdmins();
+      window.scrollTo(0,document.body.scrollHeight);
+  });
+  return false;
+};
 
 // Function to fetch the latest volunteering shifts for this Friday
 function updateShifts() {

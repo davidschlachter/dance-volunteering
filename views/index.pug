@@ -9,7 +9,6 @@ html(lang='en')
     link(rel='stylesheet', href='stylesheets/style.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7', crossorigin='anonymous')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css', integrity='sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r', crossorigin='anonymous')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS', crossorigin='anonymous')
     script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js')
     script.
       user = !{JSON.stringify(user)};
@@ -86,8 +85,8 @@ html(lang='en')
           input#otherDel2.btn.btn-primary(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
           input#details1.btn.btn-default(value="See volunteer details",onclick="showDetails()")
           input#details2.btn.btn-primary(value="Hide volunteer details",onclick="showDetails()",style="display:none;")
-          input#execs1.btn.btn-default(value="See all admins",onclick="showAdmins()")
-          input#execs2.btn.btn-primary(value="Hide admin details",onclick="showAdmins()",style="display:none;")
+          input#execs1.btn.btn-default(value="Manage admins",onclick="showAdmins()")
+          input#execs2.btn.btn-primary(value="Hide admin management",onclick="showAdmins()",style="display:none;")
         table#userDetails
           thead
             tr
@@ -95,9 +94,24 @@ html(lang='en')
               th Volunteer
               th Email address
           tbody
-        table#adminDetails(style="display:none;")
-          thead
-            tr
-              th Exec
-              th Email address
-          tbody
+        div#adminDetails(style="display:none;")
+          h3 Add an admin
+          p To add an admin, search volunteers by their name:
+          input#adminInput
+          span &nbsp;
+          button#adminButton.btn.btn-primary Search
+          br
+          div#tooShort.alert.alert-warning(style="display:none;") Search query is too short! (minimum four characters)
+          table#adminResults(style="display:none;")
+            thead
+              tr
+                th Name
+                th Email address
+            tbody
+          h3 Current admins:
+          table#currentAdmins
+            thead
+              tr
+                th Name
+                th Email address
+            tbody

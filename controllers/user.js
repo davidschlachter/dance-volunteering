@@ -20,6 +20,53 @@ exports.getAdmins = function (req, res, next) {
   });
 };
 
+// Find users to add them as admins
+exports.searchAdmins = function (req, res, next) {
+  var adminQuery = req.query.adminInput.replace(/[^a-zA-Z0-9]+/g, "");
+  if (typeof adminQuery === "string" && adminQuery.length > 3) {
+    var adminInput = new RegExp(adminQuery, "i");
+    User.find({userName: adminInput, isAdmin : false}).select('_id firstName lastName email profilePicture').exec(function (err, result) {
+      if (err) {return console.log(err);}
+      res.json(result);
+    });
+  }
+};
+
+// Add a user as an admin
+exports.makeAdmin = function (req, res, next) {
+  var userid = req.body.userid;
+  // Just quit if the ObjectID isn't valid
+  if (!mongoose.Types.ObjectId.isValid(userid)) {
+    console.log("shiftID was invalid");
+    return next;
+  }
+  User.findOneAndUpdate({_id : userid}, {$set:{
+    isAdmin: true
+  }}, function (err, result) {
+    if (err) {return console.log(err);}
+    console.log("New admin", result);
+    res.json(result);
+  });
+}
+
+// Remove a user as an admin
+exports.removeAdmin = function (req, res, next) {
+  var userid = req.body.userid;
+  console.log(userid);
+  // Just quit if the ObjectID isn't valid
+  if (!mongoose.Types.ObjectId.isValid(userid)) {
+    console.log("shiftID was invalid");
+    return next;
+  }
+  User.findOneAndUpdate({_id : userid}, {$set:{
+    isAdmin: false
+  }}, function (err, result) {
+    if (err) {return console.log(err);}
+    console.log("Removed admin", result);
+    res.json(result);
+  });
+}
+
 // Modify email preferences
 exports.emailPrefs = function (req, res, next) {
   var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall;
