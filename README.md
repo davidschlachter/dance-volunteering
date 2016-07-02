@@ -1,14 +1,18 @@
 # dance-volunteering
 Volunteering system for the Ottawa Swing Dance Society. Live at https://schlachter.ca/dance-vol/.
 
+Shifts are generated from a template Mondays at 00:00 (Sunday midnight). Volunteers can log in with Google, Facebook, or Microsoft and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
 
-List of features (with current status):
+
+## List of features (with current status):
 
 Accounts
 --------
 (An account is only required to volunteer for a shift)
 - [X] A user can log in with Facebook
 - [X] A user can log in with Google
+- [X] A user can log in with Microsoft
+- [ ] A user can log in with Yahoo
 
 Volunteering
 ------------
@@ -23,7 +27,7 @@ Email
 - [X] Users and admins can manage their email preferences
 - [ ] User can be reminded of their shift by email
 - [ ] User gets a thank-you email
-- [ ] User gets an email when shifts become available
+- [ ] User gets an email when shifts become available (Monday)
 - [X] Admin is notified of shifts on Friday
 - [ ] Admin can be notified of each shift taken
 
@@ -33,6 +37,8 @@ Exec
 - [X] Admin can add or remove other admins
 - [ ] Admin can see previous weeks
 - [X] Admin can cancel a shift
+- [ ] Admin can customize the volunteering template
+- [ ] Admin can cancel a week
 
 
 Backend
