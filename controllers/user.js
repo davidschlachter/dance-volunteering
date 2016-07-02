@@ -12,7 +12,15 @@ exports.getUser = function (req, res, next) {
   });
 };
 
-// Check if shifts have been created for the current week
+// Get a list of admins
+exports.getAdmins = function (req, res, next) {
+  User.find({isAdmin : true}).select('_id firstName lastName email').exec(function (err, result) {
+    if (err) {return console.log(err);}
+    res.json(result);
+  });
+};
+
+// Modify email preferences
 exports.emailPrefs = function (req, res, next) {
   var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall;
   

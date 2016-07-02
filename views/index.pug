@@ -81,10 +81,18 @@ html(lang='en')
           input#otherDel2.btn.btn-default(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
           input#details1.btn.btn-default(value="See volunteer details",onclick="showDetails()")
           input#details2.btn.btn-default(value="Hide volunteer details",onclick="showDetails()",style="display:none;")
+          input#execs1.btn.btn-default(value="See all admins",onclick="showAdmins()")
+          input#execs2.btn.btn-default(value="Hide admin details",onclick="showAdmins()",style="display:none;")
         table#userDetails
           thead
             tr
               th Time
               th Volunteer
+              th Email address
+          tbody
+        table#adminDetails(style="display:none;")
+          thead
+            tr
+              th Exec
               th Email address
           tbody

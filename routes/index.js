@@ -148,6 +148,9 @@ router.get('/getShifts', shift.getShifts);
 /* Get volunteer details */
 router.get('/getDetails', checkAuth, checkExec, shift.getDetails);
 
+/* Get list of admins */
+router.get('/getAdmins', checkAuth, checkExec, userController.getAdmins);
+
 /* GET one's own user profile */
 router.get('/getUser', checkAuth, userController.getUser);
 

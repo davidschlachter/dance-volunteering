@@ -124,7 +124,6 @@ function showDetails() {
     dataType: "json",
     method: "GET"
   }).done(function(data) {
-    console.log("Details are:", data);
     $("#userDetails").find("tr:gt(0)").remove();
     var i, j, line, lines = "";
     for (i=0; i < data.length; i++) {
@@ -137,6 +136,27 @@ function showDetails() {
     $("#userDetails").toggle();
     $("#details1").toggle();
     $("#details2").toggle();
+  });
+};
+
+// For admins, function to show all admins
+function showAdmins() {
+  $.ajax({
+    url: "getAdmins",
+    cache: false,
+    dataType: "json",
+    method: "GET"
+  }).done(function(data) {
+    $("#adminDetails").find("tr:gt(0)").remove();
+    var i, line, lines = "";
+    for (i=0; i < data.length; i++) {
+      line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td>' + data[i].email + '</td></tr>';
+      lines += line;
+    }
+    $("#adminDetails").append(lines);
+    $("#adminDetails").toggle();
+    $("#execs1").toggle();
+    $("#execs2").toggle();
   });
 };
 
