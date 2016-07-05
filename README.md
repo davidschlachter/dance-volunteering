@@ -24,7 +24,7 @@ Volunteering
 Email
 -----
 - [X] Users and admins can manage their email preferences
-- [ ] User can be reminded of their shift by email
+- [X] User can be reminded of their shift by email
 - [ ] User gets a thank-you email
 - [X] User gets an email when shifts become available (Monday)
 - [X] Admin is notified of shifts on Friday

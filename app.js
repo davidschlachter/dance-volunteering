@@ -218,8 +218,14 @@ cron.schedule('0 17 * * 5', function(){
 
 // Notify everyone that shifts are available Monday around midnight
 cron.schedule('1 0 * * 1', function(){
-  console.log('Sending reminder out');
+  console.log('Sending out volunteering call');
   email.shiftsAvailable(config.opt.email);
+});
+
+// Send out reminder emails Thursday at 6 PM
+cron.schedule('0 18 * * 4', function(){
+  console.log('Sending reminders out');
+  email.reminderVol(config.opt.email);
 });
 
 // Serialize and deserialize

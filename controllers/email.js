@@ -204,3 +204,39 @@ exports.shiftsAvailable = function(email) {
       }
     });
 };
+
+// Send every volunteer a reminder about their shift on Thusday at 6 PM
+exports.reminderVol = function (email) {
+  var query = shift.getFriday(moment());
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  Shift.find(query).populate({
+    path: 'Vol',
+    select: 'userName firstName lastName email sendReminder'
+  }).exec(function (err, shifts) {
+    if (err) {return console.log(err);}
+    var date = moment(shifts[0].date).format("MMMM D, YYYY");
+    var i, j, mailOpts;
+    for (i = 0; i < shifts.length; i++) {
+      if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
+        for (j = 0; j < shifts[i].Vol.length; j++) {
+          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
+            mailOpts = {
+              from: '"' + email.name + '" <' + email.user + '>',
+              to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
+              subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
+              text: "Hi " + shifts[i].Vol[j].firstName + "! This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit https://schlachter.ca/dance-vol/. See you on the dance floor!",
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "! This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>. See you on the dance floor!</p>"
+            };
+
+            transporter.sendMail(mailOpts, function (error, info) {
+              if (error) { return console.log(error); }
+              console.log('Message sent: ' + info.response);
+            });
+          }
+        }
+      }
+    }
+
+  });
+};
+
