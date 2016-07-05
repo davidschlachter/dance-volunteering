@@ -16,10 +16,7 @@ var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
 /* GET home page. */
 
 router.get('/', shift.checkShifts, function (req, res, next) {
-  // Send the userID if logged in
-  var user;
-  if (typeof req.user == "undefined") {user = "";} else {user = req.user;}
-  // Send the shifts
+  // Get the shifts for this week
   var query = shift.getFriday(moment());
   var shifts = Shift.find(query).populate({
     path: 'Vol',
@@ -27,9 +24,21 @@ router.get('/', shift.checkShifts, function (req, res, next) {
   }).populate({
     path: 'Exec',
     select: '_id firstName lastNameInitial profilePicture'
-  }).exec(function (err, results) {
-    if (err) {return console.log(err);}
-    res.render('index', {title: 'OSDS Volunteering', user: user, shifts: results });
+  }).exec(function (err0, shifts) {
+    if (err0) {return console.log(err0);}
+    // Get the user's profile as well
+    var userQuery;
+    if (typeof req.user === "undefined") {
+      userQuery = "";
+      res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
+    } else {
+      userQuery = req.user._id;
+      User.findOne({_id : userQuery}, function (err1, user) {
+        if (err1) {return console.log(err1);}
+        res.render('index', {title: 'OSDS Volunteering', user: user, shifts: shifts });
+      });
+    }
+
   });
 });
 
@@ -161,7 +170,7 @@ router.post('/removeAdmin', checkAuth, checkExec, userController.removeAdmin);
 router.get('/searchAdmins', checkAuth, checkExec, userController.searchAdmins);
 
 /* GET one's own user profile */
-router.get('/getUser', checkAuth, userController.getUser);
+//router.get('/getUser', checkAuth, userController.getUser);
 
 /* Check if authenticated */
 function checkAuth(req, res, next) {

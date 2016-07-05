@@ -19,17 +19,10 @@ $(document).ready(function() {
     document.body.removeChild(myForm);
   }
   
-  // Node passes us the userID, but we'll fetch the user's full profile (for email preferences and admin status)
+  // Node passes us the user's profile
   // If logged in, autofill the email preferences and show the admin tools if applicable
   // If not logged in, show the login button
   if (typeof user === "object") {
-    $.ajax({
-      url: "getUser",
-      cache: false,
-      dataType: "json",
-      method: "GET"
-    }).done(function(data) {
-      user = data;
       if (typeof user === "object") {
         $("#drop3").html(user.userName + ' <span class="caret"></span>');
         $("#sendChangedShift").prop('checked', user.sendChangedShift);
@@ -41,7 +34,6 @@ $(document).ready(function() {
         $("#sendSchedule").prop('checked', user.sendSchedule);
         $("#sendDetails").prop('checked', user.sendDetails);
       }
-    });
   } else {
     $("#drop3").html('<a style="color:white;" href="login">Log in</a>');
     $("#drop3").removeClass("dropdown-toggle");
@@ -339,7 +331,7 @@ function displayShifts(data) {
 
 
 // Function to get a cookie
-function getCookie(name) {
+var getCookie = function (name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) {

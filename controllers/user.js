@@ -5,12 +5,12 @@ var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
 
 // Get the current user
-exports.getUser = function (req, res, next) {
-  User.findOne({_id : req.user._id}, function (err, result) {
-    if (err) {return console.log(err);}
-    res.json(result);
-  });
-};
+//exports.getUser = function (req, res, next) {
+//  User.findOne({_id : req.user._id}, function (err, result) {
+//    if (err) {return console.log(err);}
+//    res.json(result);
+//  });
+//};
 
 // Get a list of admins
 exports.getAdmins = function (req, res, next) {
