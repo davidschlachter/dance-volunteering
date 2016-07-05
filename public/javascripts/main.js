@@ -19,6 +19,11 @@ $(document).ready(function() {
     document.body.removeChild(myForm);
   }
   
+  // Open the email preferences if we came here from an email link
+  if(window.location.href.indexOf('#emailPrefs') != -1) {
+    $('#emailPrefs').modal('show');
+  }
+  
   // Node passes us the user's profile
   // If logged in, autofill the email preferences and show the admin tools if applicable
   // If not logged in, show the login button
