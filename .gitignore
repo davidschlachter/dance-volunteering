@@ -44,3 +44,7 @@ googleanalytics.js
 
 # PM2 config
 pm2config.json
+
+# Don't track the compiled style.css
+.sass-cache
+style.css
