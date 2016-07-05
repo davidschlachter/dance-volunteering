@@ -3,6 +3,8 @@
 var User = require('../models/userModel');
 var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
+var email = require('./email');
+var config = require('../config');
 
 // Get the current user
 //exports.getUser = function (req, res, next) {
@@ -44,7 +46,10 @@ exports.makeAdmin = function (req, res, next) {
     isAdmin: true
   }}, function (err, result) {
     if (err) {return console.log(err);}
-    console.log("New admin: " + result.userName);
+    if (result) {
+      email.newAdmin(result, config.opt.email);
+      console.log("New admin: " + result.userName);
+    }
     res.json(result);
   });
 }

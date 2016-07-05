@@ -138,9 +138,7 @@ exports.mailOut = function(email) {
     path: 'Exec',
     select: '_id userName firstName lastName email'
   }).exec(function(err, results) {
-    if (err) {
-      return console.log(err)
-    }
+    if (err) {return console.log(err);}
 
     var i, j, line, lines = "<table><thead><th>Time</th><th>Volunteer</th></thead><tbody>";
     for (i = 0; i < results.length; i++) {
@@ -154,7 +152,7 @@ exports.mailOut = function(email) {
         }
       }
     }
-    lines += "</tbody></table>"
+    lines += "</tbody></table>";
 
     User.find({
       isAdmin: true,
@@ -240,3 +238,18 @@ exports.reminderVol = function (email) {
   });
 };
 
+exports.newAdmin = function (user, email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  
+  var mailOpts = {
+    from: '"' + email.name + '" <' + email.user + '>',
+    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+    subject: "OSDS Volunteering: You've been added as an admin",
+    text: "Hi " + user.firstName + "! You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM. Check it out at https://schlachter.ca/dance-vol/!",
+    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>!</p>"
+  };
+  transporter.sendMail(mailOpts, function (error, info) {
+    if (error) { return console.log(error); }
+    console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+  });
+};
