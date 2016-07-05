@@ -12,7 +12,6 @@ Accounts
 - [X] A user can log in with Facebook
 - [X] A user can log in with Google
 - [X] A user can log in with Microsoft
-- [ ] A user can log in with Yahoo
 
 Volunteering
 ------------
