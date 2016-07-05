@@ -144,9 +144,14 @@ function showAdmins() {
     method: "GET"
   }).done(function(data) {
     $("#currentAdmins").find("tr:gt(0)").remove();
-    var i, line, lines = "";
+    var i, line, lines = "", dangerButton;
     for (i=0; i < data.length; i++) {
-      line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '")\' class="btn btn-danger btn-xs" /></td><td>' + data[i].email + '</td></tr>';
+      if (data[i]._id.toString() === user._id.toString()) {
+        dangerButton = ' <input type="button" disabled value="✘" class="btn btn-default btn-xs" />';
+      } else {
+        dangerButton = ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '")\' class="btn btn-danger btn-xs" />';
+      }
+      line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + dangerButton + '</td><td>' + data[i].email + '</td></tr>';
       lines += line;
     }
     $("#currentAdmins").append(lines);

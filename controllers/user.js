@@ -59,7 +59,12 @@ exports.removeAdmin = function (req, res, next) {
   var userid = req.body.userid;
   // Just quit if the ObjectID isn't valid
   if (!mongoose.Types.ObjectId.isValid(userid)) {
-    console.log("shiftID was invalid");
+    console.log("userid was invalid");
+    return next;
+  }
+  // Don't permit an admin to remove themselves!
+  if (userid.toString() === req.user._id.toString()) {
+    console.log("admin tried to delete themselves");
     return next;
   }
   User.findOneAndUpdate({_id : userid}, {$set:{
