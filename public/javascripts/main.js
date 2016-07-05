@@ -20,7 +20,7 @@ $(document).ready(function() {
   }
   
   // Open the email preferences if we came here from an email link
-  if(window.location.href.indexOf('#emailPrefs') != -1) {
+  if(window.location.href.indexOf('#emailPrefs') != -1 && typeof user === "object") {
     $('#emailPrefs').modal('show');
   }
   
