@@ -11,14 +11,14 @@ exports.welcome = function (user, email) {
   
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
-    to: user.email,
+    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
     subject: "Welcome to OSDS Volunteering",
     text: "Welcome to OSDS Volunteering! You'll receive an email each time you volunteer. You can configure your email preferences on the volunteering website.",
     html: "<p>Welcome to OSDS Volunteering! You'll receive an email each time you volunteer. You can configure your email preferences on the volunteering website.</p>"
   };
   transporter.sendMail(mailOpts, function (error, info) {
     if (error) { return console.log(error); }
-    console.log('Message sent: ' + info.response);
+    console.log('Welcome message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
   });
 };
 
@@ -31,7 +31,7 @@ exports.cancelled = function (userid, shift, email) {
       var date = moment(query.date).format("MMMM D, YYYY");
       var mailOpts = {
         from: '"' + email.name + '" <' + email.user + '>',
-        to: user.email,
+        to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "You've cancelled your shift at " + shift.time + " on " + date + ".",
         html: "<p>You've cancelled your shift at " + shift.time + " on " + date + ".</p>"
@@ -39,7 +39,7 @@ exports.cancelled = function (userid, shift, email) {
 
       transporter.sendMail(mailOpts, function (error, info) {
         if (error) { return console.log(error); }
-        console.log('Message sent: ' + info.response);
+        console.log('Cancelled shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
       });
     }
   });
@@ -57,7 +57,7 @@ exports.newShift = function (userid, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: user.email,
+          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "You've signed up for a shift at " + shift.time + " on " + date + ".",
           html: "<p>You've signed up for a shift at " + shift.time + " on " + date + ".</p>"
@@ -65,7 +65,7 @@ exports.newShift = function (userid, uQuery, email) {
 
         transporter.sendMail(mailOpts, function (error, info) {
           if (error) { return console.log(error); }
-          console.log('Message sent: ' + info.response);
+          console.log('New shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
     });
@@ -84,7 +84,7 @@ exports.newExecShift = function (userid, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: user.email,
+          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "You've signed up for a shift at " + shift.time + " on " + date + ".",
           html: "<p>You've signed up for a shift at " + shift.time + " on " + date + ".</p>"
@@ -92,7 +92,7 @@ exports.newExecShift = function (userid, uQuery, email) {
 
         transporter.sendMail(mailOpts, function (error, info) {
           if (error) { return console.log(error); }
-          console.log('Message sent: ' + info.response);
+          console.log('New exec shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
     });
@@ -111,7 +111,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: user.email,
+          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "You've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".",
           html: "<p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p>"
@@ -119,7 +119,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 
         transporter.sendMail(mailOpts, function (error, info) {
           if (error) { return console.log(error); }
-          console.log('Message sent: ' + info.response);
+          console.log('Changed shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
     });
@@ -136,7 +136,7 @@ exports.mailOut = function(email) {
     select: '_id firstName lastName email'
   }).populate({
     path: 'Exec',
-    select: '_id firstName lastName email'
+    select: '_id userName firstName lastName email'
   }).exec(function(err, results) {
     if (err) {
       return console.log(err)
@@ -164,7 +164,7 @@ exports.mailOut = function(email) {
       for (i = 0; i < results.length; i++) {
         mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: results[i].email,
+          to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
           subject: "Volunteering shifts for this week",
           text: "The shifts for this week are:" + lines,
           html: "<p>The shifts for this week are:</p>" + lines
@@ -173,7 +173,7 @@ exports.mailOut = function(email) {
           if (error) {
             return console.log(error);
           }
-          console.log('Message sent: ' + info.response);
+          console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
         });
       }
     });
@@ -190,7 +190,7 @@ exports.shiftsAvailable = function(email) {
       for (i = 0; i < results.length; i++) {
         mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: results[i].email,
+          to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
           subject: "Volunteering shifts open for this Friday",
           text: "Hi " + results[i].firstName + "! This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit https://schlachter.ca/dance-vol/",
           html: "<p>Hi " + results[i].firstName + "! This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p>"
@@ -199,7 +199,7 @@ exports.shiftsAvailable = function(email) {
           if (error) {
             return console.log(error);
           }
-          console.log('Message sent: ' + info.response);
+          console.log('Shifts available message sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
         });
       }
     });
@@ -230,7 +230,7 @@ exports.reminderVol = function (email) {
 
             transporter.sendMail(mailOpts, function (error, info) {
               if (error) { return console.log(error); }
-              console.log('Message sent: ' + info.response);
+              console.log('Reminder message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
             });
           }
         }
