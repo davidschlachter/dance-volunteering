@@ -168,6 +168,11 @@ function showAdmins() {
         searchAdmins();
       }
     });
+    $("#adminInput").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#adminButton").click();
+        }
+    });
  
   });
 };
