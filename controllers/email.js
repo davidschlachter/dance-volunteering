@@ -253,3 +253,21 @@ exports.newAdmin = function (user, email) {
     console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
   });
 };
+
+exports.removedAdmin = function (user, email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  
+  var mailOpts = {
+    from: '"' + email.name + '" <' + email.user + '>',
+    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+    subject: "OSDS Volunteering: You've been removed as an admin",
+    text: "Hi " + user.firstName + "! This is a notification that you're no longer an admin on the OSDS Volunteering site.",
+    html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"https://schlachter.ca/dance-vol/\">the OSDS Volunteering site</a>.</p>"
+  };
+  transporter.sendMail(mailOpts, function (error, info) {
+    if (error) { return console.log(error); }
+    console.log('Removed admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+  });
+};
+
+

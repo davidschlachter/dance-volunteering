@@ -66,7 +66,10 @@ exports.removeAdmin = function (req, res, next) {
     isAdmin: false
   }}, function (err, result) {
     if (err) {return console.log(err);}
-    console.log("Removed admin: " + result.userName);
+    if (result) {
+      email.removedAdmin(result, config.opt.email);
+      console.log("Removed admin: " + result.userName);
+    }
     res.json(result);
   });
 }
