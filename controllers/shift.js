@@ -155,7 +155,6 @@ exports.deleteMyShift= function (req, res, next) {
 exports.deleteAnyShift= function (req, res, next) {
   var shiftID = req.body.shiftID;
   var volID = req.body.volID;
-  console.log(req.body);
   // Quit if shifts aren't open
   if (!shouldWrite()) {
     console.log("shouldWrite was false (exiting)");

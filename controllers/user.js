@@ -44,7 +44,7 @@ exports.makeAdmin = function (req, res, next) {
     isAdmin: true
   }}, function (err, result) {
     if (err) {return console.log(err);}
-    console.log("New admin", result);
+    console.log("New admin: " + result.userName);
     res.json(result);
   });
 }
@@ -52,7 +52,6 @@ exports.makeAdmin = function (req, res, next) {
 // Remove a user as an admin
 exports.removeAdmin = function (req, res, next) {
   var userid = req.body.userid;
-  console.log(userid);
   // Just quit if the ObjectID isn't valid
   if (!mongoose.Types.ObjectId.isValid(userid)) {
     console.log("shiftID was invalid");
@@ -62,7 +61,7 @@ exports.removeAdmin = function (req, res, next) {
     isAdmin: false
   }}, function (err, result) {
     if (err) {return console.log(err);}
-    console.log("Removed admin", result);
+    console.log("Removed admin: " + result.userName);
     res.json(result);
   });
 }
@@ -70,8 +69,6 @@ exports.removeAdmin = function (req, res, next) {
 // Modify email preferences
 exports.emailPrefs = function (req, res, next) {
   var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall;
-  
-  console.log("The req.body is:", req.body);
   
   // sendChangedShift
   if (req.body.hasOwnProperty('sendChangedShift') && typeof req.body.sendChangedShift === "string") {
@@ -146,8 +143,6 @@ exports.emailPrefs = function (req, res, next) {
     sendDetails = false;
   }
 
-  console.log("We'll try to update userid", req.user._id);
-  
   User.findOneAndUpdate({_id : req.user._id}, {$set:{
     sendNewShift: sendNewShift,
     sendChangedShift: sendChangedShift,
@@ -159,7 +154,7 @@ exports.emailPrefs = function (req, res, next) {
     sendDetails: sendDetails
   }}, function (err, result) {
     if (err) {return console.log(err);}
-    console.log("Updated email preferences:", result);
+    console.log("Updated email preferences for " + result.userName);
   });
   
   return next();
