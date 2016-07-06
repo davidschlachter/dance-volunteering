@@ -307,4 +307,43 @@ exports.removedAdmin = function (user, email) {
   });
 };
 
+// Send a 'last-call' email if any shifts are available on Friday mid-day
+exports.lastCall = function(email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  var query = shift.getFriday(moment());
+  var shifts = Shift.find(query).exec(function(err, results) {
+    if (err) {return console.log(err);}
+
+    var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
+    for (i = 0; i < results.length; i++) {
+      if (results[i].Vol.length < results[i].nVol) {
+        line = '<tr><td>' + results[i].time + '</td></tr>';
+        lines += line;
+      }
+    }
+    lines += "</tbody></table>";
+
+    User.find({
+      sendLastCall: true
+    }, function(err, results) {
+      var i, mailOpts;
+      for (i = 0; i < results.length; i++) {
+        mailOpts = {
+          from: '"' + email.name + '" <' + email.user + '>',
+          to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+          subject: "Last call: volunteering shifts still available",
+          text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: https://schlachter.ca/dance-vol/\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+          html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"https://schlachter.ca/dance-vol/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+        };
+        transporter.sendMail(mailOpts, function(error, info) {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+        });
+      }
+    });
+
+  });
+};
 

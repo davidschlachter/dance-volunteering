@@ -228,6 +228,12 @@ cron.schedule('0 18 * * 4', function(){
   email.reminderVol(config.opt.email);
 });
 
+// Send out last call emails Friday at 7 AM
+cron.schedule('0 7 * * 5', function(){
+  console.log('Sending out last call');
+  email.lastCall(config.opt.email);
+});
+
 // Send out thank you emails Saturday at 9 AM
 cron.schedule('0 9 * * 6', function(){
   console.log('Sending thank yous out');

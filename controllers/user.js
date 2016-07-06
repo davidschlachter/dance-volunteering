@@ -81,7 +81,7 @@ exports.removeAdmin = function (req, res, next) {
 
 // Modify email preferences
 exports.emailPrefs = function (req, res, next) {
-  var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall;
+  var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall, sendLastCall, sendSchedule, sendDetails;
   
   // sendChangedShift
   if (req.body.hasOwnProperty('sendChangedShift') && typeof req.body.sendChangedShift === "string") {
@@ -136,6 +136,15 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendVolunteeringCall = false;
   }
+
+  // sendLastCall
+  if (req.body.hasOwnProperty('sendLastCall') && typeof req.body.sendLastCall === "string") {
+    if (req.body.sendLastCall === "on") {
+      sendLastCall = true;
+    }
+  } else {
+    sendLastCall = false;
+  }
   
   // For admins
   // sendSchedule
@@ -163,6 +172,7 @@ exports.emailPrefs = function (req, res, next) {
     sendReminder: sendReminder,
     sendThanks: sendThanks,
     sendVolunteeringCall: sendVolunteeringCall,
+    sendLastCall: sendLastCall,
     sendSchedule: sendSchedule,
     sendDetails: sendDetails
   }}, function (err, result) {

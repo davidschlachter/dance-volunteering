@@ -25,6 +25,7 @@ var userSchema = new mongoose.Schema({
   sendReminder: { type: Boolean, default: true },
   sendThanks: { type: Boolean, default: true },
   sendVolunteeringCall: { type: Boolean, default: true },
+  sendLastCall: { type: Boolean, default: true },
   // Admin email preferences
   sendSchedule: { type: Boolean, default: true },
   sendDetails: { type: Boolean, default: false }

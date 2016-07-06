@@ -36,6 +36,7 @@ $(document).ready(function() {
         $("#sendReminder").prop('checked', user.sendReminder);
         $("#sendThanks").prop('checked', user.sendThanks);
         $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
+        $("#sendLastCall").prop('checked', user.sendLastCall);
         $("#sendSchedule").prop('checked', user.sendSchedule);
         $("#sendDetails").prop('checked', user.sendDetails);
       }
