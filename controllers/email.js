@@ -238,6 +238,43 @@ exports.reminderVol = function (email) {
   });
 };
 
+
+// Send each volunteer a thank you note on Saturday morning
+exports.thankVol = function (email) {
+  var query = shift.getFriday(moment());
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  Shift.find(query).populate({
+    path: 'Vol',
+    select: 'userName firstName lastName email sendReminder'
+  }).exec(function (err, shifts) {
+    if (err) {return console.log(err);}
+    var date = moment(shifts[0].date).format("MMMM D, YYYY");
+    var i, j, mailOpts;
+    for (i = 0; i < shifts.length; i++) {
+      if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
+        for (j = 0; j < shifts[i].Vol.length; j++) {
+          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
+            mailOpts = {
+              from: '"' + email.name + '" <' + email.user + '>',
+              to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
+              subject: "Thank you for volunteering!",
+              text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Monday. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Monday. Hope to see you again soon!</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+            };
+
+            transporter.sendMail(mailOpts, function (error, info) {
+              if (error) { return console.log(error); }
+              console.log('Thank you message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
+            });
+          }
+        }
+      }
+    }
+
+  });
+};
+
+
 exports.newAdmin = function (user, email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   
