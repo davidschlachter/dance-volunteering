@@ -34,7 +34,7 @@ exports.cancelled = function (userid, shift, email) {
         to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
       };
 
       transporter.sendMail(mailOpts, function (error, info) {
@@ -60,7 +60,7 @@ exports.newShift = function (userid, uQuery, email) {
           to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
@@ -87,7 +87,7 @@ exports.newExecShift = function (userid, uQuery, email) {
           to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
@@ -114,7 +114,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
@@ -165,7 +165,7 @@ exports.mailOut = function(email) {
           to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
           subject: "Volunteering shifts for this week",
           text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
         };
         transporter.sendMail(mailOpts, function(error, info) {
           if (error) {
@@ -191,7 +191,7 @@ exports.shiftsAvailable = function(email) {
           to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
           subject: "Volunteering shifts open for this Friday",
           text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit https://schlachter.ca/dance-vol/\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
         };
         transporter.sendMail(mailOpts, function(error, info) {
           if (error) {
@@ -223,7 +223,7 @@ exports.reminderVol = function (email) {
               to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
               subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
               text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit https://schlachter.ca/dance-vol/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>. See you on the dance floor!</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>. See you on the dance floor!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
             transporter.sendMail(mailOpts, function (error, info) {
@@ -259,7 +259,7 @@ exports.thankVol = function (email) {
               to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
               subject: "Thank you for volunteering!",
               text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Monday. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Monday. Hope to see you again soon!</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Monday. Hope to see you again soon!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
             transporter.sendMail(mailOpts, function (error, info) {
@@ -283,7 +283,7 @@ exports.newAdmin = function (user, email) {
     to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
     subject: "OSDS Volunteering: You've been added as an admin",
     text: "Hi " + user.firstName + "!\nYou've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at https://schlachter.ca/dance-vol/!\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>!</p><p><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
   };
   transporter.sendMail(mailOpts, function (error, info) {
     if (error) { return console.log(error); }
