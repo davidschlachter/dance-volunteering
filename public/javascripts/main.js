@@ -342,7 +342,14 @@ function displayShifts(data) {
     lines += line;
   }
   $("#shifts").append(lines);
-  $("#date").html("Volunteering shifts for <strong>" + moment(data[0].date).format("dddd MMMM D, YYYY") + '</strong>:');
+  // Make sure that we actually select the Friday for time zones west of EST
+  var thisFriday;
+  if (moment(data[0].date).weekday() != 5) {
+    thisFriday = moment(data[0].date).weekday(5);
+  } else {
+    thisFriday = moment(data[0].date);
+  }
+  $("#date").html("Volunteering shifts for <strong>" + thisFriday.format("dddd MMMM D, YYYY") + '</strong>:');
 };
 
 
