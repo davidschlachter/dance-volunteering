@@ -38,7 +38,6 @@ $(document).ready(function() {
         $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
         $("#sendLastCall").prop('checked', user.sendLastCall);
         $("#sendSchedule").prop('checked', user.sendSchedule);
-        $("#sendDetails").prop('checked', user.sendDetails);
       }
   } else {
     $("#drop3").html('<a style="color:white;" href="login">Log in</a>');

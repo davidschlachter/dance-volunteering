@@ -27,8 +27,7 @@ var userSchema = new mongoose.Schema({
   sendVolunteeringCall: { type: Boolean, default: true },
   sendLastCall: { type: Boolean, default: true },
   // Admin email preferences
-  sendSchedule: { type: Boolean, default: true },
-  sendDetails: { type: Boolean, default: false }
+  sendSchedule: { type: Boolean, default: true }
 });
 
 // Export the Mongoose model

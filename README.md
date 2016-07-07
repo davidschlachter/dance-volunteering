@@ -28,7 +28,6 @@ Email
 - [X] User gets a thank-you email
 - [X] User gets an email when shifts become available (Monday)
 - [X] Admin is notified of shifts on Friday
-- [ ] Admin can be notified of each shift taken
 
 Exec
 ----

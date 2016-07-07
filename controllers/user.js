@@ -81,7 +81,7 @@ exports.removeAdmin = function (req, res, next) {
 
 // Modify email preferences
 exports.emailPrefs = function (req, res, next) {
-  var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall, sendLastCall, sendSchedule, sendDetails;
+  var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall, sendLastCall, sendSchedule;
   
   // sendChangedShift
   if (req.body.hasOwnProperty('sendChangedShift') && typeof req.body.sendChangedShift === "string") {
@@ -156,15 +156,6 @@ exports.emailPrefs = function (req, res, next) {
     sendSchedule = false;
   }
   
-  // sendDetails
-  if (req.body.hasOwnProperty('sendDetails') && typeof req.body.sendDetails === "string") {
-    if (req.body.sendDetails === "on") {
-      sendDetails = true;
-    }
-  } else {
-    sendDetails = false;
-  }
-
   User.findOneAndUpdate({_id : req.user._id}, {$set:{
     sendNewShift: sendNewShift,
     sendChangedShift: sendChangedShift,
@@ -173,8 +164,7 @@ exports.emailPrefs = function (req, res, next) {
     sendThanks: sendThanks,
     sendVolunteeringCall: sendVolunteeringCall,
     sendLastCall: sendLastCall,
-    sendSchedule: sendSchedule,
-    sendDetails: sendDetails
+    sendSchedule: sendSchedule
   }}, function (err, result) {
     if (err) {return console.log(err);}
     console.log("Updated email preferences for " + result.userName);
