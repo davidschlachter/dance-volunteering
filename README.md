@@ -33,7 +33,6 @@ Exec
 ----
 - [X] Admin can get more information on users (to contact them)
 - [X] Admin can add or remove other admins
-- [ ] Admin can see previous weeks
 - [X] Admin can cancel a shift
 - [ ] Admin can customize the volunteering template
 - [ ] Admin can cancel a week
