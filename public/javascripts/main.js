@@ -40,9 +40,7 @@ $(document).ready(function() {
         $("#sendSchedule").prop('checked', user.sendSchedule);
       }
   } else {
-    $("#drop3").html('<a style="color:white;" href="login">Log in</a>');
-    $("#drop3").removeClass("dropdown-toggle");
-    $("#drop3").removeAttr("data-toggle");
+    $("#dropdown").html('<a class="btn btn-primary" style="color:white;" href="login">Log in</a>');
   }
   
   if (typeof user === "object" && user.isAdmin === true) {
@@ -51,11 +49,20 @@ $(document).ready(function() {
   }
   
   // Fetch the volunteer shifts
-  if (typeof shifts === "object") {
+  if (typeof shifts === "object" && shifts.cancelled != true) {
     displayShifts(shifts)
   } else {
     updateShifts();
   }
+  
+  // Set up the date picker for cancelling a week
+  var picker = new Pikaday({ field: $('#datepicker')[0], minDate: new Date(), disableDayFn: function (day) {
+    if (moment(day).day() === 5) {
+      return false;
+    } else {
+      return true;
+    }
+  } });
 });
 
 $(window).load(function(){
@@ -101,6 +108,55 @@ function showDelButtons() {
   $("#otherDel2").toggle();
 };
 
+
+// For admins, show the interface to cancel a week
+function showCancel() {
+  $("#cancelWeeks").toggle();
+  $("#cancel1").toggle();
+  $("#cancel2").toggle();
+ 
+  getCancelled();
+ 
+  $("#cancelButton").on("click", function(e) {
+    cancelWeek($("#datepicker").val());
+  });
+};
+
+function cancelWeek (week) {
+  if (typeof week === "undefined" || week === "") {
+    return (console.log("No week selected"));
+  } else {
+    $.ajax({
+      url: "cancelWeek",
+      data: {week: week},
+      method: "POST"
+    }).done(function(data) {
+      console.log("Cancelled week (update list of cancelled weeks)");
+      getCancelled();
+    });
+  }
+};
+
+function unCancelWeek (id) {
+  $.ajax({url: "unCancelWeek", method: "POST", data: {weekID: id}}).done(function(data) {
+    console.log(data);
+    getCancelled();
+  });
+};
+
+function getCancelled () {
+  $("#cancelledWeeks").find("tr:gt(0)").remove();
+  $.ajax({url: "getCancelled", method: "GET", cache:false}).done(function(data) {
+    var i, tbody = "<tbody>";
+    console.log("data.length", data.length, "data", data);
+    if (data.length === 0) {tbody+="<tr><td>No cancelled weeks</td></tr></tbody>"; $("#cancelledWeeks").append(tbody); return;} 
+    for (i=0; i<data.length; i++) {
+      tbody += '<tr><td>' + moment(data[i].week).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
+    }
+    tbody += "</tbody>"
+    $("#cancelledWeeks").append(tbody);
+  });
+};
 
 // For admins, function to delete any shift
 function deleteAnyShift(shiftID, volID) {
@@ -251,7 +307,11 @@ function updateShifts() {
     dataType: "json",
     method: "GET"
   }).done(function(data) {
-    displayShifts(data);
+    if (data.cancelled) {
+      weekCancelled();
+    } else {
+      displayShifts(data);
+    }
   });
 };
 
@@ -349,6 +409,14 @@ function displayShifts(data) {
     thisFriday = moment(data[0].date);
   }
   $("#date").html("Volunteering shifts for <strong>" + thisFriday.format("dddd MMMM D, YYYY") + '</strong>:');
+};
+
+
+var weekCancelled = function () {
+  $("#shifts").hide();
+  $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next week!');
+  $("#date").addClass('well-lg');
+  $("#date").css('padding', '6em;');
 };
 
 

@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
+var Cancelled = require('../models/cancelledModel');
 var moment = require('moment');
 
 // Get options from config file
@@ -18,27 +19,45 @@ var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
 router.get('/', shift.checkShifts, function (req, res, next) {
   // Get the shifts for this week
   var query = shift.getFriday(moment());
-  var shifts = Shift.find(query).populate({
-    path: 'Vol',
-    select: '_id firstName lastNameInitial profilePicture'
-  }).populate({
-    path: 'Exec',
-    select: '_id firstName lastNameInitial profilePicture'
-  }).exec(function (err0, shifts) {
+  Cancelled.findOne(query, function (err0, results0) {
     if (err0) {return console.log(err0);}
-    // Get the user's profile as well
-    var userQuery;
-    if (typeof req.user === "undefined") {
-      userQuery = "";
-      res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
-    } else {
-      userQuery = req.user._id;
-      User.findOne({_id : userQuery}, function (err1, user) {
+    if (!results0) {
+      Shift.find(query).populate({
+        path: 'Vol',
+        select: '_id firstName lastNameInitial profilePicture'
+      }).populate({
+        path: 'Exec',
+        select: '_id firstName lastNameInitial profilePicture'
+      }).exec(function (err1, shifts) {
         if (err1) {return console.log(err1);}
-        res.render('index', {title: 'OSDS Volunteering', user: user, shifts: shifts });
+        // Get the user's profile as well
+        var userQuery;
+        if (typeof req.user === "undefined") {
+          userQuery = "";
+          res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
+        } else {
+          userQuery = req.user._id;
+          User.findOne({_id : userQuery}, function (err1, user) {
+            if (err1) {return console.log(err1);}
+            res.render('index', {title: 'OSDS Volunteering', user: user, shifts: shifts });
+          });
+        }
       });
+    } else {
+      // Get the user's profile as well
+      var userQuery;
+      if (typeof req.user === "undefined") {
+        userQuery = "";
+        res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
+      } else {
+        userQuery = req.user._id;
+        User.findOne({_id : userQuery}, function (err1, user) {
+          if (err1) {return console.log(err1);}
+            var cancelled = {"cancelled": true};
+            res.render('index', {title: 'OSDS Volunteering', user: user, shifts: cancelled });
+        });
+      }
     }
-
   });
 });
 
@@ -165,6 +184,15 @@ router.post('/makeAdmin', checkAuth, checkExec, userController.makeAdmin);
 
 /* POST to add a user as an admin */
 router.post('/removeAdmin', checkAuth, checkExec, userController.removeAdmin);
+
+/* POST to cancel a week */
+router.post('/cancelWeek', checkAuth, checkExec, shift.cancelWeek);
+
+/* POST to uncancel a week */
+router.post('/unCancelWeek', checkAuth, checkExec, shift.unCancelWeek);
+
+/* GET to get cancelled weeks */
+router.get('/getCancelled', checkAuth, checkExec, shift.getCancelled);
 
 /* Get users for admin adding */
 router.get('/searchAdmins', checkAuth, checkExec, userController.searchAdmins);

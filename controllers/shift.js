@@ -2,6 +2,7 @@
 // Load the Shift model
 var Shift = require('../models/shiftModel');
 var Template = require('../models/templateModel');
+var Cancelled = require('../models/cancelledModel');
 var email = require('./email');
 var moment = require('moment');
 var mongoose = require('mongoose');
@@ -13,35 +14,52 @@ var config = require('../config');
 // Check if shifts have been created for the current week
 exports.checkShifts = function (req, res, next) {
   var query = getFriday(moment());
-  Shift.find(query, function (err1, results1) {
-    if (err1) {return console.log(err1);}
-    // If there are no shifts for this week, create them
-    if (!results1.length) {
-      Template.findOne({}, null, {sort: {version: -1}}, function (err2, results2) {
-        if (err2) {return console.log(err2);}
-        if (!results2) {return console.log("No templates were found. Please create a template first");}
-        Template.find({version: results2.version}, function (err3, results3) {
-          var i, j, k, l, m;
-          for (i = 0; i < results3.length; i++) {
-            j = results3[i].nSpots; k = results3[i].nExec;
-            Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k}, function (err4, results4) {
-              if (err4) {return console.log(err4);}
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {return console.log(err0);}
+    // If the week isn't cancelled, create the shifts
+    if (!results0) {
+      Shift.find(query, function (err1, results1) {
+        if (err1) {return console.log(err1);}
+        // If there are no shifts for this week, create them
+        if (!results1.length) {
+          Template.findOne({}, null, {sort: {version: -1}}, function (err2, results2) {
+            if (err2) {return console.log(err2);}
+            if (!results2) {return console.log("No templates were found. Please create a template first");}
+            Template.find({version: results2.version}, function (err3, results3) {
+              var i, j, k, l, m;
+              for (i = 0; i < results3.length; i++) {
+                j = results3[i].nSpots; k = results3[i].nExec;
+                Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k}, function (err4, results4) {
+                  if (err4) {return console.log(err4);}
+                });
+              }
+              console.log("Creating new shifts for this Friday");
             });
-          }
-          console.log("Creating new shifts for this Friday");
-        });
+          });
+        }
       });
+      return next();
+    } else {
+      // If the week is cancelled, just continue
+      return next();
     }
   });
-  return next();
 };
 
 exports.getShifts = function (req, res, next) {
   // http://mongoosejs.com/docs/populate.html
   var query = getFriday(moment());
-  var shifts = Shift.find(query).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
-    if (err) {return console.log(err)}
-    res.json(results);
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {return console.log(err0);}
+    if (!results0) {
+      Shift.find(query).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
+        if (err) {return console.log(err)}
+        res.json(results);
+      });
+    } else {
+      var cancelled = {"cancelled": true};
+      res.json(cancelled);
+    }
   });
 };
 
@@ -193,6 +211,40 @@ exports.deleteAnyShift= function (req, res, next) {
       }
     });
   return next();
+};
+
+exports.getCancelled = function (req,res,next) {
+  var today = moment().startOf('day').toDate();
+  Cancelled.find({date: {$gte: today}}, function (err, data) {
+    if (err) {return console.log(err);}
+    res.json(data);
+  });
+};
+
+exports.cancelWeek = function (req, res, next) {
+  console.log(req.body);
+  var date = moment(req.body.week, 'YYYY-MM-DD', true);
+  if (date.isValid() !== true || date.day() != 5) {return console.log("Date was invalid");}
+  // If the week is already cancelled, don't create a duplicate entry
+  Cancelled.findOneAndUpdate({date: date.startOf('day').toDate()}, {date: date.startOf('day').toDate()}, {upsert:true}, function (err, result) {
+    if (err) {return console.log(err);}
+    console.log(result);
+    res.json(result);
+  });
+};
+
+exports.unCancelWeek = function (req, res, next) { 
+  var weekID = req.body.weekID;
+  console.log(weekID);
+  // Just quit if the ObjectID isn't valid
+  if (!mongoose.Types.ObjectId.isValid(weekID)) {
+    console.log("weekID was invalid");
+    return next;
+  }
+  Cancelled.remove({_id: weekID}, function (err, result) {
+    if (err) {return console.log(err);}
+    res.json(result);
+  });
 };
 
 

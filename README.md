@@ -35,7 +35,7 @@ Exec
 - [X] Admin can add or remove other admins
 - [X] Admin can cancel a shift
 - [ ] Admin can customize the volunteering template
-- [ ] Admin can cancel a week
+- [X] Admin can cancel a week
 
 
 Backend

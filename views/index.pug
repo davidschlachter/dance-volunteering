@@ -19,6 +19,8 @@ html(lang='en')
     script
       include ../public/javascripts/googleanalytics.js
     script
+      include ../public/javascripts/pikaday.min.js
+    script
       include ../public/javascripts/main.js
     // Then the stylesheets
     style
@@ -27,10 +29,12 @@ html(lang='en')
       include ../public/bootstrap/bootstrap.min.css
     style
       include ../public/bootstrap/bootstrap-theme.min.css
+    style
+      include ../public/stylesheets/pikaday.css
   body
     div.container
       ul.nav.pull-right
-        div.dropdown
+        div.dropdown#dropdown
           button#drop3.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown')
           ul.dropdown-menu
             li
@@ -111,6 +115,8 @@ html(lang='en')
           input#details2.btn.btn-primary(value="Hide volunteer details",onclick="showDetails()",style="display:none;")
           input#execs1.btn.btn-default(value="Manage admins",onclick="showAdmins()")
           input#execs2.btn.btn-primary(value="Hide admin management",onclick="showAdmins()",style="display:none;")
+          input#cancel1.btn.btn-default(value="Cancel a week",onclick="showCancel()")
+          input#cancel2.btn.btn-primary(value="Hide cancelled weeks",onclick="showCancel()",style="display:none;")
         table#userDetails
           thead
             tr
@@ -139,7 +145,16 @@ html(lang='en')
                 th Name
                 th Email address
             tbody
-
+        div#cancelWeeks(style="display:none;")
+          h3 Cancel a week
+          table#cancelledWeeks
+            thead
+              tr
+                th Cancelled weeks
+            tbody
+          p Select a week to cancel:
+          input(type="text", id="datepicker")
+          button#cancelButton(type="button", class="btn btn-primary") Cancel week
       div#footer
         p
           a(href="https://github.com/davidschlachter/dance-volunteering/")
