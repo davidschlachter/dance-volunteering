@@ -24,13 +24,13 @@ html(lang='en')
       include ../public/javascripts/main.js
     // Then the stylesheets
     style
-      include ../public/stylesheets/style.css
-    style
       include ../public/bootstrap/bootstrap.min.css
     style
       include ../public/bootstrap/bootstrap-theme.min.css
     style
       include ../public/stylesheets/pikaday.css
+    style
+      include ../public/stylesheets/style.css
   body
     div.container
       ul.nav.pull-right
@@ -107,8 +107,8 @@ html(lang='en')
                 input.btn.btn-default(type='submit', value="Save")
                 
       div#adminTools(style="display:none;")
-        h2 Exec tools:
-        p
+        h2.center <br> Exec tools
+        p.center
           input#otherDel1.btn.btn-default(value="Delete a shift",onclick="showDelButtons()")
           input#otherDel2.btn.btn-primary(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
           input#details1.btn.btn-default(value="See volunteer details",onclick="showDetails()")
