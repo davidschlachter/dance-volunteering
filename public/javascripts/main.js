@@ -131,7 +131,6 @@ function cancelWeek (week) {
       data: {week: week},
       method: "POST"
     }).done(function(data) {
-      console.log("Cancelled week (update list of cancelled weeks)");
       getCancelled();
     });
   }
@@ -139,7 +138,6 @@ function cancelWeek (week) {
 
 function unCancelWeek (id) {
   $.ajax({url: "unCancelWeek", method: "POST", data: {weekID: id}}).done(function(data) {
-    console.log(data);
     getCancelled();
   });
 };
@@ -148,7 +146,6 @@ function getCancelled () {
   $("#cancelledWeeks").find("tr:gt(0)").remove();
   $.ajax({url: "getCancelled", method: "GET", cache:false}).done(function(data) {
     var i, tbody = "<tbody>";
-    console.log("data.length", data.length, "data", data);
     if (data.length === 0) {tbody+="<tr><td>No cancelled weeks</td></tr></tbody>"; $("#cancelledWeeks").append(tbody); return;} 
     for (i=0; i<data.length; i++) {
       tbody += '<tr><td>' + moment(data[i].week).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
@@ -254,7 +251,6 @@ var searchAdmins = function() {
     data: {
       adminInput: input
     }}).done(function(data) {
-      console.log(data);
       $("#adminResults").find("tr:gt(0)").remove();
       var i, line, lines = "";
       for (i=0; i < data.length; i++) {
@@ -276,7 +272,6 @@ var makeAdmin = function(userid) {
     data: {
       userid: userid
     }}).done(function(data) {
-      console.log(data);
       $("#adminResults").hide();
       showAdmins();
       showAdmins();
