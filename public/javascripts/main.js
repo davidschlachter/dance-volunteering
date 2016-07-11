@@ -148,7 +148,7 @@ function getCancelled () {
     var i, tbody = "<tbody>";
     if (data.length === 0) {tbody+="<tr><td>No cancelled weeks</td></tr></tbody>"; $("#cancelledWeeks").append(tbody); return;} 
     for (i=0; i<data.length; i++) {
-      tbody += '<tr><td>' + moment(data[i].week).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
+      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
     }
     tbody += "</tbody>"
     $("#cancelledWeeks").append(tbody);
