@@ -172,7 +172,7 @@ exports.mailOut = function(email) {
             if (error) {
               return console.log(error);
             }
-            console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+            console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
           });
         }
       });
@@ -201,7 +201,7 @@ exports.shiftsAvailable = function(email) {
           };
           transporter.sendMail(mailOpts, function(error, info) {
             if (error) {return console.log(error);}
-            console.log('Shifts available message sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+            console.log('Shifts available message sent to ' + info.envelope.to[0] + ': ' + info.response);
           });
         }
       });
@@ -238,7 +238,6 @@ exports.reminderVol = function (email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {return console.log(err0);}
-    // If the week isn't cancelled, create the shifts
     if (!results0) {
       Shift.find(query).populate({
         path: 'Vol',
@@ -382,7 +381,7 @@ exports.lastCall = function(email) {
               if (error) {
                 return console.log(error);
               }
-              console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+              console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
             });
           }
         });
