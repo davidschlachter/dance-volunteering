@@ -4,6 +4,8 @@ var moment = require('moment');
 var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
 var shift = require('../controllers/shift');
+var Cancelled = require('../models/cancelledModel');
+
 
 
 exports.welcome = function (user, email) {
@@ -181,60 +183,101 @@ exports.mailOut = function(email) {
 
 exports.shiftsAvailable = function(email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-    User.find({
-      sendVolunteeringCall: true
-    }, function(err, results) {
-      var i, mailOpts;
-      for (i = 0; i < results.length; i++) {
-        mailOpts = {
-          from: '"' + email.name + '" <' + email.user + '>',
-          to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
-          subject: "Volunteering shifts open for this Friday",
-          text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit https://schlachter.ca/dance-vol/\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
-        };
-        transporter.sendMail(mailOpts, function(error, info) {
-          if (error) {
-            return console.log(error);
-          }
-          console.log('Shifts available message sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
-        });
-      }
-    });
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {return console.log(err0);}
+    // If the week isn't cancelled, create the shifts
+    if (!results0) {
+      User.find({
+        sendVolunteeringCall: true
+      }, function(err, results) {
+        var i, mailOpts;
+        for (i = 0; i < results.length; i++) {
+          mailOpts = {
+            from: '"' + email.name + '" <' + email.user + '>',
+            to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+            subject: "Volunteering shifts open for this Friday",
+            text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit https://schlachter.ca/dance-vol/\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          };
+          transporter.sendMail(mailOpts, function(error, info) {
+            if (error) {
+              return console.log(error);
+            }
+            console.log('Shifts available message sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+          });
+        }
+      });
+      return next();
+    } else {
+      // If the week is cancelled, send a different message
+      User.find({
+        sendVolunteeringCall: true
+      }, function(err, results) {
+        var i, mailOpts;
+        for (i = 0; i < results.length; i++) {
+          mailOpts = {
+            from: '"' + email.name + '" <' + email.user + '>',
+            to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+            subject: "No dance this Friday",
+            text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next week! \nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next week! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          };
+          transporter.sendMail(mailOpts, function(error, info) {
+            if (error) {
+              return console.log(error);
+            }
+            console.log('No dance message sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+          });
+        }
+      });
+      return next();
+    }
+  });
+    
 };
 
 // Send every volunteer a reminder about their shift on Thusday at 6 PM
 exports.reminderVol = function (email) {
   var query = shift.getFriday(moment());
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-  Shift.find(query).populate({
-    path: 'Vol',
-    select: 'userName firstName lastName email sendReminder'
-  }).exec(function (err, shifts) {
-    if (err) {return console.log(err);}
-    var date = moment(shifts[0].date).format("MMMM D, YYYY");
-    var i, j, mailOpts;
-    for (i = 0; i < shifts.length; i++) {
-      if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
-        for (j = 0; j < shifts[i].Vol.length; j++) {
-          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
-            mailOpts = {
-              from: '"' + email.name + '" <' + email.user + '>',
-              to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
-              subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
-              text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit https://schlachter.ca/dance-vol/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>. See you on the dance floor!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
-            };
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {return console.log(err0);}
+    // If the week isn't cancelled, create the shifts
+    if (!results0) {
+      Shift.find(query).populate({
+        path: 'Vol',
+        select: 'userName firstName lastName email sendReminder'
+      }).exec(function (err, shifts) {
+        if (err) {return console.log(err);}
+        var date = moment(shifts[0].date).format("MMMM D, YYYY");
+        var i, j, mailOpts;
+        for (i = 0; i < shifts.length; i++) {
+          if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
+            for (j = 0; j < shifts[i].Vol.length; j++) {
+              if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
+                mailOpts = {
+                  from: '"' + email.name + '" <' + email.user + '>',
+                  to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
+                  subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
+                  text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit https://schlachter.ca/dance-vol/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+                  html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"https://schlachter.ca/dance-vol/\">https://schlachter.ca/dance-vol/</a>. See you on the dance floor!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+                };
 
-            transporter.sendMail(mailOpts, function (error, info) {
-              if (error) { return console.log(error); }
-              console.log('Reminder message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
-            });
+                transporter.sendMail(mailOpts, function (error, info) {
+                  if (error) { return console.log(error); }
+                  console.log('Reminder message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
+                });
+              }
+            }
           }
         }
-      }
-    }
 
+      });
+      return next();
+    } else {
+      // If the week is cancelled, don't do anything
+      return next();
+    }
   });
 };
 
@@ -311,39 +354,49 @@ exports.removedAdmin = function (user, email) {
 exports.lastCall = function(email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
-  var shifts = Shift.find(query).exec(function(err, results) {
-    if (err) {return console.log(err);}
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {return console.log(err0);}
+    // If the week isn't cancelled, create the shifts
+    if (!results0) {
+      var shifts = Shift.find(query).exec(function(err, results) {
+        if (err) {return console.log(err);}
 
-    var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
-    for (i = 0; i < results.length; i++) {
-      if (results[i].Vol.length < results[i].nVol) {
-        line = '<tr><td>' + results[i].time + '</td></tr>';
-        lines += line;
-      }
-    }
-    lines += "</tbody></table>";
-
-    User.find({
-      sendLastCall: true
-    }, function(err, results) {
-      var i, mailOpts;
-      for (i = 0; i < results.length; i++) {
-        mailOpts = {
-          from: '"' + email.name + '" <' + email.user + '>',
-          to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
-          subject: "Last call: volunteering shifts still available",
-          text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: https://schlachter.ca/dance-vol/\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
-          html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"https://schlachter.ca/dance-vol/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
-        };
-        transporter.sendMail(mailOpts, function(error, info) {
-          if (error) {
-            return console.log(error);
+        var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
+        for (i = 0; i < results.length; i++) {
+          if (results[i].Vol.length < results[i].nVol) {
+            line = '<tr><td>' + results[i].time + '</td></tr>';
+            lines += line;
           }
-          console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
-        });
-      }
-    });
+        }
+        lines += "</tbody></table>";
 
+        User.find({
+          sendLastCall: true
+        }, function(err, results) {
+          var i, mailOpts;
+          for (i = 0; i < results.length; i++) {
+            mailOpts = {
+              from: '"' + email.name + '" <' + email.user + '>',
+              to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+              subject: "Last call: volunteering shifts still available",
+              text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: https://schlachter.ca/dance-vol/\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+              html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"https://schlachter.ca/dance-vol/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+            };
+            transporter.sendMail(mailOpts, function(error, info) {
+              if (error) {
+                return console.log(error);
+              }
+              console.log('Mail out sent to ' + results[i].userName + ', ' + results[i].email + ': ' + info.response);
+            });
+          }
+        });
+
+      });
+      return next();
+    } else {
+      // If the week is cancelled, don't do anything
+      return next();
+    }
   });
 };
 
