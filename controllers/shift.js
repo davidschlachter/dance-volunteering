@@ -29,7 +29,7 @@ exports.checkShifts = function (req, res, next) {
               var i, j, k, l, m;
               for (i = 0; i < results3.length; i++) {
                 j = results3[i].nSpots; k = results3[i].nExec;
-                Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k}, function (err4, results4) {
+                Shift.create({date: query.date, index: results3[i].index, time: results3[i].time, nVol: (j-k), nExec: k, newUsers: results3[i].newUsers}, function (err4, results4) {
                   if (err4) {return console.log(err4);}
                 });
               }

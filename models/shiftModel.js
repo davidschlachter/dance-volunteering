@@ -15,7 +15,8 @@ var ShiftSchema = new mongoose.Schema({
   nVol: Number,
 	Vol: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // userIDs of non-exec volunteers for shift
 	nExec: Number,
-  Exec: [{ type: Schema.Types.ObjectId, ref: 'User' }]  // userIDs of execs for shift
+  Exec: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // userIDs of execs for shift
+  newUsers: Boolean
 });
 
 // Export the Mongoose model

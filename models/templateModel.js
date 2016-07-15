@@ -17,6 +17,10 @@ var TemplateSchema = new mongoose.Schema({
 		type: Number,
 		min: 0
 	},
+  newUsers: {   // Whether new users can sign up for the shift
+		type: Boolean,
+		default: true
+	},
 	version: Number,
 	author: String
 });
