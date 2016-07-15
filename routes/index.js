@@ -43,12 +43,12 @@ router.get('/', shift.checkShifts, function (req, res, next) {
           });
         }
       });
+    // If the week is cancelled...
     } else {
-      // Get the user's profile as well
       var userQuery;
       if (typeof req.user === "undefined") {
         userQuery = "";
-        res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
+        res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: ""});
       } else {
         userQuery = req.user._id;
         User.findOne({_id : userQuery}, function (err1, user) {
