@@ -14,6 +14,7 @@ var LiveStrategy = require('passport-windowslive').Strategy;
 var User = require('./models/userModel');
 var flash = require('connect-flash');
 var email = require('./controllers/email');
+var userController = require('./controllers/user');
 var cron = require('node-cron');
 
 var routes = require('./routes/index');
@@ -216,6 +217,11 @@ cron.schedule('0 17 * * 5', function(){
   email.mailOut(config.opt.email);
 });
 
+// Update isNewUser flags right before sending out the shifts available
+cron.schedule('0 0 * * 1', function(){
+  console.log('Updating isNewUser');
+  userController.updateNewUsers();
+});
 // Notify everyone that shifts are available Monday around midnight
 cron.schedule('1 0 * * 1', function(){
   console.log('Sending out volunteering call');
