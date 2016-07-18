@@ -291,6 +291,7 @@ exports.thankVol = function (email) {
     select: 'userName firstName lastName email sendReminder'
   }).exec(function (err, shifts) {
     if (err) {return console.log(err);}
+    if (!shifts.length) {return console.log("No shifts this week -- not sending thank you emails");}
     var date = moment(shifts[0].date).format("MMMM D, YYYY");
     var i, j, mailOpts;
     for (i = 0; i < shifts.length; i++) {
