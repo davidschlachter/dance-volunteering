@@ -212,45 +212,45 @@ passport.use(new LiveStrategy({
   }
 ));
 
-// Send list of volunteers to Execs Friday at 5 PM
-cron.schedule('0 17 * * 5', function(){
-  console.log('Sending schedule out');
-  email.mailOut(config.opt.email);
-});
+//
+// Scheduled tasks
+//
 
-// Update isNewUser flags right before sending out the shifts available
-cron.schedule('0 0 0 * * 1', function(){
+// Sunday midnight (Monday 00:00) -- create shifts, notify users
+cron.schedule('15 0 0 * * 1', function(){
   console.log('Updating isNewUser');
   userController.updateNewUsers();
-});
-// Also create the shifts at midnight
-cron.schedule('15 0 0 * * 1', function(){
   console.log("Running checkShifts from cron");
   shiftController.checkShifts();
-});
-// Notify everyone that shifts are available Monday around midnight
-cron.schedule('30 0 0 * * 1', function(){
   console.log('Sending out volunteering call');
   email.shiftsAvailable(config.opt.email);
 });
 
-// Send out reminder emails Thursday at 6 PM
+// Thursday 6 PM -- send reminders to volunteers with a shift
 cron.schedule('0 18 * * 4', function(){
-  console.log('Sending reminders out');
+  console.log('Sending out reminders');
   email.reminderVol(config.opt.email);
 });
 
-// Send out last call emails Friday at 7 AM
+// Friday 7 AM -- send last call if any shifts are still available
 cron.schedule('0 7 * * 5', function(){
   console.log('Sending out last call');
   email.lastCall(config.opt.email);
 });
 
-// Send out thank you emails Saturday at 9 AM
+// Friday 5 PM -- send final volunteering schedule to each Exec
+cron.schedule('0 17 * * 5', function(){
+  console.log('Sending schedule out');
+  email.mailOut(config.opt.email);
+});
+
+// Saturday 9 AM -- send thank you emails to this week's volunteers
 cron.schedule('0 9 * * 6', function(){
-  console.log('Sending thank yous out');
+  console.log('Sending out thank you emails');
   email.thankVol(config.opt.email);
 });
+
+
 
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {
