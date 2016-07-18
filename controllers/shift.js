@@ -13,11 +13,8 @@ var config = require('../config');
 
 // Check if shifts have been created for the current week
 exports.checkShifts = function (req, res, next) {
-  var ret;
-  if (typeof next == 'function') {
-    ret = next;
-  } else {
-    ret = 0;
+  if (typeof next != 'function') {
+    next = function(){console.log("(Running checkShifts automatically)")};
   }
   var query = getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
@@ -44,10 +41,12 @@ exports.checkShifts = function (req, res, next) {
           });
         }
       });
-      return ret;
+      next();
+      return;
     } else {
       // If the week is cancelled, just continue
-      return ret;
+      next();
+      return;
     }
   });
 };
