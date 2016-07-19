@@ -10,6 +10,7 @@ var moment = require('moment');
 var config = require('../config');
 
 var shift = require('../controllers/shift');
+var template = require('../controllers/template');
 var userController = require('../controllers/user');
 
 var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
@@ -196,6 +197,12 @@ router.get('/getCancelled', checkAuth, checkExec, shift.getCancelled);
 
 /* Get users for admin adding */
 router.get('/searchAdmins', checkAuth, checkExec, userController.searchAdmins);
+
+/* Get the current shift template */
+router.get('/getTemplate', checkAuth, checkExec, template.getTemplate);
+
+/* POST a new set of templates */
+router.post('/newTemplate', checkAuth, checkExec, template.newTemplate);
 
 /* GET one's own user profile */
 //router.get('/getUser', checkAuth, userController.getUser);

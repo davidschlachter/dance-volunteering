@@ -191,3 +191,61 @@ var removeAdmin = function(userid) {
   });
   return false;
 };
+
+
+// For admins, show the interface to modify the template 
+function showTemplate() {
+  $("#template").toggle();
+  $("#template1").toggle();
+  $("#template2").toggle();
+ 
+  getTemplate();
+};
+
+
+function getTemplate () {
+  $("#templateTable tbody").remove();
+  $.ajax({url: "getTemplate", method: "GET", cache:false}).done(function(data) {
+    var i, checked, tbody = "<tbody>";
+    if (data.length === 0) {tbody+="<tr><td>No shifts were found in the template</td></tr></tbody>"; $("#templateTable").append(tbody); return;} 
+    for (i=0; i<data.length; i++) {
+      if (data[i].newUsers === true) {
+        checked = "checked";
+      } else {
+        checked = "";
+      }
+      tbody += '<tr><td><input type="text" name="time" value="' + data[i].time + '"></td><td><input type="number" value="' + (data[i].nSpots - data[i].nExec) + '"></td><td><input type="number" value="' + data[i].nExec + '"></td><td><input type="checkbox" ' + checked + '></td></tr>';
+    }
+    tbody += "</tbody>"
+    $("#templateTable").append(tbody); 
+  });
+};
+
+// Add or remove a row from the templateTable
+function deleteLastRow () {
+  $("#templateTable tbody tr:last").remove();
+};
+function addRow () {
+  var string = '<tr><td><input type="text" name="time"></td><td><input type="number"></td><td><input type="number"></td><td><input type="checkbox"></td></tr>';
+  $("#templateTable tbody").append(string);
+};
+
+// Save the new templates
+function newTemplate () {
+  var templates = {d: []}, check, i, table = $("#templateTable tbody")[0];
+  for (i = 0; i < table.rows.length; i++) {
+    if ($(table.rows[i].cells[3]).find('input').is(':checked')) {check = true;} else {check = false;}
+    templates.d.push({
+      time: $(table.rows[i].cells[0]).find('input').val(),
+      nSpots: (parseInt($(table.rows[i].cells[1]).find('input').val(), 10) + parseInt($(table.rows[i].cells[2]).find('input').val(), 10)),
+      nExec: $(table.rows[i].cells[2]).find('input').val(),
+      newUsers: check
+    });
+  } 
+  console.log("Sending:", templates);
+  $.ajax({url: "newTemplate", method: "POST", dataType: "JSON", data: templates}).done(function(data) {
+    console.log(data);
+    showTemplate();
+    $('#newTemplate').modal('show');
+  });
+};

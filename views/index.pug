@@ -120,6 +120,8 @@ html(lang='en')
           input#execs2.btn.btn-primary(value="Hide admin management",onclick="showAdmins()",style="display:none;")
           input#cancel1.btn.btn-default(value="Cancel a week",onclick="showCancel()")
           input#cancel2.btn.btn-primary(value="Hide cancelled weeks",onclick="showCancel()",style="display:none;")
+          input#template1.btn.btn-default(value="Modify template",onclick="showTemplate()")
+          input#template2.btn.btn-primary(value="Hide template",onclick="showTemplate()",style="display:none;")
         table#userDetails
           thead
             tr
@@ -158,6 +160,35 @@ html(lang='en')
           p Select a week to cancel:
           input(type="text", id="datepicker")
           button#cancelButton(type="button", class="btn btn-primary") Cancel week
+        div#template(style="display:none;")
+          h3 Modify the shift template
+          p To modify the layout of shifts, edit them below and then click 'Save'. The shifts will take effect starting next week.
+          table#templateTable
+            thead
+              tr
+                th Time
+                th Number of <br>non-exec volunteers
+                th Number of <br>exec volunteers
+                th New volunteers can<br>sign up for this shift
+            tbody
+          button.btn.btn-primary(type='button', onclick='addRow()') Add a row
+          span &nbsp;
+          button.btn.btn-primary(type='button', onclick='deleteLastRow()') Remove last row
+          br
+          br
+          button.btn.btn-primary(type='button', onclick='newTemplate()') Save
+        
+        #newTemplate.modal.fade(role='dialog')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal') ×
+                h4.modal-title Template saved
+              .modal-body
+                p The template has been saved and will take effect starting this coming week. You'll receive an email confirmation of this change.
+              .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') OK
+        
       div#footer
         p
           a(href="https://github.com/davidschlachter/dance-volunteering/")

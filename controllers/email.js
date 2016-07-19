@@ -3,6 +3,7 @@ var nodemailer = require('nodemailer');
 var moment = require('moment');
 var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
+var Template = require('../models/templateModel');
 var shift = require('../controllers/shift');
 var Cancelled = require('../models/cancelledModel');
 
@@ -401,3 +402,48 @@ exports.lastCall = function(email) {
   });
 };
 
+
+exports.newTemplate = function(email) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+  Template.findOne({}, null, {sort: {version: -1}}, function (err0, results0) {
+    Template.find({version: results0.version}, null, {sort: {index: 1}}, function (err1, results1) {
+      if (err1) {return console.log(err1);}
+            
+      // Set up the template table
+      var nSpots, nVol, nExec, newUsers, colSpan, line, lines;
+      lines = '<table><thead><tr><th style="text-align:left;padding-right: 1em;">Time</th><th style="text-align:left;padding-right: 1em;">Volunteers, Execs, New Volunteers</th></tr></thead><tbody>';
+      for (i=0; i < results1.length; i++) {
+        nExec = results1[i].nExec;
+        nSpots = results1[i].nSpots;
+        newUsers = results1[i].newUsers;
+        if (newUsers === true) {newUsersText = " <em>(new volunteers can sign up for this shift)</em>"} else {newUsersText = ""}
+        line  = '<tr><td style="text-align:left;padding-right: 1em;">' + results1[i].time + '</td><td><strong>' + (nSpots - nExec) + '</strong> volunteers, <strong>' + nExec + '</strong> execs' + newUsersText + '</td></tr>';
+        lines += line;
+      }
+      lines += "</tbody></table>"
+      
+      User.find({
+        isAdmin: true
+      }, function(err, results) {
+        if (err) {return console.log(err);}
+        var i, mailOpts;
+        for (i = 0; i < results.length; i++) {
+          mailOpts = {
+            from: '"' + email.name + '" <' + email.user + '>',
+            to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+            subject: "New template for volunteering shifts",
+            text: "Hi " + results[i].firstName + "!\nStarting next week the volunteering shifts will follow this format:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: https://schlachter.ca/dance-vol/#emailPrefs",
+            html: "<p>Hi " + results[i].firstName + "!</p><p>Starting next week the volunteering shifts will follow this format:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"https://schlachter.ca/dance-vol/#emailPrefs\">the volunteering website</a>.</p>"
+          };
+          transporter.sendMail(mailOpts, function(error, info) {
+            if (error) {return console.log(error);}
+            console.log('New template sent to ' + info.envelope.to[0] + ': ' + info.response);
+          });
+        }
+      });
+
+
+    });
+  });
+  
+};
