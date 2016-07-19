@@ -3,6 +3,7 @@
 var Shift = require('../models/shiftModel');
 var Template = require('../models/templateModel');
 var Cancelled = require('../models/cancelledModel');
+var User = require('../models/userModel');
 var email = require('./email');
 var moment = require('moment');
 var mongoose = require('mongoose');
@@ -93,29 +94,32 @@ exports.volunteer = function (req, res, next) {
   var query = getFriday(rightNow);
   query.Vol = [];
   query.Vol[0] = req.user._id;
-  // Check if the volunteer already has a shift this week (if yes, cancel it)
-  Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
-    if (err) {return console.log(err);}
-    var switching = false; if (result != null) {switching = true;}
-    // Check that there actually is a spot available
-    Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
-      var nVolNow = result0.Vol.length;
-      if (nVolNow < result0.nVol) {
-        var uQuery = getFriday(rightNow); // Ensure shift is for this week
-        uQuery["_id"] = ObjectID(shiftID);
-        Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
-          if (err1) {return console.log(err1)};
-          if (results1 != null) {
-            if (switching === true) {
-              email.switching(req.user._id, result, uQuery, config.opt.email);
-            } else {
-              email.newShift(req.user._id, uQuery, config.opt.email);
+  User.findOne({"_id": req.user._id}).exec(function (error, user) {
+    // Check if the volunteer already has a shift this week (if yes, cancel it)
+    Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
+      var switching = false; if (result != null) {switching = true;}
+      // Check that there actually is a spot available
+      Shift.findOne({"_id": ObjectID(shiftID)}, function (err0, result0) {
+        if (!result0) {return console.log("No shift was found in /volunteer");}
+        if (result0.newUsers === false && user.isNewUser === true) {return console.log("User is a new user -- can't take this shift");}
+        var nVolNow = result0.Vol.length;
+        if (nVolNow < result0.nVol) {
+          var uQuery = getFriday(rightNow); // Ensure shift is for this week
+          uQuery["_id"] = ObjectID(shiftID);
+          Shift.update(uQuery, {$push:{"Vol":req.user._id}}, function (err1, results1) {
+            if (err1) {return console.log(err1)};
+            if (results1 != null) {
+              if (switching === true) {
+                email.switching(req.user._id, result, uQuery, config.opt.email);
+              } else {
+                email.newShift(req.user._id, uQuery, config.opt.email);
+              }
             }
-          }
-        });
-      } else {
-        console.log("No more volunteering spots left");
-      }
+          });
+        } else {
+          console.log("No more volunteering spots left");
+        }
+      });
     });
   });
   return next();

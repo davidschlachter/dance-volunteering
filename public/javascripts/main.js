@@ -148,7 +148,7 @@ function displayShifts(data) {
   }
   
   // Set up the volunteering table
-  var nSpots, nVol, nExec, colSpan;
+  var nSpots, nVol, nExec, colSpan, newUserText;
   for (i=0; i < data.length; i++) {
     nVol = data[i].nVol;
     nExec = data[i].nExec;
@@ -174,6 +174,7 @@ function displayShifts(data) {
         tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         deleteButton = "";
+        if (areOpen && typeof user === 'object' && user.isNewUser === false) {action = 'type="submit"';} else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === true) {action = 'type="submit"';} else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === false) {action = 'disabled type="button"';}
         tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
       }
       line += '<td' + colSpanText + '>' + tableText + '</td>';

@@ -18,7 +18,7 @@ Volunteering
 - [X] A user can see shifts taken/available
 - [X] User can sign up for a shift (only one each week)
 - [X] User can cancel their own shift (only their own)
-- [ ] New users can only sign up for a shift with an exec
+- [X] New users can only sign up for a shift with an exec (configurable in volunteering template)
 - [X] User can contact osdsvol@gmail.com
 
 Email
