@@ -48,3 +48,4 @@ pm2config.json
 # Don't track the compiled style.css
 .sass-cache
 style.css
+style.css.map
