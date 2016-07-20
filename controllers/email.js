@@ -7,7 +7,7 @@ var Template = require('../models/templateModel');
 var shift = require('../controllers/shift');
 var Cancelled = require('../models/cancelledModel');
 
-var config = require('./config');
+var config = require('../config');
 
 exports.welcome = function (user, email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
