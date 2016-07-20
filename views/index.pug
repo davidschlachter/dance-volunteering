@@ -189,9 +189,34 @@ html(lang='en')
                 p The template has been saved and will take effect starting this coming week. You'll receive an email confirmation of this change.
               .modal-footer
                 button.btn.btn-default(type='button', data-dismiss='modal') OK
-        
+       
+        #privacyPolicy.modal.fade(role='dialog')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal') ×
+                h4.modal-title Privacy policy
+              .modal-body
+                p If you are not logged in, we collect basic information about your computer and your visit, including your IP address, the type of operating system and browser you use, your computer's general location, what pages you visit on our site, and what links you click on.
+                p By logging in, we collect the following personal information, as provided to us by either Google, Facebook, or Microsoft (according to your choice of login provider and conditional on your acceptance of their respective terms of service):
+                ul
+                  li Full name
+                  li Email address
+                  li Internet address (URL) of your profile picture
+                  li ID of your login provider’s account (e.g. Facebook profile ID)
+                p Site administrators (execs) are able to see this information and will use it to verify your volunteering shift and possibly to contact you regarding it. Our automatic email system will use your full name and email address to email you reminders and confirmations of your shift, according to your email preferences. You may also receive occasional emails related to your account (e.g. if you become an exec, you will receive an email confirming this).
+                p The following information will be publicly displayed for the week in which you have signed up for a volunteering shift, to indicate that you have signed up for the shift:
+                ul
+                  li First name(s) and last initial
+                  li Profile picture
+                p Your personal information is stored electronically according to industry best practices, is encrypted in transit, and will not be shared with third parties. If you have any questions or concerns, or if you wish to manually update your personal information stored with us, please contact <a href="mailto:osdsvol@gmail.com">osdsvol@gmail.com</a>
+              .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') OK
+
       div#footer
         p
           a(href="https://github.com/davidschlachter/dance-volunteering/")
             include ../public/images/GitHub-Mark-32px.png.b64
             span Open-source on GitHub
+          span &nbsp; |&nbsp; 
+          a(href="#", onclick="$('#privacyPolicy').modal('show');") Privacy policy
