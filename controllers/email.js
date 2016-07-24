@@ -388,7 +388,7 @@ exports.lastCall = function(email) {
               if (error) {
                 return console.log(error);
               }
-              console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
+              console.log('Last call sent to ' + info.envelope.to[0] + ': ' + info.response);
             });
           }
         });
