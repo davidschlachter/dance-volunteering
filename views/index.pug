@@ -112,24 +112,24 @@ html(lang='en')
       div#adminTools(style="display:none;")
         h2.center <br> Exec tools
         p.center
-          input#otherDel1.btn.btn-default(value="Delete a shift",onclick="showDelButtons()")
-          input#otherDel2.btn.btn-primary(value="Hide delete buttons",onclick="showDelButtons()",style="display:none;")
-          input#details1.btn.btn-default(value="See volunteer details",onclick="showDetails()")
-          input#details2.btn.btn-primary(value="Hide volunteer details",onclick="showDetails()",style="display:none;")
-          input#execs1.btn.btn-default(value="Manage admins",onclick="showAdmins()")
-          input#execs2.btn.btn-primary(value="Hide admin management",onclick="showAdmins()",style="display:none;")
-          input#cancel1.btn.btn-default(value="Cancel a week",onclick="showCancel()")
-          input#cancel2.btn.btn-primary(value="Hide cancelled weeks",onclick="showCancel()",style="display:none;")
-          input#template1.btn.btn-default(value="Modify template",onclick="showTemplate()")
-          input#template2.btn.btn-primary(value="Hide template",onclick="showTemplate()",style="display:none;")
-        table#userDetails
+          input#otherDel1.btn.btn-default.btnShow(value="Delete a shift",onclick="showDelButtons()")
+          input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons",onclick="showDelButtons()")
+          input#details1.btn.btn-default.btnShow(value="See volunteer details",onclick="showDetails()")
+          input#details2.btn.btn-primary.btnHide(value="Hide volunteer details",onclick="showDetails()")
+          input#execs1.btn.btn-default.btnShow(value="Manage admins",onclick="showAdmins()")
+          input#execs2.btn.btn-primary.btnHide(value="Hide admin management",onclick="showAdmins()")
+          input#cancel1.btn.btn-default.btnShow(value="Cancel a week",onclick="showCancel()")
+          input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks",onclick="showCancel()")
+          input#template1.btn.btn-default.btnShow(value="Modify template",onclick="showTemplate()")
+          input#template2.btn.btn-primary.btnHide(value="Hide template",onclick="showTemplate()")
+        table#userDetails.btnHide
           thead
             tr
               th Time
               th Volunteer
               th Email address
           tbody
-        div#adminDetails(style="display:none;")
+        div#adminDetails.btnHide
           h3 Add an admin
           p To add an admin, search volunteers by their name:
           input#adminInput
@@ -150,7 +150,7 @@ html(lang='en')
                 th Name
                 th Email address
             tbody
-        div#cancelWeeks(style="display:none;")
+        div#cancelWeeks.btnHide
           h3 Cancel a week
           table#cancelledWeeks
             thead
@@ -160,7 +160,7 @@ html(lang='en')
           p Select a week to cancel:
           input(type="text", id="datepicker")
           button#cancelButton(type="button", class="btn btn-primary") Cancel week
-        div#template(style="display:none;")
+        div#template.btnHide
           h3 Modify the shift template
           p To modify the layout of shifts, edit them below and then click 'Save'. &nbsp;
             span(style="background-color: yellow;") The shifts will take effect starting next week. <br>

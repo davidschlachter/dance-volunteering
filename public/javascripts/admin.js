@@ -1,23 +1,49 @@
 
 // For admins, show the buttons to delete other users' shifts after clicking the button for this
 function showDelButtons() {
-  $(".otherDel").toggle();
-  $("#otherDel1").toggle();
-  $("#otherDel2").toggle();
+  var i;
+  if ($('#otherDel1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $(".otherDel").show();
+    $("#otherDel1").hide();
+    $("#otherDel2").show();
+  } else {
+    $(".otherDel").hide();
+    $("#otherDel1").show();
+    $("#otherDel2").hide();
+  }
 };
 
 
 // For admins, show the interface to cancel a week
 function showCancel() {
-  $("#cancelWeeks").toggle();
-  $("#cancel1").toggle();
-  $("#cancel2").toggle();
- 
-  getCancelled();
- 
-  $("#cancelButton").on("click", function(e) {
-    cancelWeek($("#datepicker").val());
-  });
+  var i;
+  if ($('#cancel1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#cancelWeeks").show();
+    $("#cancel1").hide();
+    $("#cancel2").show();
+    getCancelled();
+    $("#cancelButton").on("click", function(e) {
+      cancelWeek($("#datepicker").val());
+    });
+  } else {
+    $("#cancelWeeks").hide();
+    $("#cancel1").show();
+    $("#cancel2").hide();
+  }
 };
 
 function cancelWeek (week) {
@@ -69,6 +95,23 @@ function deleteAnyShift(shiftID, volID) {
 
 // For admins, function to show details (last names and email addresses) for this Friday's volunteers
 function showDetails() {
+  var i;
+  if ($('#details1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#userDetails").show();
+    $("#details1").hide();
+    $("#details2").show();
+  } else {
+    $("#userDetails").hide();
+    $("#details1").show();
+    $("#details2").hide();
+  }
   $.ajax({
     url: "getDetails",
     cache: false,
@@ -83,16 +126,30 @@ function showDetails() {
         lines += line;
       }
     }
+
     $("#userDetails").append(lines);
-    $("#userDetails").toggle();
-    $("#details1").toggle();
-    $("#details2").toggle();
-    window.scrollTo(0,document.body.scrollHeight);
   });
 };
 
 // For admins, function to show all admins
 function showAdmins() {
+  var i;
+  if ($('#execs1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#adminDetails").show();
+    $("#execs1").hide();
+    $("#execs2").show();
+  } else {
+    $("#adminDetails").hide();
+    $("#execs1").show();
+    $("#execs2").hide();
+  }
   $.ajax({
     url: "getAdmins",
     cache: false,
@@ -111,10 +168,6 @@ function showAdmins() {
       lines += line;
     }
     $("#currentAdmins").append(lines);
-    $("#adminDetails").toggle();
-    $("#execs1").toggle();
-    $("#execs2").toggle();
-    window.scrollTo(0,document.body.scrollHeight);
 
     // For admins, function to search users to add them as admins
     // (Inside the AJAX callback because it didn't work outside)
@@ -187,7 +240,6 @@ var removeAdmin = function(userid) {
     }}).done(function(data) {
       showAdmins();
       showAdmins();
-      window.scrollTo(0,document.body.scrollHeight);
   });
   return false;
 };
@@ -195,11 +247,24 @@ var removeAdmin = function(userid) {
 
 // For admins, show the interface to modify the template 
 function showTemplate() {
-  $("#template").toggle();
-  $("#template1").toggle();
-  $("#template2").toggle();
- 
-  getTemplate();
+  var i;
+  if ($('#template1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#template").show();
+    $("#template1").hide();
+    $("#template2").show();
+    getTemplate();
+  } else {
+    $("#template").hide();
+    $("#template1").show();
+    $("#template2").hide();
+  }
 };
 
 
@@ -217,7 +282,7 @@ function getTemplate () {
       tbody += '<tr><td><input type="text" name="time" value="' + data[i].time + '"></td><td><input type="number" value="' + (data[i].nSpots - data[i].nExec) + '"></td><td><input type="number" value="' + data[i].nExec + '"></td><td><input type="checkbox" ' + checked + '></td></tr>';
     }
     tbody += "</tbody>"
-    $("#templateTable").append(tbody); 
+    $("#templateTable").append(tbody);
   });
 };
 
