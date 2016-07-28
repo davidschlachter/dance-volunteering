@@ -167,8 +167,8 @@ exports.deleteMyShift= function (req, res, next) {
   }
   var rightNow = moment();
   var query = getFriday(rightNow);
-  query.Vol = [];
-  query.Vol[0] = req.user._id;
+  query.Vol = "";
+  query.Vol = req.user._id;
   // Check if the volunteer already has a shift this week (if yes, cancel it)
   Shift.findOneAndUpdate(query, {$pull:{"Vol":req.user._id}}, function (err, result) {
       if (err) {return console.log(err);}
@@ -199,8 +199,8 @@ exports.deleteAnyShift= function (req, res, next) {
   var rightNow = moment();
   var query = getFriday(rightNow);
   query["_id"] = shiftID;
-  query.Vol = [];
-  query.Vol[0] = volID;
+  query.Vol = "";
+  query.Vol = volID;
   // Check if the volunteer already has a shift this week (if yes, cancel it)
   Shift.findOneAndUpdate(query, {$pull:{"Vol":volID}}, function (err, result) {
       if (err) {return console.log(err);}
