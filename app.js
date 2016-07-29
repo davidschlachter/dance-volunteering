@@ -17,6 +17,7 @@ var email = require('./controllers/email');
 var userController = require('./controllers/user');
 var shiftController = require('./controllers/shift');
 var cron = require('node-cron');
+var helmet = require('helmet');
 
 var routes = require('./routes/index');
 
@@ -66,6 +67,7 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(helmet({hsts: false}));
 
 app.use('/', routes);
 
