@@ -266,7 +266,7 @@ exports.reminderVol = function (email) {
 
                 transporter.sendMail(mailOpts, function (error, info) {
                   if (error) { return console.log(error); }
-                  console.log('Reminder message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
+                  console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response); 
                 });
               }
             }
@@ -309,7 +309,7 @@ exports.thankVol = function (email) {
 
             transporter.sendMail(mailOpts, function (error, info) {
               if (error) { return console.log(error); }
-              console.log('Thank you message sent to ' + shifts[i].Vol[j].userName + ', ' + shifts[i].Vol[j].email + ': ' + info.response);
+              console.log('Thank you message sent to ' + info.envelope.to[0] + ': ' + info.response);
             });
           }
         }
