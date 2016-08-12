@@ -18,6 +18,9 @@ var userController = require('./controllers/user');
 var shiftController = require('./controllers/shift');
 var cron = require('node-cron');
 var helmet = require('helmet');
+var Entities = require('html-entities').Html5Entities;
+var entities = new Entities();
+var validator = require('validator');
 
 var routes = require('./routes/index');
 
@@ -118,17 +121,21 @@ passport.use(new FacebookStrategy({
     }, function (err, user) {
       if (err) {return console.log(err);}
       if (!err && user != null) {
-         // Update the user if necessary
-        User.update({facebookID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, lastNameInitial: profile.name.familyName.charAt(0) + '.', profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
+        // Update the user if necessary
+        User.update({facebookID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
         done(null, user);
       } else {
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         var user = new User({
           facebookID: profile.id,
-          userName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          lastNameInitial: profile.name.familyName.charAt(0) + '.',
-          profilePicture: profile.photos[0].value,
+          userName: entities.encode(profile.displayName),
+          firstName: entities.encode(profile.name.givenName),
+          lastName: entities.encode(profile.name.familyName),
+          lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
+          profilePicture: encodeURI(profile.photos[0].value),
           email: profile.emails[0].value
         });
         user.save(function (err) {
@@ -153,17 +160,21 @@ passport.use(new GoogleStrategy({
     }, function (err, user) {
       if (err) {return console.log(err);}
       if (!err && user != null) {
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         // Update the user if necessary
-        User.update({googleID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, lastNameInitial: profile.name.familyName.charAt(0) + '.', profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
+        User.update({googleID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
         done(null, user);
       } else {
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         var user = new User({
           googleID: profile.id,
-          userName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          lastNameInitial: profile.name.familyName.charAt(0) + '.',
-          profilePicture: profile.photos[0].value,
+          userName: entities.encode(profile.displayName),
+          firstName: entities.encode(profile.name.givenName),
+          lastName: entities.encode(profile.name.familyName),
+          lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
+          profilePicture: encodeURI(profile.photos[0].value),
           email: profile.emails[0].value
         });
         user.save(function (err) {
@@ -189,17 +200,21 @@ passport.use(new LiveStrategy({
     }, function (err, user) {
       if (err) {return console.log(err);}
       if (!err && user != null) {
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         // Update the user if necessary
-        User.update({liveID: profile.id}, {$set:{userName: profile.displayName, firstName: profile.name.givenName, lastName: profile.name.familyName, lastNameInitial: profile.name.familyName.charAt(0) + '.', profilePicture: profile.photos[0].value, email: profile.emails[0].value}});
+        User.update({liveID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
         done(null, user);
       } else {
+        // Quit if the email is invalid
+        if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         var user = new User({
           liveID: profile.id,
-          userName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          lastNameInitial: profile.name.familyName.charAt(0) + '.',
-          profilePicture: profile.photos[0].value,
+          userName: entities.encode(profile.displayName),
+          firstName: entities.encode(profile.name.givenName),
+          lastName: entities.encode(profile.name.familyName),
+          lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
+          profilePicture: encodeURI(profile.photos[0].value),
           email: profile.emails[0].value
         });
         user.save(function (err) {
