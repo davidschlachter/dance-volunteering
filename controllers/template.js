@@ -15,7 +15,7 @@ exports.getTemplate = function (req, res, next) {
   Template.findOne({}, null, {sort: {version: -1}}, function (err0, results0) {
     if (err0) {return console.log(err0);}
     if (!results0) {return console.log("No templates were found. Please create a template first");}
-    Template.find({version: results0.version}, function (err1, results1) {
+    Template.find({version: results0.version}, null, {sort: {index: 1}}, function (err1, results1) {
       res.json(results1);
     });
   });

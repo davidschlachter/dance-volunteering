@@ -133,7 +133,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 exports.mailOut = function(email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
-  var shifts = Shift.find(query).populate({
+  var shifts = Shift.find(query, null, {sort: {index: 1}}).populate({
     path: 'Vol',
     select: '_id firstName lastName email isNewUser'
   }).populate({
@@ -360,7 +360,7 @@ exports.lastCall = function(email) {
     if (err0) {return console.log(err0);}
     // If the week isn't cancelled, create the shifts
     if (!results0) {
-      var shifts = Shift.find(query).exec(function(err, results) {
+      var shifts = Shift.find(query, null, {sort: {index: 1}}).exec(function(err, results) {
         if (err) {return console.log(err);}
 
         var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";

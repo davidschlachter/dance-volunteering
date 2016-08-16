@@ -72,7 +72,7 @@ exports.getShifts = function (req, res, next) {
 exports.getDetails = function (req, res, next) {
   // http://mongoosejs.com/docs/populate.html
   var query = getFriday(moment());
-  var shifts = Shift.find(query).populate({path: 'Vol', select: '_id firstName lastName email'}).populate({path: 'Exec', select: '_id firstName lastName email'}).exec(function (err, results) {
+  var shifts = Shift.find(query, null, {sort: {index: 1}}).populate({path: 'Vol', select: '_id firstName lastName email'}).populate({path: 'Exec', select: '_id firstName lastName email'}).exec(function (err, results) {
     if (err) {return console.log(err)}
     res.json(results);
   });
@@ -224,7 +224,7 @@ exports.deleteAnyShift= function (req, res, next) {
 
 exports.getCancelled = function (req,res,next) {
   var today = moment().startOf('day').toDate();
-  Cancelled.find({date: {$gte: today}}, function (err, data) {
+  Cancelled.find({date: {$gte: today}}, null, {sort: {date: 1}}, function (err, data) {
     if (err) {return console.log(err);}
     res.json(data);
   });
