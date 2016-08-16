@@ -58,7 +58,7 @@ exports.getShifts = function (req, res, next) {
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {return console.log(err0);}
     if (!results0) {
-      Shift.find(query).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
+      Shift.find(query, null, {sort: {index: 1}}).populate({path: 'Vol', select: '_id firstName lastNameInitial profilePicture'}).populate({path: 'Exec', select: '_id firstName lastNameInitial profilePicture'}).exec(function (err, results) {
         if (err) {return console.log(err)}
         res.json(results);
       });

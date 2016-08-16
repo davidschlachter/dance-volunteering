@@ -23,7 +23,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {return console.log(err0);}
     if (!results0) {
-      Shift.find(query).populate({
+      Shift.find(query, null, {sort: {index: 1}}).populate({
         path: 'Vol',
         select: '_id firstName lastNameInitial profilePicture'
       }).populate({
