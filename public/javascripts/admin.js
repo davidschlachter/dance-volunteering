@@ -143,6 +143,7 @@ function showAdmins() {
   $(".btnShow").show();
   if (i === true) {
     $("#adminDetails").show();
+    getAdmins();
     $("#execs1").hide();
     $("#execs2").show();
   } else {
@@ -150,6 +151,10 @@ function showAdmins() {
     $("#execs1").show();
     $("#execs2").hide();
   }
+  
+};
+
+var getAdmins = function () {
   $.ajax({
     url: "getAdmins",
     cache: false,
@@ -162,7 +167,7 @@ function showAdmins() {
       if (data[i]._id.toString() === user._id.toString()) {
         dangerButton = ' <input type="button" disabled value="✘" class="btn btn-default btn-xs" />';
       } else {
-        dangerButton = ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '")\' class="btn btn-danger btn-xs" />';
+        dangerButton = ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '", "' + data[i].firstName + ' ' + data[i].lastName + '")\' class="btn btn-danger btn-xs" />';
       }
       line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + dangerButton + '</td><td>' + data[i].email + '</td></tr>';
       lines += line;
@@ -187,7 +192,6 @@ function showAdmins() {
             $("#adminButton").click();
         }
     });
- 
   });
 };
 
@@ -224,13 +228,12 @@ var makeAdmin = function(userid) {
       userid: userid
     }}).done(function(data) {
       $("#adminResults").hide();
-      showAdmins();
-      showAdmins();
+      getAdmins();
   });
   return false;
 };
 // Function to remove a user an admin
-var removeAdmin = function(userid) {
+var removeAdmin = function(userid, adminName) {
   $.ajax({
     url: "removeAdmin",
     dataType: "json",
@@ -238,11 +241,14 @@ var removeAdmin = function(userid) {
     data: {
       userid: userid
     }}).done(function(data) {
-      showAdmins();
-      showAdmins();
+      $('#delAdmin .modal-body').html('<p>' + adminName + ' has been removed as an admin and will be notified of the change by email.</p>')
+      $('#delAdmin').modal('show');
   });
   return false;
 };
+$('#delAdmin').on('hidden.bs.modal', function () {
+  getAdmins();
+})
 
 
 // For admins, show the interface to modify the template 
