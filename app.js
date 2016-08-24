@@ -59,8 +59,14 @@ app.use(require('node-sass-middleware')({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
 	secret: config.opt.sessionsecret,
-	cookie: {maxAge: 86400 * 180 * 1000}, // Session cookie lasts six months
-	store: new MongoStore({
+	cookie: {
+          maxAge: 86400 * 180 * 1000, // Session cookie lasts six months
+          secure: true,
+          httpOnly: true,
+          domain: config.opt.full_url.replace('https://', ''),
+          path: '/'
+        },
+        store: new MongoStore({
 		mongooseConnection: db,
 		touchAfter: 8 * 3600 // Don't update session entry more than once in 8 hrs
 	}),
