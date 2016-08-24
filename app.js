@@ -60,8 +60,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
 	secret: config.opt.sessionsecret,
 	cookie: {
-          maxAge: 86400 * 180 * 1000, // Session cookie lasts six months
-          secure: true,
+        maxAge: 86400 * 180 * 1000, // Session cookie lasts six months
+//      secure: true,
           httpOnly: true,
           domain: config.opt.full_url.replace('https://', ''),
           path: '/'
