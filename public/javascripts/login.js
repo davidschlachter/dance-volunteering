@@ -2,7 +2,7 @@
 $(document).ready(function() {
   // Description
   var authMethod = getCookie("authMethod");
-  var userName = getCookie("userName");
+  var userName = decodeURIComponent(getCookie("userName"));
   if (authMethod != false && userName != false) {
     $("#Welcome").html("<br>Welcome back " + userName + "!");
     $("#Welcome").show();
