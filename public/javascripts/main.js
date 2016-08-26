@@ -69,7 +69,7 @@ $(document).ready(function() {
 
 $(window).load(function(){
   if (shouldWrite() === false && getCookie("noShifts") === false) {
-    if (moment().day() === 5) {
+    if (moment().day() === 5 && moment().hour() < 21) {
       $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open on Monday.<br><br>If you need to make a change to your shift, please contact <a href=\"mailto:osdsvol@gmail.com\">osdsvol@gmail.com</a>");
     }
     $('#noShifts').modal('show');
