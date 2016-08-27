@@ -1,5 +1,5 @@
 # dance-volunteering
-Volunteering system for the Ottawa Swing Dance Society. Live at http://ec2-52-2-107-49.compute-1.amazonaws.com.
+Volunteering system for the Ottawa Swing Dance Society. Live at https://volunteer.swingottawa.ca.
 
 Shifts are generated from a template Mondays at 00:00 (Sunday midnight). Volunteers can log in with Google, Facebook, or Microsoft and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
 
