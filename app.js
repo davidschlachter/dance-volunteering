@@ -33,10 +33,10 @@ var config = require('./config');
 mongoose.connect(config.opt.db, config.opt.mongoose);
 var db = mongoose.connection;
 db.on('error', function (err) {
-	console.log('Connection error to MongoDB database ', err);
+  console.log('Connection error to MongoDB database ', err);
 });
 db.once('open', function () {
-	console.log('Connected to the MongoDB database.');
+  console.log('Connected to the MongoDB database.');
 });
 
 // Use Jade for templating
@@ -57,21 +57,22 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('trust proxy', 1);
 app.use(session({
-	secret: config.opt.sessionsecret,
-	cookie: {
-        maxAge: 86400 * 180 * 1000, // Session cookie lasts six months
-//      secure: true,
-          httpOnly: true,
-          domain: config.opt.full_url.replace('https://', ''),
-          path: '/'
-        },
-        store: new MongoStore({
-		mongooseConnection: db,
-		touchAfter: 8 * 3600 // Don't update session entry more than once in 8 hrs
-	}),
-	resave: false, // Don't save session if unmodified
-	saveUninitialized: false // Don't create session until something stored
+  proxy: true, 
+  secret: config.opt.sessionsecret,
+  cookie: {
+    maxAge: 86400 * 180 * 1000, // Session cookie lasts six months
+    secure: true,
+    httpOnly: true,
+    path: '/'
+    },
+    store: new MongoStore({
+      mongooseConnection: db,
+      touchAfter: 8 * 3600 // Don't update session entry more than once in 8 hrs
+    }),
+    resave: false, // Don't save session if unmodified
+    saveUninitialized: false // Don't create session until something stored
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -277,7 +278,7 @@ cron.schedule('0 9 * * 6', function(){
 
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {
-	done(null, user.id);
+  done(null, user.id);
 });
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
