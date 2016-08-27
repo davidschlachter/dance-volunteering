@@ -10,7 +10,7 @@ img.user {
   vertical-align: middle;
   height: 3em;
   width: 3em;
-  @media screen and (max-width: 375px) {
+  @media screen and (max-width: 320px) {
     display: none;
   }
 }
