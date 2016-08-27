@@ -29,7 +29,7 @@ exports.newTemplate = function (req, res, next) {
     for (i = 0; i < req.body.d.length; i++) {
       index = i;
       if (!results0) {version = 0;} else {version = results0.version + 1;}
-      if (typeof req.body.d[i].time === 'string') {time = entities.encode(req.body.d[i].time.trim());} else {console.log("time was not a string");continue;}
+      if (typeof req.body.d[i].time === 'string') {time = entities.encode(req.body.d[i].time.trim()).replace("&lt;br&gt;", "<br>").replace("&lt;br/&gt;", "<br/>").replace("&lt;br /&gt;", "<br />");} else {console.log("time was not a string");continue;}
       if (!isNaN(parseInt(req.body.d[i].nSpots, 10))) {nSpots = parseInt(req.body.d[i].nSpots, 10)} else {console.log("nSpots was not a number");continue;}
       if (!isNaN(parseInt(req.body.d[i].nExec, 10))) {nExec= parseInt(req.body.d[i].nExec, 10)} else {console.log("nExec was not a number");continue;}
       if (req.body.d[i].newUsers === 'true') {newUsers = true} else if (req.body.d[i].newUsers === 'false') {newUsers = false}  else {console.log("newUsers was not a boolean");continue;}
