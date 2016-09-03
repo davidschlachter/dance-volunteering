@@ -142,10 +142,10 @@ exports.mailOut = function(email) {
   }).exec(function(err, results) {
     if (err) {return console.log(err);}
     if (results.length) {
-      var i, j, newUser, line, lines = "<table><thead><th>Time</th><th>Volunteer</th></thead><tbody>";
+      var i, j, newUser, line, lines = '<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>';
       for (i = 0; i < results.length; i++) {
         if (results[i].Vol.length === 0) {
-          line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-top: 1px solid gray;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-top: 1px solid gray;border-bottom: 1px solid gray;"><strong>No volunteers</strong></td></tr>';
+          line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;"><strong>No volunteers</strong></td></tr>';
           lines += line;
         } else {
           for (j = 0; j < results[i].Vol.length; j++) {
@@ -154,7 +154,7 @@ exports.mailOut = function(email) {
             } else {
               newUser = '';
             }
-            line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-top: 1px solid gray;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-top: 1px solid gray;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + newUser + '</td></tr>';
+            line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + newUser + '</td></tr>';
             lines += line;
           }
         }
