@@ -21,41 +21,75 @@ router.get('/', shift.checkShifts, function (req, res, next) {
   // Get the shifts for this week
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
-    if (err0) {return console.log(err0);}
+    if (err0) {
+      return console.log(err0);
+    }
     if (!results0) {
-      Shift.find(query, null, {sort: {index: 1}}).populate({
+      Shift.find(query, null, {
+        sort: {
+          index: 1
+        }
+      }).populate({
         path: 'Vol',
         select: '_id firstName lastNameInitial profilePicture'
       }).populate({
         path: 'Exec',
         select: '_id firstName lastNameInitial profilePicture'
       }).exec(function (err1, shifts) {
-        if (err1) {return console.log(err1);}
+        if (err1) {
+          return console.log(err1);
+        }
         // Get the user's profile as well
         var userQuery;
         if (typeof req.user === "undefined") {
           userQuery = "";
-          res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: shifts });
+          res.render('index', {
+            title: 'OSDS Volunteering',
+            user: userQuery,
+            shifts: shifts
+          });
         } else {
           userQuery = req.user._id;
-          User.findOne({_id : userQuery}, function (err1, user) {
-            if (err1) {return console.log(err1);}
-            res.render('index', {title: 'OSDS Volunteering', user: user, shifts: shifts });
+          User.findOne({
+            _id: userQuery
+          }, function (err1, user) {
+            if (err1) {
+              return console.log(err1);
+            }
+            res.render('index', {
+              title: 'OSDS Volunteering',
+              user: user,
+              shifts: shifts
+            });
           });
         }
       });
-    // If the week is cancelled...
+      // If the week is cancelled...
     } else {
       var userQuery;
       if (typeof req.user === "undefined") {
         userQuery = "";
-        res.render('index', {title: 'OSDS Volunteering', user: userQuery, shifts: ""});
+        res.render('index', {
+          title: 'OSDS Volunteering',
+          user: userQuery,
+          shifts: ""
+        });
       } else {
         userQuery = req.user._id;
-        User.findOne({_id : userQuery}, function (err1, user) {
-          if (err1) {return console.log(err1);}
-            var cancelled = {"cancelled": true};
-            res.render('index', {title: 'OSDS Volunteering', user: user, shifts: cancelled });
+        User.findOne({
+          _id: userQuery
+        }, function (err1, user) {
+          if (err1) {
+            return console.log(err1);
+          }
+          var cancelled = {
+            "cancelled": true
+          };
+          res.render('index', {
+            title: 'OSDS Volunteering',
+            user: user,
+            shifts: cancelled
+          });
         });
       }
     }
@@ -64,11 +98,13 @@ router.get('/', shift.checkShifts, function (req, res, next) {
 
 /* GET login page */
 router.get('/login', function (req, res, next) {
-  res.render('login', { title: 'OSDS Volunteering - Login' });
+  res.render('login', {
+    title: 'OSDS Volunteering - Login'
+  });
 });
 
 /* GET logout */
-router.get('/logout', function(req, res){
+router.get('/logout', function (req, res) {
   req.logout();
   res.redirect(config.opt.base_url + '/');
 });
@@ -100,7 +136,7 @@ router.post('/emailPrefs', checkAuth, userController.emailPrefs, function (req, 
 
 /* POST logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
-  scope: [ 'email' ],
+  scope: ['email'],
   successRedirect: config.opt.base_url + '/',
   failureRedirect: config.opt.base_url + '/login',
   failureFlash: true
@@ -110,19 +146,25 @@ router.get('/auth/facebook/callback',
     failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
-    User.findById(req.user._id, function(err, user) {
+    User.findById(req.user._id, function (err, user) {
       if (err) {
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
         console.log("Facebook log-in from", req.user);
-        res.cookie('authMethod', "Facebook", {path: '/', expires: cookieExpiryDate});
-        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.cookie('authMethod', "Facebook", {
+          path: '/',
+          expires: cookieExpiryDate
+        });
+        res.cookie('userName', user.firstName, {
+          path: '/',
+          expires: cookieExpiryDate
+        });
         res.redirect(config.opt.base_url + '/');
       }
     });
   });
-  
+
 router.get('/loginGoogle', passport.authenticate('google', {
   scope: ['profile', 'email'],
   successRedirect: config.opt.base_url + '/',
@@ -134,14 +176,20 @@ router.get('/auth/google/callback',
     failureRedirect: config.opt.base_url + '/login',
   }),
   function (req, res) {
-    User.findById(req.user._id, function(err, user) {
+    User.findById(req.user._id, function (err, user) {
       if (err) {
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
         console.log("Google log-in from", req.user);
-        res.cookie('authMethod', "Google", {path: '/', expires: cookieExpiryDate});
-        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.cookie('authMethod', "Google", {
+          path: '/',
+          expires: cookieExpiryDate
+        });
+        res.cookie('userName', user.firstName, {
+          path: '/',
+          expires: cookieExpiryDate
+        });
         res.redirect(config.opt.base_url + '/');
       }
     });
@@ -158,14 +206,20 @@ router.get('/auth/live/callback',
     failureRedirect: config.opt.base_url + '/'
   }),
   function (req, res) {
-    User.findById(req.user._id, function(err, user) {
+    User.findById(req.user._id, function (err, user) {
       if (err) {
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
         console.log("Microsoft log-in from", req.user);
-        res.cookie('authMethod', "Microsoft", {path: '/', expires: cookieExpiryDate});
-        res.cookie('userName', user.firstName, {path: '/', expires: cookieExpiryDate});
+        res.cookie('authMethod', "Microsoft", {
+          path: '/',
+          expires: cookieExpiryDate
+        });
+        res.cookie('userName', user.firstName, {
+          path: '/',
+          expires: cookieExpiryDate
+        });
         res.redirect(config.opt.base_url + '/');
       }
     });
@@ -212,14 +266,18 @@ function checkAuth(req, res, next) {
   if (req.user) {
     next();
   } else {
-    if (typeof req.body.shiftID != "undefined") {res.cookie('shiftID', req.body.shiftID, {path: '/'});}
+    if (typeof req.body.shiftID != "undefined") {
+      res.cookie('shiftID', req.body.shiftID, {
+        path: '/'
+      });
+    }
     res.redirect(config.opt.base_url + '/login');
   }
 }
 
 /* Check if exec */
 function checkExec(req, res, next) {
-  User.findById(req.user._id, function(err, user) {
+  User.findById(req.user._id, function (err, user) {
     if (err) {
       console.log(err);
       res.redirect(config.opt.base_url + '/');

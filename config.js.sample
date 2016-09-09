@@ -7,7 +7,9 @@ var full_path = '/var/www/schl/dance-volunteering';
 var opt = {
   db: 'mongodb://127.0.0.1:27017/osdsvol',
   mongoose: {
-    db: { native_parser: true },
+    db: {
+      native_parser: true
+    },
     user: 'mongo_user',
     pass: 'mongo_passwd'
   },

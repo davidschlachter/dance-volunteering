@@ -1,4 +1,3 @@
-
 // Load required packages
 var mongoose = require('mongoose');
 
@@ -15,19 +14,52 @@ var userSchema = new mongoose.Schema({
   lastNameInitial: String,
   profilePicture: String,
   email: String,
-  emailConfirmed: { type: Boolean, default: false },
-  isNewUser: { type: Boolean, default: true },
-  isAdmin: { type: Boolean, default: false },
+  emailConfirmed: {
+    type: Boolean,
+    default: false
+  },
+  isNewUser: {
+    type: Boolean,
+    default: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   // Email preferences
-  sendNewShift: { type: Boolean, default: true },
-  sendChangedShift: { type: Boolean, default: true },
-  sendDeletedShift: { type: Boolean, default: true },
-  sendReminder: { type: Boolean, default: true },
-  sendThanks: { type: Boolean, default: true },
-  sendVolunteeringCall: { type: Boolean, default: true },
-  sendLastCall: { type: Boolean, default: true },
+  sendNewShift: {
+    type: Boolean,
+    default: true
+  },
+  sendChangedShift: {
+    type: Boolean,
+    default: true
+  },
+  sendDeletedShift: {
+    type: Boolean,
+    default: true
+  },
+  sendReminder: {
+    type: Boolean,
+    default: true
+  },
+  sendThanks: {
+    type: Boolean,
+    default: true
+  },
+  sendVolunteeringCall: {
+    type: Boolean,
+    default: true
+  },
+  sendLastCall: {
+    type: Boolean,
+    default: true
+  },
   // Admin email preferences
-  sendSchedule: { type: Boolean, default: true }
+  sendSchedule: {
+    type: Boolean,
+    default: true
+  }
 });
 
 // Export the Mongoose model

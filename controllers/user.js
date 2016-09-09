@@ -1,4 +1,3 @@
-
 // Load the Shift model
 var User = require('../models/userModel');
 var mongoose = require('mongoose');
@@ -17,8 +16,12 @@ var config = require('../config');
 
 // Get a list of admins
 exports.getAdmins = function (req, res, next) {
-  User.find({isAdmin : true}).select('_id firstName lastName email').exec(function (err, result) {
-    if (err) {return console.log(err);}
+  User.find({
+    isAdmin: true
+  }).select('_id firstName lastName email').exec(function (err, result) {
+    if (err) {
+      return console.log(err);
+    }
     res.json(result);
   });
 };
@@ -28,8 +31,13 @@ exports.searchAdmins = function (req, res, next) {
   var adminQuery = req.query.adminInput.replace(/[^a-zA-Z0-9]+/g, "");
   if (typeof adminQuery === "string" && adminQuery.length > 3) {
     var adminInput = new RegExp(adminQuery, "i");
-    User.find({userName: adminInput, isAdmin : false}).select('_id firstName lastName email profilePicture').exec(function (err, result) {
-      if (err) {return console.log(err);}
+    User.find({
+      userName: adminInput,
+      isAdmin: false
+    }).select('_id firstName lastName email profilePicture').exec(function (err, result) {
+      if (err) {
+        return console.log(err);
+      }
       res.json(result);
     });
   }
@@ -43,11 +51,17 @@ exports.makeAdmin = function (req, res, next) {
     console.log("shiftID was invalid");
     return next;
   }
-  User.findOneAndUpdate({_id : userid}, {$set:{
-    isAdmin: true,
-    isNewUser: false
-  }}, function (err, result) {
-    if (err) {return console.log(err);}
+  User.findOneAndUpdate({
+    _id: userid
+  }, {
+    $set: {
+      isAdmin: true,
+      isNewUser: false
+    }
+  }, function (err, result) {
+    if (err) {
+      return console.log(err);
+    }
     if (result) {
       email.newAdmin(result, config.opt.email);
       console.log("New admin: " + result.userName);
@@ -69,10 +83,16 @@ exports.removeAdmin = function (req, res, next) {
     console.log("admin tried to delete themselves");
     return next;
   }
-  User.findOneAndUpdate({_id : userid}, {$set:{
-    isAdmin: false
-  }}, function (err, result) {
-    if (err) {return console.log(err);}
+  User.findOneAndUpdate({
+    _id: userid
+  }, {
+    $set: {
+      isAdmin: false
+    }
+  }, function (err, result) {
+    if (err) {
+      return console.log(err);
+    }
     if (result) {
       email.removedAdmin(result, config.opt.email);
       console.log("Removed admin: " + result.userName);
@@ -84,7 +104,7 @@ exports.removeAdmin = function (req, res, next) {
 // Modify email preferences
 exports.emailPrefs = function (req, res, next) {
   var i, sendChangedShift, sendDeletedShift, sendNewShift, sendReminder, sendThanks, sendVolunteeringCall, sendLastCall, sendSchedule;
-  
+
   // sendChangedShift
   if (req.body.hasOwnProperty('sendChangedShift') && typeof req.body.sendChangedShift === "string") {
     if (req.body.sendChangedShift === "on") {
@@ -93,7 +113,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendChangedShift = false;
   }
-  
+
   // sendDeletedShift
   if (req.body.hasOwnProperty('sendDeletedShift') && typeof req.body.sendDeletedShift === "string") {
     if (req.body.sendDeletedShift === "on") {
@@ -102,7 +122,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendDeletedShift = false;
   }
-  
+
   // sendNewShift
   if (req.body.hasOwnProperty('sendNewShift') && typeof req.body.sendNewShift === "string") {
     if (req.body.sendNewShift === "on") {
@@ -111,7 +131,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendNewShift = false;
   }
-  
+
   // sendReminder
   if (req.body.hasOwnProperty('sendReminder') && typeof req.body.sendReminder === "string") {
     if (req.body.sendReminder === "on") {
@@ -120,7 +140,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendReminder = false;
   }
-  
+
   // sendThanks
   if (req.body.hasOwnProperty('sendThanks') && typeof req.body.sendThanks === "string") {
     if (req.body.sendThanks === "on") {
@@ -129,7 +149,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendThanks = false;
   }
-  
+
   // sendVolunteeringCall
   if (req.body.hasOwnProperty('sendVolunteeringCall') && typeof req.body.sendVolunteeringCall === "string") {
     if (req.body.sendVolunteeringCall === "on") {
@@ -147,7 +167,7 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendLastCall = false;
   }
-  
+
   // For admins
   // sendSchedule
   if (req.body.hasOwnProperty('sendSchedule') && typeof req.body.sendSchedule === "string") {
@@ -157,39 +177,60 @@ exports.emailPrefs = function (req, res, next) {
   } else {
     sendSchedule = false;
   }
-  
-  User.findOneAndUpdate({_id : req.user._id}, {$set:{
-    sendNewShift: sendNewShift,
-    sendChangedShift: sendChangedShift,
-    sendDeletedShift: sendDeletedShift,
-    sendReminder: sendReminder,
-    sendThanks: sendThanks,
-    sendVolunteeringCall: sendVolunteeringCall,
-    sendLastCall: sendLastCall,
-    sendSchedule: sendSchedule
-  }}, function (err, result) {
-    if (err) {return console.log(err);}
+
+  User.findOneAndUpdate({
+    _id: req.user._id
+  }, {
+    $set: {
+      sendNewShift: sendNewShift,
+      sendChangedShift: sendChangedShift,
+      sendDeletedShift: sendDeletedShift,
+      sendReminder: sendReminder,
+      sendThanks: sendThanks,
+      sendVolunteeringCall: sendVolunteeringCall,
+      sendLastCall: sendLastCall,
+      sendSchedule: sendSchedule
+    }
+  }, function (err, result) {
+    if (err) {
+      return console.log(err);
+    }
     console.log("Updated email preferences for " + result.userName);
   });
-  
+
   return next();
 };
 
 // Update the isNewUser flag for users
 exports.updateNewUsers = function () {
-  User.find({isNewUser : true, isAdmin : false}).exec(function (err0, users) {
-    if (err0) {return console.log(err0);}
+  User.find({
+    isNewUser: true,
+    isAdmin: false
+  }).exec(function (err0, users) {
+    if (err0) {
+      return console.log(err0);
+    }
     var i, query = {};
     for (i = 0; i < users.length; i++) {
       query.Vol = [];
       query.Vol[0] = users[i]._id;
       console.log("Starting the loop with query:", query);
       Shift.findOne(query, function (err1, shift) {
-        if (err1) {return console.log(err1);}
+        if (err1) {
+          return console.log(err1);
+        }
         if (shift != null && shift.Vol) {
           // Note: accessing shift.Vol[0] is dangerous because if the array.length is > 0, we could miss a user here
-          User.findOneAndUpdate({_id : shift.Vol[0]}, {$set:{isNewUser: false}}, function (err2, result) {
-            if (err2) {return console.log(err2);}
+          User.findOneAndUpdate({
+            _id: shift.Vol[0]
+          }, {
+            $set: {
+              isNewUser: false
+            }
+          }, function (err2, result) {
+            if (err2) {
+              return console.log(err2);
+            }
             console.log("User", result.userName, "is no longer a NewUser.");
           });
         } else {
@@ -199,8 +240,19 @@ exports.updateNewUsers = function () {
     }
   });
   // Now for the Exec version!
-  User.update({isNewUser : true, isAdmin : true}, { $set: { isNewUser : false } }, { multi: true }, function (err, admins) {
-    if (err) {return console.log(err);}
+  User.update({
+    isNewUser: true,
+    isAdmin: true
+  }, {
+    $set: {
+      isNewUser: false
+    }
+  }, {
+    multi: true
+  }, function (err, admins) {
+    if (err) {
+      return console.log(err);
+    }
     var i;
     console.log("Exec function returned:", admins);
   });

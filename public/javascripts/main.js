@@ -1,73 +1,80 @@
-
-$(document).ready(function() {
+$(document).ready(function () {
   // If we had clicked 'Volunteer' and are now coming back from the login page, then volunteer for the shift we had clicked
   if (typeof user === "object" && getCookie("shiftID") != false) {
     var shiftID = getCookie("shiftID");
-    document.cookie = "shiftID" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
-    var myForm=document.createElement("form");
-    myForm.method="post";
-    myForm.action="volunteer";
-    p = {shiftID: shiftID};
+    document.cookie = "shiftID" + '=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
+    var myForm = document.createElement("form");
+    myForm.method = "post";
+    myForm.action = "volunteer";
+    p = {
+      shiftID: shiftID
+    };
     var k;
-    for(k in p) {
-      var myInput=document.createElement("input"); myInput.setAttribute("name",k);
-      myInput.setAttribute("value",p[k]);
+    for (k in p) {
+      var myInput = document.createElement("input");
+      myInput.setAttribute("name", k);
+      myInput.setAttribute("value", p[k]);
       myForm.appendChild(myInput);
     }
     document.body.appendChild(myForm);
     myForm.submit();
     document.body.removeChild(myForm);
   }
-  
+
   // Open the email preferences if we came here from an email link
-  if(window.location.href.indexOf('#emailPrefs') != -1 && typeof user === "object") {
+  if (window.location.href.indexOf('#emailPrefs') != -1 && typeof user === "object") {
     $('#emailPrefs').modal('show');
   }
-  
+
   // Node passes us the user's profile
   // If logged in, autofill the email preferences and show the admin tools if applicable
   // If not logged in, show the login button
   if (typeof user === "object") {
-      if (typeof user === "object") {
-        $("#drop3").html(user.userName + ' <span class="caret"></span>');
-        $("#sendChangedShift").prop('checked', user.sendChangedShift);
-        $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
-        $("#sendNewShift").prop('checked', user.sendNewShift);
-        $("#sendReminder").prop('checked', user.sendReminder);
-        $("#sendThanks").prop('checked', user.sendThanks);
-        $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
-        $("#sendLastCall").prop('checked', user.sendLastCall);
-        $("#sendSchedule").prop('checked', user.sendSchedule);
-      }
+    if (typeof user === "object") {
+      $("#drop3").html(user.userName + ' <span class="caret"></span>');
+      $("#sendChangedShift").prop('checked', user.sendChangedShift);
+      $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
+      $("#sendNewShift").prop('checked', user.sendNewShift);
+      $("#sendReminder").prop('checked', user.sendReminder);
+      $("#sendThanks").prop('checked', user.sendThanks);
+      $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
+      $("#sendLastCall").prop('checked', user.sendLastCall);
+      $("#sendSchedule").prop('checked', user.sendSchedule);
+    }
   } else {
     $("#dropdown").html('<a class="btn btn-primary" style="color:white;" href="login">Log in</a>');
   }
-  
+
   if (typeof user === "object" && user.isAdmin === true) {
-    var head=document.getElementsByTagName("head")[0], script=document.createElement("script");
-    script.type="text/javascript", script.src="javascripts/admin.js", head.appendChild(script);
+    var head = document.getElementsByTagName("head")[0],
+      script = document.createElement("script");
+    script.type = "text/javascript", script.src = "javascripts/admin.js", head.appendChild(script);
     $("#adminTools").show();
     $("#adminEmail").show();
   }
-  
+
   // Fetch the volunteer shifts
   if (typeof shifts === "object" && shifts.cancelled != true) {
     displayShifts(shifts)
   } else {
     updateShifts();
   }
-  
+
   // Set up the date picker for cancelling a week
-  var picker = new Pikaday({ field: $('#datepicker')[0], minDate: new Date(), disableDayFn: function (day) {
-    if (moment(day).day() === 5) {
-      return false;
-    } else {
-      return true;
+  var picker = new Pikaday({
+    field: $('#datepicker')[0],
+    minDate: new Date(),
+    disableDayFn: function (day) {
+      if (moment(day).day() === 5) {
+        return false;
+      } else {
+        return true;
+      }
     }
-  } });
+  });
 });
 
-$(window).load(function(){
+$(window).load(function () {
   if (shouldWrite() === false && getCookie("noShifts") === false) {
     if (moment().day() === 5 && moment().hour() < 21) {
       $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open on Monday.<br><br>If you need to make a change to your shift, please contact <a href=\"mailto:osdsvol@gmail.com\">osdsvol@gmail.com</a>");
@@ -100,7 +107,7 @@ function deleteMyShift() {
   $.ajax({
     url: "deleteMyShift",
     method: "POST"
-  }).done(function(data) {
+  }).done(function (data) {
     updateShifts();
   });
 };
@@ -113,7 +120,7 @@ function updateShifts() {
     cache: false,
     dataType: "json",
     method: "GET"
-  }).done(function(data) {
+  }).done(function (data) {
     if (data.cancelled) {
       weekCancelled();
     } else {
@@ -127,18 +134,19 @@ function updateShifts() {
 function displayShifts(data) {
   $("#shifts").find("tr:gt(0)").remove();
   var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText, deleteButton;
-  
+
   // Determine the number of columns
   var nCol = 0;
-  for (i=0; i < data.length; i++) {
+  for (i = 0; i < data.length; i++) {
     if (data[i].nVol + data[i].nExec > nCol) {
       nCol = data[i].nVol + data[i].nExec;
     }
   }
-  $("#volCol").attr('colspan',nCol);
+  $("#volCol").attr('colspan', nCol);
 
   // Are shifts open?
-  var areOpen = shouldWrite(), action;
+  var areOpen = shouldWrite(),
+    action;
   if (areOpen) {
     action = 'type="submit"';
     delAction = ''
@@ -146,10 +154,10 @@ function displayShifts(data) {
     action = 'disabled type="button"';
     delAction = 'disabled'
   }
-  
+
   // Set up the volunteering table
   var nSpots, nVol, nExec, colSpan, newUserText;
-  for (i=0; i < data.length; i++) {
+  for (i = 0; i < data.length; i++) {
     nVol = data[i].nVol;
     nExec = data[i].nExec;
     nSpots = nVol + nExec;
@@ -167,15 +175,21 @@ function displayShifts(data) {
         if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
           deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
         } else if (typeof user === 'object' && user.isAdmin === true) {
-        deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+          deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
         } else {
           deleteButton = ""
         }
         tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         deleteButton = "";
-        if (areOpen && typeof user === 'object' && user.isNewUser === false) {action = 'type="submit"';} else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === true) {action = 'type="submit"';} else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === false) {action = 'disabled type="button"';}
-        tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
+        if (areOpen && typeof user === 'object' && user.isNewUser === false) {
+          action = 'type="submit"';
+        } else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === true) {
+          action = 'type="submit"';
+        } else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === false) {
+          action = 'disabled type="button"';
+        }
+        tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
       }
       line += '<td' + colSpanText + '>' + tableText + '</td>';
     }
@@ -193,7 +207,7 @@ function displayShifts(data) {
         if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
           deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
         } else if (typeof user === 'object' && user.isAdmin === true) {
-        deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+          deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
         } else {
           deleteButton = ""
         }
@@ -201,11 +215,11 @@ function displayShifts(data) {
         profilePicture = data[i].Exec[h].profilePicture;
         tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
-        tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="'+data[i]._id+'"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
+        tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
       }
       line += '<td>' + tableText + '</td>';
     }
-    line+= "</tr>"
+    line += "</tr>"
     lines += line;
   }
   $("#shifts").append(lines);
@@ -236,6 +250,8 @@ var getCookie = function (name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) {
-    return parts.pop().split(";").shift();} else {return false;}
+    return parts.pop().split(";").shift();
+  } else {
+    return false;
+  }
 };
-

@@ -1,4 +1,3 @@
-
 var nodemailer = require('nodemailer');
 var moment = require('moment');
 var User = require('../models/userModel');
@@ -19,7 +18,9 @@ exports.welcome = function (user, email) {
     html: "<p>Welcome to OSDS Volunteering!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Monday. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
   };
   transporter.sendMail(mailOpts, function (error, info) {
-    if (error) { return console.log(error); }
+    if (error) {
+      return console.log(error);
+    }
     console.log('Welcome message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
   });
 };
@@ -40,7 +41,9 @@ exports.cancelled = function (userid, shift, email) {
       };
 
       transporter.sendMail(mailOpts, function (error, info) {
-        if (error) { return console.log(error); }
+        if (error) {
+          return console.log(error);
+        }
         console.log('Cancelled shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
       });
     }
@@ -66,7 +69,9 @@ exports.newShift = function (userid, uQuery, email) {
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
-          if (error) { return console.log(error); }
+          if (error) {
+            return console.log(error);
+          }
           console.log('New shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
@@ -93,7 +98,9 @@ exports.newExecShift = function (userid, uQuery, email) {
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
-          if (error) { return console.log(error); }
+          if (error) {
+            return console.log(error);
+          }
           console.log('New exec shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
@@ -120,7 +127,9 @@ exports.switching = function (userid, oldShift, uQuery, email) {
         };
 
         transporter.sendMail(mailOpts, function (error, info) {
-          if (error) { return console.log(error); }
+          if (error) {
+            return console.log(error);
+          }
           console.log('Changed shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
         });
       }
@@ -130,17 +139,23 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 
 
 
-exports.mailOut = function(email) {
+exports.mailOut = function (email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
-  var shifts = Shift.find(query, null, {sort: {index: 1}}).populate({
+  var shifts = Shift.find(query, null, {
+    sort: {
+      index: 1
+    }
+  }).populate({
     path: 'Vol',
     select: '_id firstName lastName email isNewUser'
   }).populate({
     path: 'Exec',
     select: '_id userName firstName lastName email'
-  }).exec(function(err, results) {
-    if (err) {return console.log(err);}
+  }).exec(function (err, results) {
+    if (err) {
+      return console.log(err);
+    }
     if (results.length) {
       var i, j, newUser, line, lines = '<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>';
       for (i = 0; i < results.length; i++) {
@@ -164,7 +179,7 @@ exports.mailOut = function(email) {
       User.find({
         isAdmin: true,
         sendSchedule: true
-      }, function(err, results) {
+      }, function (err, results) {
         var i, mailOpts;
         for (i = 0; i < results.length; i++) {
           mailOpts = {
@@ -174,7 +189,7 @@ exports.mailOut = function(email) {
             text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function(error, info) {
+          transporter.sendMail(mailOpts, function (error, info) {
             if (error) {
               return console.log(error);
             }
@@ -186,16 +201,18 @@ exports.mailOut = function(email) {
   });
 };
 
-exports.shiftsAvailable = function(email) {
+exports.shiftsAvailable = function (email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
-    if (err0) {return console.log(err0);}
+    if (err0) {
+      return console.log(err0);
+    }
     // If the week isn't cancelled, create the shifts
     if (!results0) {
       User.find({
         sendVolunteeringCall: true
-      }, function(err, results) {
+      }, function (err, results) {
         var i, mailOpts;
         for (i = 0; i < results.length; i++) {
           mailOpts = {
@@ -205,8 +222,10 @@ exports.shiftsAvailable = function(email) {
             text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit " + config.opt.full_url + "/\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function(error, info) {
-            if (error) {return console.log(error);}
+          transporter.sendMail(mailOpts, function (error, info) {
+            if (error) {
+              return console.log(error);
+            }
             console.log('Shifts available message sent to ' + info.envelope.to[0] + ': ' + info.response);
           });
         }
@@ -215,7 +234,7 @@ exports.shiftsAvailable = function(email) {
       // If the week is cancelled, send a different message
       User.find({
         sendVolunteeringCall: true
-      }, function(err, users) {
+      }, function (err, users) {
         var i, mailOpts;
         if (users) {
           for (i = 0; i < users.length; i++) {
@@ -227,15 +246,17 @@ exports.shiftsAvailable = function(email) {
               text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next week! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
               html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next week! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
-            transporter.sendMail(mailOpts, function(error, info) {
-              if (error) {return console.log(error);}
+            transporter.sendMail(mailOpts, function (error, info) {
+              if (error) {
+                return console.log(error);
+              }
               console.log('No dance message sent to ' + info.envelope.to[0] + ': ' + info.response);
             });
           }
         }
       });
     }
-  });    
+  });
 };
 
 // Send every volunteer a reminder about their shift on Thusday at 6 PM
@@ -243,13 +264,17 @@ exports.reminderVol = function (email) {
   var query = shift.getFriday(moment());
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   Cancelled.findOne(query, function (err0, results0) {
-    if (err0) {return console.log(err0);}
+    if (err0) {
+      return console.log(err0);
+    }
     if (!results0) {
       Shift.find(query).populate({
         path: 'Vol',
         select: 'userName firstName lastName email sendReminder'
       }).exec(function (err, shifts) {
-        if (err) {return console.log(err);}
+        if (err) {
+          return console.log(err);
+        }
         var date = moment(shifts[0].date).format("MMMM D, YYYY");
         var i, j, mailOpts;
         for (i = 0; i < shifts.length; i++) {
@@ -265,8 +290,10 @@ exports.reminderVol = function (email) {
                 };
 
                 transporter.sendMail(mailOpts, function (error, info) {
-                  if (error) { return console.log(error); }
-                  console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response); 
+                  if (error) {
+                    return console.log(error);
+                  }
+                  console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response);
                 });
               }
             }
@@ -291,8 +318,12 @@ exports.thankVol = function (email) {
     path: 'Vol',
     select: 'userName firstName lastName email sendReminder'
   }).exec(function (err, shifts) {
-    if (err) {return console.log(err);}
-    if (!shifts.length) {return console.log("No shifts this week -- not sending thank you emails");}
+    if (err) {
+      return console.log(err);
+    }
+    if (!shifts.length) {
+      return console.log("No shifts this week -- not sending thank you emails");
+    }
     var date = moment(shifts[0].date).format("MMMM D, YYYY");
     var i, j, mailOpts;
     for (i = 0; i < shifts.length; i++) {
@@ -308,7 +339,9 @@ exports.thankVol = function (email) {
             };
 
             transporter.sendMail(mailOpts, function (error, info) {
-              if (error) { return console.log(error); }
+              if (error) {
+                return console.log(error);
+              }
               console.log('Thank you message sent to ' + info.envelope.to[0] + ': ' + info.response);
             });
           }
@@ -322,7 +355,7 @@ exports.thankVol = function (email) {
 
 exports.newAdmin = function (user, email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-  
+
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
@@ -331,14 +364,16 @@ exports.newAdmin = function (user, email) {
     html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
   };
   transporter.sendMail(mailOpts, function (error, info) {
-    if (error) { return console.log(error); }
+    if (error) {
+      return console.log(error);
+    }
     console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
   });
 };
 
 exports.removedAdmin = function (user, email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-  
+
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
@@ -347,21 +382,31 @@ exports.removedAdmin = function (user, email) {
     html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the OSDS Volunteering site</a>.</p>"
   };
   transporter.sendMail(mailOpts, function (error, info) {
-    if (error) { return console.log(error); }
+    if (error) {
+      return console.log(error);
+    }
     console.log('Removed admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
   });
 };
 
 // Send a 'last-call' email if any shifts are available on Friday mid-day
-exports.lastCall = function(email) {
+exports.lastCall = function (email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
-    if (err0) {return console.log(err0);}
+    if (err0) {
+      return console.log(err0);
+    }
     // If the week isn't cancelled, create the shifts
     if (!results0) {
-      var shifts = Shift.find(query, null, {sort: {index: 1}}).exec(function(err, results) {
-        if (err) {return console.log(err);}
+      var shifts = Shift.find(query, null, {
+        sort: {
+          index: 1
+        }
+      }).exec(function (err, results) {
+        if (err) {
+          return console.log(err);
+        }
 
         var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
         for (i = 0; i < results.length; i++) {
@@ -374,7 +419,7 @@ exports.lastCall = function(email) {
 
         User.find({
           sendLastCall: true
-        }, function(err, results) {
+        }, function (err, results) {
           var i, mailOpts;
           for (i = 0; i < results.length; i++) {
             mailOpts = {
@@ -384,7 +429,7 @@ exports.lastCall = function(email) {
               text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
               html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
-            transporter.sendMail(mailOpts, function(error, info) {
+            transporter.sendMail(mailOpts, function (error, info) {
               if (error) {
                 return console.log(error);
               }
@@ -403,29 +448,47 @@ exports.lastCall = function(email) {
 };
 
 
-exports.newTemplate = function(email) {
+exports.newTemplate = function (email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
-  Template.findOne({}, null, {sort: {version: -1}}, function (err0, results0) {
-    Template.find({version: results0.version}, null, {sort: {index: 1}}, function (err1, results1) {
-      if (err1) {return console.log(err1);}
-            
+  Template.findOne({}, null, {
+    sort: {
+      version: -1
+    }
+  }, function (err0, results0) {
+    Template.find({
+      version: results0.version
+    }, null, {
+      sort: {
+        index: 1
+      }
+    }, function (err1, results1) {
+      if (err1) {
+        return console.log(err1);
+      }
+
       // Set up the template table
       var nSpots, nVol, nExec, newUsers, colSpan, line, lines;
       lines = '<table><thead><tr><th style="text-align:left;padding-right: 1em;">Time</th><th style="text-align:left;padding-right: 1em;">Volunteers, Execs, New Volunteers</th></tr></thead><tbody>';
-      for (i=0; i < results1.length; i++) {
+      for (i = 0; i < results1.length; i++) {
         nExec = results1[i].nExec;
         nSpots = results1[i].nSpots;
         newUsers = results1[i].newUsers;
-        if (newUsers === true) {newUsersText = " <em>(new volunteers can sign up for this shift)</em>"} else {newUsersText = ""}
-        line  = '<tr><td style="text-align:left;padding-right: 1em;">' + results1[i].time + '</td><td><strong>' + (nSpots - nExec) + '</strong> volunteers, <strong>' + nExec + '</strong> execs' + newUsersText + '</td></tr>';
+        if (newUsers === true) {
+          newUsersText = " <em>(new volunteers can sign up for this shift)</em>"
+        } else {
+          newUsersText = ""
+        }
+        line = '<tr><td style="text-align:left;padding-right: 1em;">' + results1[i].time + '</td><td><strong>' + (nSpots - nExec) + '</strong> volunteers, <strong>' + nExec + '</strong> execs' + newUsersText + '</td></tr>';
         lines += line;
       }
       lines += "</tbody></table>"
-      
+
       User.find({
         isAdmin: true
-      }, function(err, results) {
-        if (err) {return console.log(err);}
+      }, function (err, results) {
+        if (err) {
+          return console.log(err);
+        }
         var i, mailOpts;
         for (i = 0; i < results.length; i++) {
           mailOpts = {
@@ -435,8 +498,10 @@ exports.newTemplate = function(email) {
             text: "Hi " + results[i].firstName + "!\nStarting next week the volunteering shifts will follow this format:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>Starting next week the volunteering shifts will follow this format:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function(error, info) {
-            if (error) {return console.log(error);}
+          transporter.sendMail(mailOpts, function (error, info) {
+            if (error) {
+              return console.log(error);
+            }
             console.log('New template sent to ' + info.envelope.to[0] + ': ' + info.response);
           });
         }
@@ -445,5 +510,5 @@ exports.newTemplate = function(email) {
 
     });
   });
-  
+
 };
