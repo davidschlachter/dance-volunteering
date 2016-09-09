@@ -131,7 +131,7 @@ passport.use(new FacebookStrategy({
         // Quit if the email is invalid
         if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         // Update the user if necessary
-        User.update({facebookID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
+        User.update({facebookID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}}, function (err, doc) {if (err) {return console.log(err);} else {console.log("Updated user");}});
         done(null, user);
       } else {
         // Quit if the email is invalid
@@ -170,7 +170,7 @@ passport.use(new GoogleStrategy({
         // Quit if the email is invalid
         if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         // Update the user if necessary
-        User.update({googleID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
+        User.update({googleID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}}, function (err, doc) {if (err) {return console.log(err);} else {console.log("Updated user");}});
         done(null, user);
       } else {
         // Quit if the email is invalid
@@ -210,7 +210,7 @@ passport.use(new LiveStrategy({
         // Quit if the email is invalid
         if (!validator.isEmail(profile.emails[0].value)) {return console.log("Email address invalid: ", profile.emails[0].value);}
         // Update the user if necessary
-        User.update({liveID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}});
+        User.update({liveID: profile.id}, {$set:{userName: entities.encode(profile.displayName), firstName: entities.encode(profile.name.givenName), lastName: entities.encode(profile.name.familyName), lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.', profilePicture: encodeURI(profile.photos[0].value), email: profile.emails[0].value}}, function (err, doc) {if (err) {return console.log(err);} else {console.log("Updated user");}});
         done(null, user);
       } else {
         // Quit if the email is invalid
