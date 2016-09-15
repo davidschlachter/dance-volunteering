@@ -1,3 +1,8 @@
+// Show the admin tools
+$(document).ready(function () {
+  $("#adminTools").show();
+  $("#adminEmail").show();
+});
 
 // For admins, show the buttons to delete other users' shifts after clicking the button for this
 function showDelButtons() {
@@ -36,7 +41,7 @@ function showCancel() {
     $("#cancel1").hide();
     $("#cancel2").show();
     getCancelled();
-    $("#cancelButton").on("click", function(e) {
+    $("#cancelButton").on("click", function (e) {
       cancelWeek($("#datepicker").val());
     });
   } else {
@@ -46,32 +51,48 @@ function showCancel() {
   }
 };
 
-function cancelWeek (week) {
+function cancelWeek(week) {
   if (typeof week === "undefined" || week === "") {
     return (console.log("No week selected"));
   } else {
     $.ajax({
       url: "cancelWeek",
-      data: {week: week},
+      data: {
+        week: week
+      },
       method: "POST"
-    }).done(function(data) {
+    }).done(function (data) {
       getCancelled();
     });
   }
 };
 
-function unCancelWeek (id) {
-  $.ajax({url: "unCancelWeek", method: "POST", data: {weekID: id}}).done(function(data) {
+function unCancelWeek(id) {
+  $.ajax({
+    url: "unCancelWeek",
+    method: "POST",
+    data: {
+      weekID: id
+    }
+  }).done(function (data) {
     getCancelled();
   });
 };
 
-function getCancelled () {
+function getCancelled() {
   $("#cancelledWeeks").find("tr:gt(0)").remove();
-  $.ajax({url: "getCancelled", method: "GET", cache:false}).done(function(data) {
+  $.ajax({
+    url: "getCancelled",
+    method: "GET",
+    cache: false
+  }).done(function (data) {
     var i, tbody = "<tbody>";
-    if (data.length === 0) {tbody+="<tr><td>No cancelled weeks</td></tr></tbody>"; $("#cancelledWeeks").append(tbody); return;} 
-    for (i=0; i<data.length; i++) {
+    if (data.length === 0) {
+      tbody += "<tr><td>No cancelled weeks</td></tr></tbody>";
+      $("#cancelledWeeks").append(tbody);
+      return;
+    }
+    for (i = 0; i < data.length; i++) {
       tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
     }
     tbody += "</tbody>"
@@ -88,7 +109,7 @@ function deleteAnyShift(shiftID, volID) {
       volID: volID
     },
     method: "POST"
-  }).done(function(data) {
+  }).done(function (data) {
     updateShifts();
   });
 };
@@ -117,10 +138,10 @@ function showDetails() {
     cache: false,
     dataType: "json",
     method: "GET"
-  }).done(function(data) {
+  }).done(function (data) {
     $("#userDetails").find("tr:gt(0)").remove();
     var i, j, line, lines = "";
-    for (i=0; i < data.length; i++) {
+    for (i = 0; i < data.length; i++) {
       for (j = 0; j < data[i].Vol.length; j++) {
         line = '<tr><td>' + data[i].time + '</td><td>' + data[i].Vol[j].firstName + ' ' + data[i].Vol[j].lastName + '</td><td>' + data[i].Vol[j].email + '</td></tr>';
         lines += line;
@@ -151,7 +172,7 @@ function showAdmins() {
     $("#execs1").show();
     $("#execs2").hide();
   }
-  
+
 };
 
 var getAdmins = function () {
@@ -160,10 +181,11 @@ var getAdmins = function () {
     cache: false,
     dataType: "json",
     method: "GET"
-  }).done(function(data) {
+  }).done(function (data) {
     $("#currentAdmins").find("tr:gt(0)").remove();
-    var i, line, lines = "", dangerButton;
-    for (i=0; i < data.length; i++) {
+    var i, line, lines = "",
+      dangerButton;
+    for (i = 0; i < data.length; i++) {
       if (data[i]._id.toString() === user._id.toString()) {
         dangerButton = ' <input type="button" disabled value="✘" class="btn btn-default btn-xs" />';
       } else {
@@ -176,7 +198,7 @@ var getAdmins = function () {
 
     // For admins, function to search users to add them as admins
     // (Inside the AJAX callback because it didn't work outside)
-    $("#adminButton").on("click", function(e) {
+    $("#adminButton").on("click", function (e) {
       if ($("#adminInput").val().length < 4) {
         $("#tooShort").show();
         return false;
@@ -187,16 +209,16 @@ var getAdmins = function () {
         searchAdmins();
       }
     });
-    $("#adminInput").keyup(function(event){
-        if(event.keyCode == 13){
-            $("#adminButton").click();
-        }
+    $("#adminInput").keyup(function (event) {
+      if (event.keyCode == 13) {
+        $("#adminButton").click();
+      }
     });
   });
 };
 
 // Function for finding users to add them as admins
-var searchAdmins = function() {
+var searchAdmins = function () {
   var input = $("#adminInput").val();
   $.ajax({
     url: "searchAdmins",
@@ -205,44 +227,47 @@ var searchAdmins = function() {
     method: "GET",
     data: {
       adminInput: input
-    }}).done(function(data) {
-      $("#adminResults").find("tr:gt(0)").remove();
-      var i, line, lines = "";
-      for (i=0; i < data.length; i++) {
-        line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button class="btn btn-success" onclick="makeAdmin(\'' + data[i]._id + '\')">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
-        lines += line;
-      }
-      $("#adminResults").append(lines);
-      $("#adminResults").show();
+    }
+  }).done(function (data) {
+    $("#adminResults").find("tr:gt(0)").remove();
+    var i, line, lines = "";
+    for (i = 0; i < data.length; i++) {
+      line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button class="btn btn-success" onclick="makeAdmin(\'' + data[i]._id + '\')">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
+      lines += line;
+    }
+    $("#adminResults").append(lines);
+    $("#adminResults").show();
   });
   return false;
 };
 
 // Function to make a user an admin
-var makeAdmin = function(userid) {
+var makeAdmin = function (userid) {
   $.ajax({
     url: "makeAdmin",
     dataType: "json",
     method: "POST",
     data: {
       userid: userid
-    }}).done(function(data) {
-      $("#adminResults").hide();
-      getAdmins();
+    }
+  }).done(function (data) {
+    $("#adminResults").hide();
+    getAdmins();
   });
   return false;
 };
 // Function to remove a user an admin
-var removeAdmin = function(userid, adminName) {
+var removeAdmin = function (userid, adminName) {
   $.ajax({
     url: "removeAdmin",
     dataType: "json",
     method: "POST",
     data: {
       userid: userid
-    }}).done(function(data) {
-      $('#delAdmin .modal-body').html('<p>' + adminName + ' has been removed as an admin and will be notified of the change by email.</p>')
-      $('#delAdmin').modal('show');
+    }
+  }).done(function (data) {
+    $('#delAdmin .modal-body').html('<p>' + adminName + ' has been removed as an admin and will be notified of the change by email.</p>')
+    $('#delAdmin').modal('show');
   });
   return false;
 };
@@ -274,12 +299,20 @@ function showTemplate() {
 };
 
 
-function getTemplate () {
+function getTemplate() {
   $("#templateTable tbody").remove();
-  $.ajax({url: "getTemplate", method: "GET", cache:false}).done(function(data) {
+  $.ajax({
+    url: "getTemplate",
+    method: "GET",
+    cache: false
+  }).done(function (data) {
     var i, checked, tbody = "<tbody>";
-    if (data.length === 0) {tbody+="<tr><td>No shifts were found in the template</td></tr></tbody>"; $("#templateTable").append(tbody); return;} 
-    for (i=0; i<data.length; i++) {
+    if (data.length === 0) {
+      tbody += "<tr><td>No shifts were found in the template</td></tr></tbody>";
+      $("#templateTable").append(tbody);
+      return;
+    }
+    for (i = 0; i < data.length; i++) {
       if (data[i].newUsers === true) {
         checked = "checked";
       } else {
@@ -293,28 +326,41 @@ function getTemplate () {
 };
 
 // Add or remove a row from the templateTable
-function deleteLastRow () {
+function deleteLastRow() {
   $("#templateTable tbody tr:last").remove();
 };
-function addRow () {
+
+function addRow() {
   var string = '<tr><td><input type="text" name="time"></td><td><input type="number"></td><td><input type="number"></td><td><input type="checkbox"></td></tr>';
   $("#templateTable tbody").append(string);
 };
 
 // Save the new templates
-function newTemplate () {
-  var templates = {d: []}, check, i, table = $("#templateTable tbody")[0];
+function newTemplate() {
+  var templates = {
+      d: []
+    },
+    check, i, table = $("#templateTable tbody")[0];
   for (i = 0; i < table.rows.length; i++) {
-    if ($(table.rows[i].cells[3]).find('input').is(':checked')) {check = true;} else {check = false;}
+    if ($(table.rows[i].cells[3]).find('input').is(':checked')) {
+      check = true;
+    } else {
+      check = false;
+    }
     templates.d.push({
       time: $(table.rows[i].cells[0]).find('input').val(),
       nSpots: (parseInt($(table.rows[i].cells[1]).find('input').val(), 10) + parseInt($(table.rows[i].cells[2]).find('input').val(), 10)),
       nExec: $(table.rows[i].cells[2]).find('input').val(),
       newUsers: check
     });
-  } 
+  }
   console.log("Sending:", templates);
-  $.ajax({url: "newTemplate", method: "POST", dataType: "JSON", data: templates}).done(function(data) {
+  $.ajax({
+    url: "newTemplate",
+    method: "POST",
+    dataType: "JSON",
+    data: templates
+  }).done(function (data) {
     console.log(data);
     showTemplate();
     $('#newTemplate').modal('show');

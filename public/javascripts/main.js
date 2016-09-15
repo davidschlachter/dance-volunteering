@@ -46,11 +46,11 @@ $(document).ready(function () {
   }
 
   if (typeof user === "object" && user.isAdmin === true) {
-    var head = document.getElementsByTagName("head")[0],
-      script = document.createElement("script");
-    script.type = "text/javascript", script.src = "javascripts/admin.js", head.appendChild(script);
-    $("#adminTools").show();
-    $("#adminEmail").show();
+    var head = document.getElementsByTagName("head")[0];
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "javascripts/admin.js";
+    head.appendChild(script);
   }
 
   // Fetch the volunteer shifts
