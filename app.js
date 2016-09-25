@@ -320,7 +320,7 @@ passport.use(new LiveStrategy({
 //
 
 // Sunday 12 PM -- create shifts, notify users
-cron.schedule('15 0 12 * * 0', function () {
+cron.schedule('15 0 12 * * 7', function () {
   console.log('Updating isNewUser');
   userController.updateNewUsers();
   console.log("Running checkShifts from cron");
