@@ -77,7 +77,7 @@ $(document).ready(function () {
 $(window).load(function () {
   if (shouldWrite() === false && getCookie("noShifts") === false) {
     if (moment().day() === 5 && moment().hour() < 21) {
-      $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open on Monday.<br><br>If you need to make a change to your shift, please contact <a href=\"mailto:osdsvol@gmail.com\">osdsvol@gmail.com</a>");
+      $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open on Sunday at 12 PM.<br><br>If you need to make a change to your shift, please contact <a href=\"mailto:osdsvol@gmail.com\">osdsvol@gmail.com</a>");
     }
     $('#noShifts').modal('show');
     document.cookie = "noShifts=shown";
@@ -87,13 +87,17 @@ $(window).load(function () {
 // Client-side version of the server's logic for whether shifts are open. If it's Friday evening, Saturday, or Sunday, disable the volunteering buttons.
 function shouldWrite() {
   var now = moment();
-  if (now.day() < 5 && now.day() > 0) {
+  if (now.day() < 5 && now.day() > 0) { // Monday - Thursday: YES
     return true;
-  } else if (now.day() === 5 && now.hour() < 17) {
+  } else if (now.day() === 5 && now.hour() < 17) { // Friday before 5 PM: YES
     return true;
-  } else if (now.day() === 5 && now.hour() >= 17) {
+  } else if (now.day() === 5 && now.hour() >= 17) { // Friday after 5 PM: NO
     return false;
-  } else if (now.day() === 6 || now.day() === 0) {
+  } else if (now.day() === 0 && now.hour() >= 12) { // Sunday after 12 PM: YES
+    return true;
+  } else if (now.day() === 0 && now.hour() < 12) { // Sunday before 12 PM: NO
+    return true;
+  } else if (now.day() === 6) { // Saturday: NO
     return false;
   } else {
     console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());

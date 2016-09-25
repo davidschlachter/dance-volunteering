@@ -1,7 +1,7 @@
 # dance-volunteering
 Volunteering system for the Ottawa Swing Dance Society. Live at https://volunteer.swingottawa.ca.
 
-Shifts are generated from a template Mondays at 00:00 (Sunday midnight). Volunteers can log in with Google, Facebook, or Microsoft and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
+Shifts are generated from a template Sundays at 12:00 PM (noon). Volunteers can log in with Google, Facebook, or Microsoft and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
 
 
 ## List of features (with current status):
@@ -26,7 +26,7 @@ Email
 - [X] Users and admins can manage their email preferences
 - [X] User can be reminded of their shift by email
 - [X] User gets a thank-you email
-- [X] User gets an email when shifts become available (Monday)
+- [X] User gets an email when shifts become available (Sunday)
 - [X] Admin is notified of shifts on Friday
 
 Exec
@@ -42,4 +42,4 @@ Backend
 -------
 (Need a database for users, and a database for volunteering info)
 - [X] Shifts become read-only Friday evening
-- [X] Shifts for new week become available early in the week (Monday?)
+- [X] Shifts for new week become available early in the week (Sunday 12 PM)

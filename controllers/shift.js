@@ -408,13 +408,17 @@ module.exports.getFriday = getFriday;
 
 function shouldWrite() {
   var now = moment();
-  if (now.day() < 5 && now.day() > 0) {
+  if (now.day() < 5 && now.day() > 0) { // Monday - Thursday: YES
     return true;
-  } else if (now.day() === 5 && now.hour() < 17) {
+  } else if (now.day() === 5 && now.hour() < 17) { // Friday before 5 PM: YES
     return true;
-  } else if (now.day() === 5 && now.hour() >= 17) {
+  } else if (now.day() === 5 && now.hour() >= 17) { // Friday after 5 PM: NO
     return false;
-  } else if (now.day() === 6 || now.day() === 0) {
+  } else if (now.day() === 0 && now.hour() >= 12) { // Sunday after 12 PM: YES
+    return true;
+  } else if (now.day() === 0 && now.hour() < 12) { // Sunday before 12 PM: NO
+    return true;
+  } else if (now.day() === 6) { // Saturday: NO
     return false;
   } else {
     console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());
