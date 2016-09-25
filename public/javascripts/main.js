@@ -96,7 +96,7 @@ function shouldWrite() {
   } else if (now.day() === 0 && now.hour() >= 12) { // Sunday after 12 PM: YES
     return true;
   } else if (now.day() === 0 && now.hour() < 12) { // Sunday before 12 PM: NO
-    return true;
+    return false;
   } else if (now.day() === 6) { // Saturday: NO
     return false;
   } else {
