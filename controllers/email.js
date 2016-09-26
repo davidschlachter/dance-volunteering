@@ -210,10 +210,10 @@ exports.mailOut = function (email) {
     }
   }).populate({
     path: 'Vol',
-    select: '_id firstName lastName email isNewUser'
+    select: '_id firstName lastNameInitial email isNewUser'
   }).populate({
     path: 'Exec',
-    select: '_id userName firstName lastName email'
+    select: '_id userName firstName lastNameInitial email'
   }).exec(function (err, results) {
     if (err) {
       return console.log(err);
@@ -231,7 +231,7 @@ exports.mailOut = function (email) {
             } else {
               newUser = '';
             }
-            line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastName + newUser + '</td></tr>';
+            line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastNameInitial + newUser + '</td></tr>';
             lines += line;
           }
         }
