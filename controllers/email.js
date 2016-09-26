@@ -5,6 +5,7 @@ var Shift = require('../models/shiftModel');
 var Template = require('../models/templateModel');
 var shift = require('../controllers/shift');
 var Cancelled = require('../models/cancelledModel');
+var retry = require('retry');
 
 var config = require('../config');
 
@@ -17,12 +18,24 @@ exports.welcome = function (user, email) {
     text: "Welcome to OSDS Volunteering!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nSee you on the dance floor!",
     html: "<p>Welcome to OSDS Volunteering!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
   };
-  transporter.sendMail(mailOpts, function (error, info) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Welcome message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-  });
+
+  function faultTolerantSend(cb) {
+    var operation = retry.operation();
+
+    operation.attempt(function (currentAttempt) {
+      transporter.sendMail(mailOpts, function (err, info) {
+        if (operation.retry(err)) {
+          console.log(error);
+          return;
+        }
+
+        cb(err ? operation.mainError() : null, info.response);
+        console.log('Welcome message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+      });
+    });
+  }
+
+  faultTolerantSend(function (err, info) {});
 };
 
 exports.cancelled = function (userid, shift, email) {
@@ -40,12 +53,25 @@ exports.cancelled = function (userid, shift, email) {
         html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
       };
 
-      transporter.sendMail(mailOpts, function (error, info) {
-        if (error) {
-          return console.log(error);
-        }
-        console.log('Cancelled shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-      });
+      function faultTolerantSend(cb) {
+        var operation = retry.operation();
+
+        operation.attempt(function (currentAttempt) {
+          transporter.sendMail(mailOpts, function (err, info) {
+            if (operation.retry(err)) {
+              console.log(error);
+              return;
+            }
+
+            cb(err ? operation.mainError() : null, info.response);
+            console.log('Cancelled shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+          });
+        });
+      }
+
+      faultTolerantSend(function (err, info) {});
+
+
     }
   });
 };
@@ -68,12 +94,25 @@ exports.newShift = function (userid, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
-        transporter.sendMail(mailOpts, function (error, info) {
-          if (error) {
-            return console.log(error);
-          }
-          console.log('New shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-        });
+
+        function faultTolerantSend(cb) {
+          var operation = retry.operation();
+
+          operation.attempt(function (currentAttempt) {
+            transporter.sendMail(mailOpts, function (err, info) {
+              if (operation.retry(err)) {
+                console.log(error);
+                return;
+              }
+
+              cb(err ? operation.mainError() : null, info.response);
+              console.log('New shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+            });
+          });
+        }
+
+        faultTolerantSend(function (err, info) {});
+
       }
     });
   });
@@ -97,12 +136,24 @@ exports.newExecShift = function (userid, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
-        transporter.sendMail(mailOpts, function (error, info) {
-          if (error) {
-            return console.log(error);
-          }
-          console.log('New exec shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-        });
+
+        function faultTolerantSend(cb) {
+          var operation = retry.operation();
+
+          operation.attempt(function (currentAttempt) {
+            transporter.sendMail(mailOpts, function (err, info) {
+              if (operation.retry(err)) {
+                console.log(error);
+                return;
+              }
+
+              cb(err ? operation.mainError() : null, info.response);
+              console.log('New exec shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+            });
+          });
+        }
+
+        faultTolerantSend(function (err, info) {});
       }
     });
   });
@@ -126,12 +177,23 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
-        transporter.sendMail(mailOpts, function (error, info) {
-          if (error) {
-            return console.log(error);
-          }
-          console.log('Changed shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-        });
+        function faultTolerantSend(cb) {
+          var operation = retry.operation();
+
+          operation.attempt(function (currentAttempt) {
+            transporter.sendMail(mailOpts, function (err, info) {
+              if (operation.retry(err)) {
+                console.log(error);
+                return;
+              }
+
+              cb(err ? operation.mainError() : null, info.response);
+              console.log('Changed shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+            });
+          });
+        }
+
+        faultTolerantSend(function (err, info) {});
       }
     });
   });
@@ -189,12 +251,26 @@ exports.mailOut = function (email) {
             text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function (error, info) {
-            if (error) {
-              return console.log(error);
-            }
-            console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
-          });
+
+          function faultTolerantSend(cb) {
+            var operation = retry.operation();
+
+            operation.attempt(function (currentAttempt) {
+              transporter.sendMail(mailOpts, function (err, info) {
+                if (operation.retry(err)) {
+                  console.log(error);
+                  return;
+                }
+
+                cb(err ? operation.mainError() : null, info.response);
+                console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
+              });
+            });
+          }
+
+          faultTolerantSend(function (err, info) {});
+
+
         }
       });
     }
@@ -222,12 +298,27 @@ exports.shiftsAvailable = function (email) {
             text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit " + config.opt.full_url + "/\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function (error, info) {
-            if (error) {
-              return console.log(error);
-            }
-            console.log('Shifts available message sent to ' + info.envelope.to[0] + ': ' + info.response);
-          });
+
+
+          function faultTolerantSend(cb) {
+            var operation = retry.operation();
+
+            operation.attempt(function (currentAttempt) {
+              transporter.sendMail(mailOpts, function (err, info) {
+                if (operation.retry(err)) {
+                  console.log(error);
+                  return;
+                }
+
+                cb(err ? operation.mainError() : null, info.response);
+                console.log('Shifts available message sent to ' + info.envelope.to[0] + ': ' + info.response);
+              });
+            });
+          }
+
+          faultTolerantSend(function (err, info) {});
+
+
         }
       });
     } else {
@@ -246,12 +337,27 @@ exports.shiftsAvailable = function (email) {
               text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next week! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
               html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next week! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
-            transporter.sendMail(mailOpts, function (error, info) {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('No dance message sent to ' + info.envelope.to[0] + ': ' + info.response);
-            });
+
+
+            function faultTolerantSend(cb) {
+              var operation = retry.operation();
+
+              operation.attempt(function (currentAttempt) {
+                transporter.sendMail(mailOpts, function (err, info) {
+                  if (operation.retry(err)) {
+                    console.log(error);
+                    return;
+                  }
+
+                  cb(err ? operation.mainError() : null, info.response);
+                  console.log('No dance message sent to ' + info.envelope.to[0] + ': ' + info.response);
+                });
+              });
+            }
+
+            faultTolerantSend(function (err, info) {});
+
+
           }
         }
       });
@@ -289,12 +395,26 @@ exports.reminderVol = function (email) {
                   html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
                 };
 
-                transporter.sendMail(mailOpts, function (error, info) {
-                  if (error) {
-                    return console.log(error);
-                  }
-                  console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response);
-                });
+
+
+                function faultTolerantSend(cb) {
+                  var operation = retry.operation();
+
+                  operation.attempt(function (currentAttempt) {
+                    transporter.sendMail(mailOpts, function (err, info) {
+                      if (operation.retry(err)) {
+                        console.log(error);
+                        return;
+                      }
+
+                      cb(err ? operation.mainError() : null, info.response);
+                      console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response);
+                    });
+                  });
+                }
+
+                faultTolerantSend(function (err, info) {});
+
               }
             }
           }
@@ -338,12 +458,26 @@ exports.thankVol = function (email) {
               html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
-            transporter.sendMail(mailOpts, function (error, info) {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('Thank you message sent to ' + info.envelope.to[0] + ': ' + info.response);
-            });
+
+            function faultTolerantSend(cb) {
+              var operation = retry.operation();
+
+              operation.attempt(function (currentAttempt) {
+                transporter.sendMail(mailOpts, function (err, info) {
+                  if (operation.retry(err)) {
+                    console.log(error);
+                    return;
+                  }
+
+                  cb(err ? operation.mainError() : null, info.response);
+                  console.log('Thank you message sent to ' + info.envelope.to[0] + ': ' + info.response);
+                });
+              });
+            }
+
+            faultTolerantSend(function (err, info) {});
+
+
           }
         }
       }
@@ -363,12 +497,26 @@ exports.newAdmin = function (user, email) {
     text: "Hi " + user.firstName + "!\nYou've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
     html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
   };
-  transporter.sendMail(mailOpts, function (error, info) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-  });
+
+
+  function faultTolerantSend(cb) {
+    var operation = retry.operation();
+
+    operation.attempt(function (currentAttempt) {
+      transporter.sendMail(mailOpts, function (err, info) {
+        if (operation.retry(err)) {
+          console.log(error);
+          return;
+        }
+
+        cb(err ? operation.mainError() : null, info.response);
+        console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+      });
+    });
+  }
+
+  faultTolerantSend(function (err, info) {});
+
 };
 
 exports.removedAdmin = function (user, email) {
@@ -381,12 +529,26 @@ exports.removedAdmin = function (user, email) {
     text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the OSDS Volunteering site.",
     html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the OSDS Volunteering site</a>.</p>"
   };
-  transporter.sendMail(mailOpts, function (error, info) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Removed admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-  });
+
+
+  function faultTolerantSend(cb) {
+    var operation = retry.operation();
+
+    operation.attempt(function (currentAttempt) {
+      transporter.sendMail(mailOpts, function (err, info) {
+        if (operation.retry(err)) {
+          console.log(error);
+          return;
+        }
+
+        cb(err ? operation.mainError() : null, info.response);
+        console.log('Removed admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
+      });
+    });
+  }
+
+  faultTolerantSend(function (err, info) {});
+
 };
 
 // Send a 'last-call' email if any shifts are available on Friday mid-day
@@ -429,12 +591,26 @@ exports.lastCall = function (email) {
               text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
               html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
-            transporter.sendMail(mailOpts, function (error, info) {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('Last call sent to ' + info.envelope.to[0] + ': ' + info.response);
-            });
+
+
+            function faultTolerantSend(cb) {
+              var operation = retry.operation();
+
+              operation.attempt(function (currentAttempt) {
+                transporter.sendMail(mailOpts, function (err, info) {
+                  if (operation.retry(err)) {
+                    console.log(error);
+                    return;
+                  }
+
+                  cb(err ? operation.mainError() : null, info.response);
+                  console.log('Last call sent to ' + info.envelope.to[0] + ': ' + info.response);
+                });
+              });
+            }
+
+            faultTolerantSend(function (err, info) {});
+
           }
         });
 
@@ -498,12 +674,27 @@ exports.newTemplate = function (email) {
             text: "Hi " + results[i].firstName + "!\nStarting next week the volunteering shifts will follow this format:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
             html: "<p>Hi " + results[i].firstName + "!</p><p>Starting next week the volunteering shifts will follow this format:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
-          transporter.sendMail(mailOpts, function (error, info) {
-            if (error) {
-              return console.log(error);
-            }
-            console.log('New template sent to ' + info.envelope.to[0] + ': ' + info.response);
-          });
+
+
+          function faultTolerantSend(cb) {
+            var operation = retry.operation();
+
+            operation.attempt(function (currentAttempt) {
+              transporter.sendMail(mailOpts, function (err, info) {
+                if (operation.retry(err)) {
+                  console.log(error);
+                  return;
+                }
+
+                cb(err ? operation.mainError() : null, info.response);
+                console.log('New template sent to ' + info.envelope.to[0] + ': ' + info.response);
+              });
+            });
+          }
+
+          faultTolerantSend(function (err, info) {});
+
+
         }
       });
 
