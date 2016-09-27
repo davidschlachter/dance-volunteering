@@ -12,6 +12,7 @@ var config = require('../config');
 var shift = require('../controllers/shift');
 var template = require('../controllers/template');
 var userController = require('../controllers/user');
+var extraText = require('../controllers/extraText');
 
 var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
 
@@ -257,6 +258,12 @@ router.get('/getTemplate', checkAuth, checkExec, template.getTemplate);
 
 /* POST a new set of templates */
 router.post('/newTemplate', checkAuth, checkExec, template.newTemplate);
+
+/* Get extra text for printing */
+router.get('/getExtraText', checkAuth, checkExec, extraText.getextraText);
+
+/* POST to save text for printing */
+router.post('/setExtraText', checkAuth, checkExec, extraText.setextraText);
 
 /* GET one's own user profile */
 //router.get('/getUser', checkAuth, userController.getUser);

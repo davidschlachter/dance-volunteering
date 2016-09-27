@@ -2,6 +2,7 @@
 $(document).ready(function () {
   $("#adminTools").show();
   $("#adminEmail").show();
+  getExtraText();
 });
 
 // For admins, show the buttons to delete other users' shifts after clicking the button for this
@@ -364,5 +365,56 @@ function newTemplate() {
     console.log(data);
     showTemplate();
     $('#newTemplate').modal('show');
+  });
+};
+
+// Get the extra text for printing
+function getExtraText() {
+  $.ajax({
+    url: "getExtraText",
+    method: "GET",
+    cache: false
+  }).done(function (data) {
+    console.log('Extra text is', data);
+    $("#extraText").html(data.text);
+    $("#printingTextArea").val(data.text.replace(/<br>/g, '\n'));
+  });
+};
+
+// For admins, show the interface to edit the extra printed text
+function showPrinting() {
+  var i;
+  if ($('#printing1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#printing").show();
+    $("#printing1").hide();
+    $("#printing2").show();
+  } else {
+    $("#printing").hide();
+    $("#printing1").show();
+    $("#printing2").hide();
+  }
+};
+
+// For admins, set the printing text
+function setPrintingText() {
+  var extraText = {
+    "extraText": $("#printingTextArea").val()
+  };
+  console.log("Sending:", extraText);
+  $.ajax({
+    url: "setExtraText",
+    method: "POST",
+    dataType: "JSON",
+    data: extraText
+  }).done(function (data) {
+    console.log(data);
+    getExtraText();
   });
 };

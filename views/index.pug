@@ -50,6 +50,7 @@ html(lang='en')
               a(href='logout') Log out
               
       h1= title
+      h2#friday
       p#user
       p#date.well
       table(id='shifts')
@@ -111,7 +112,7 @@ html(lang='en')
                     <input type="checkbox" name="sendSchedule" id="sendSchedule" /> The volunteer schedule each week (Friday at 5 PM)
               .modal-footer
                 input.btn.btn-default(type='submit', value="Save")
-                
+      div#extraText(style="display:none;")
       div#adminTools(style="display:none;")
         h2.center <br> Exec tools
         p.center
@@ -119,6 +120,8 @@ html(lang='en')
           input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons",onclick="showDelButtons()")
           input#details1.btn.btn-default.btnShow(value="See volunteer details",onclick="showDetails()")
           input#details2.btn.btn-primary.btnHide(value="Hide volunteer details",onclick="showDetails()")
+          input#printing1.btn.btn-default.btnShow(value="Change printing text",onclick="showPrinting()")
+          input#printing2.btn.btn-primary.btnHide(value="Hide printing text",onclick="showPrinting()")
           input#execs1.btn.btn-default.btnShow(value="Manage admins",onclick="showAdmins()")
           input#execs2.btn.btn-primary.btnHide(value="Hide admin management",onclick="showAdmins()")
           input#cancel1.btn.btn-default.btnShow(value="Cancel a week",onclick="showCancel()")
@@ -132,6 +135,13 @@ html(lang='en')
               th Volunteer
               th Email address
           tbody
+        div#printing.btnHide
+          h3 Edit printing text
+          p This text is only shown when this page is printed by an admin:
+          br
+          textarea(id='printingTextArea')
+          br
+          button#printingButton(type="button", class="btn btn-primary", onclick='setPrintingText()') Save
         div#adminDetails.btnHide
           h3 Add an admin
           p To add an admin, search volunteers by their name:

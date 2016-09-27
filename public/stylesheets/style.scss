@@ -58,7 +58,9 @@ input[type=checkbox] {
   .btnHide {
     display: none;
   }
-
+  .btn {
+    margin: 2px;
+  }
 }
 
 .otherDel {
@@ -78,7 +80,28 @@ input[type=checkbox] {
   text-align: center;
 }
 
+h2#friday {
+  display: none;
+}
+
 @media print {
+  body {
+    color: black;
+  }
+  h1 {
+    display: none;
+  }
+  h2#friday {
+    display: block;
+  }
+  .well {
+    display: none;
+  }
+  div#extraText {
+    display: block !important;
+    font-size: 130%;
+    margin: 2em 0 2em 0;
+  }
   #adminTools {
     margin-top: 2em;
   }
@@ -89,11 +112,16 @@ input[type=checkbox] {
     display: none;
   }
   .btn {
-    border: 1px solid black;
-    background-color: white;
-    color: black;
-    border-radius: 0;
-    text-shadow:none;
-    opacity:1;
+    visibility: hidden;
   }
+  .btnHide {
+    display: none !important;
+  }
+  #footer {
+    opacity: 0.5;
+    a {
+      color: black;
+    }
+  }
+
 }

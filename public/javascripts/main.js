@@ -235,6 +235,7 @@ function displayShifts(data) {
     thisFriday = moment(data[0].date);
   }
   $("#date").html("Volunteering shifts for <strong>" + thisFriday.format("dddd MMMM D, YYYY") + '</strong>:');
+  $("#friday").text(thisFriday.format("dddd MMMM D, YYYY"));
 };
 
 
