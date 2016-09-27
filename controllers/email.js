@@ -27,7 +27,7 @@ exports.welcome = function (user, email) {
     operation.attempt(function (currentAttempt) {
       transporter.sendMail(mailOpts, function (err, info) {
         if (operation.retry(err)) {
-          console.log(error);
+          console.log("Error for " + user.email + ": ", err);
           return;
         }
 
@@ -61,7 +61,7 @@ exports.cancelled = function (userid, shift, email) {
         operation.attempt(function (currentAttempt) {
           transporter.sendMail(mailOpts, function (err, info) {
             if (operation.retry(err)) {
-              console.log(error);
+              console.log("Error for " + user.email + ": ", err);
               return;
             }
 
@@ -103,7 +103,7 @@ exports.newShift = function (userid, uQuery, email) {
           operation.attempt(function (currentAttempt) {
             transporter.sendMail(mailOpts, function (err, info) {
               if (operation.retry(err)) {
-                console.log(error);
+                console.log("Error for " + user.email + ": ", err);
                 return;
               }
 
@@ -145,7 +145,7 @@ exports.newExecShift = function (userid, uQuery, email) {
           operation.attempt(function (currentAttempt) {
             transporter.sendMail(mailOpts, function (err, info) {
               if (operation.retry(err)) {
-                console.log(error);
+                console.log("Error for " + user.email + ": ", err);
                 return;
               }
 
@@ -185,7 +185,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           operation.attempt(function (currentAttempt) {
             transporter.sendMail(mailOpts, function (err, info) {
               if (operation.retry(err)) {
-                console.log(error);
+                console.log("Error for " + user.email + ": ", err);
                 return;
               }
 
@@ -260,7 +260,7 @@ exports.mailOut = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log(error);
+                  console.log("Error for " + user.email + ": ", err);
                   return;
                 }
 
@@ -308,7 +308,7 @@ exports.shiftsAvailable = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log(error);
+                  console.log("Error for " + user.email + ": ", err);
                   return;
                 }
 
@@ -347,7 +347,7 @@ exports.shiftsAvailable = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log(error);
+                    console.log("Error for " + user.email + ": ", err);
                     return;
                   }
 
@@ -405,7 +405,7 @@ exports.reminderVol = function (email) {
                   operation.attempt(function (currentAttempt) {
                     transporter.sendMail(mailOpts, function (err, info) {
                       if (operation.retry(err)) {
-                        console.log(error);
+                        console.log("Error for " + user.email + ": ", err);
                         return;
                       }
 
@@ -467,7 +467,7 @@ exports.thankVol = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log(error);
+                    console.log("Error for " + user.email + ": ", err);
                     return;
                   }
 
@@ -507,7 +507,7 @@ exports.newAdmin = function (user, email) {
     operation.attempt(function (currentAttempt) {
       transporter.sendMail(mailOpts, function (err, info) {
         if (operation.retry(err)) {
-          console.log(error);
+          console.log("Error for " + user.email + ": ", err);
           return;
         }
 
@@ -539,7 +539,7 @@ exports.removedAdmin = function (user, email) {
     operation.attempt(function (currentAttempt) {
       transporter.sendMail(mailOpts, function (err, info) {
         if (operation.retry(err)) {
-          console.log(error);
+          console.log("Error for " + user.email + ": ", err);
           return;
         }
 
@@ -601,7 +601,7 @@ exports.lastCall = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log(error);
+                    console.log("Error for " + user.email + ": ", err);
                     return;
                   }
 
@@ -684,7 +684,7 @@ exports.newTemplate = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log(error);
+                  console.log("Error for " + user.email + ": ", err);
                   return;
                 }
 
