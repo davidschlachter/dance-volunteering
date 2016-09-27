@@ -151,7 +151,7 @@ router.get('/auth/facebook/callback',
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
-        console.log("Facebook log-in from", req.user);
+        console.log("Facebook log-in from", req.user.userName);
         res.cookie('authMethod', "Facebook", {
           path: '/',
           expires: cookieExpiryDate
@@ -181,7 +181,7 @@ router.get('/auth/google/callback',
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
-        console.log("Google log-in from", req.user);
+        console.log("Google log-in from", req.user.userName);
         res.cookie('authMethod', "Google", {
           path: '/',
           expires: cookieExpiryDate
@@ -211,7 +211,7 @@ router.get('/auth/live/callback',
         console.log(err);
         res.redirect(config.opt.base_url + '/');
       } else {
-        console.log("Microsoft log-in from", req.user);
+        console.log("Microsoft log-in from", req.user.userName);
         res.cookie('authMethod', "Microsoft", {
           path: '/',
           expires: cookieExpiryDate
