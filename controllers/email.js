@@ -6,6 +6,8 @@ var Template = require('../models/templateModel');
 var shift = require('../controllers/shift');
 var Cancelled = require('../models/cancelledModel');
 var retry = require('retry');
+var Entities = require('html-entities').XmlEntities;
+var entities = new Entities();
 
 var config = require('../config');
 
@@ -13,7 +15,7 @@ exports.welcome = function (user, email) {
   var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
-    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+    to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
     subject: "Welcome to OSDS Volunteering",
     text: "Welcome to OSDS Volunteering!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nSee you on the dance floor!",
     html: "<p>Welcome to OSDS Volunteering!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
@@ -47,7 +49,7 @@ exports.cancelled = function (userid, shift, email) {
       var date = moment(query.date).format("MMMM D, YYYY");
       var mailOpts = {
         from: '"' + email.name + '" <' + email.user + '>',
-        to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+        to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
         html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
@@ -88,7 +90,7 @@ exports.newShift = function (userid, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+          to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
           html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
@@ -130,7 +132,7 @@ exports.newExecShift = function (userid, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+          to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
           html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
@@ -171,7 +173,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
-          to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+          to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
           html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
@@ -492,7 +494,7 @@ exports.newAdmin = function (user, email) {
 
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
-    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+    to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
     subject: "OSDS Volunteering: You've been added as an admin",
     text: "Hi " + user.firstName + "!\nYou've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
     html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
@@ -524,7 +526,7 @@ exports.removedAdmin = function (user, email) {
 
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
-    to: '"' + user.userName.replace(/"/g, '') + '" <' + user.email + '>',
+    to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
     subject: "OSDS Volunteering: You've been removed as an admin",
     text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the OSDS Volunteering site.",
     html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the OSDS Volunteering site</a>.</p>"
