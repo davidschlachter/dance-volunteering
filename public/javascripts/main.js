@@ -76,7 +76,10 @@ $(document).ready(function () {
 
 $(window).load(function () {
   if (shouldWrite() === false && getCookie("noShifts") === false) {
-    if (moment().day() === 5 && moment().hour() < 21) {
+    var rightNow = moment();
+    if (rightNow.day() === 7 && rightNow.hour() < 12) {
+      $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open today at 12 PM.");
+    } else if (rightNow.day() === 5 && rightNow.hour() < 21) {
       $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open on Sunday at 12 PM.<br><br>If you need to make a change to your shift, please contact <a href=\"mailto:osdsvol@gmail.com\">osdsvol@gmail.com</a>");
     }
     $('#noShifts').modal('show');
