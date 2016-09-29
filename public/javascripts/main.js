@@ -187,7 +187,7 @@ function displayShifts(data) {
         } else {
           deleteButton = ""
         }
-        tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
+        tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         deleteButton = "";
         if (areOpen && typeof user === 'object' && user.isNewUser === false) {
@@ -221,7 +221,7 @@ function displayShifts(data) {
         }
         userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
         profilePicture = data[i].Exec[h].profilePicture;
-        tableText = '<img class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
+        tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         tableText = '<form action="volunteerExec" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
       }
