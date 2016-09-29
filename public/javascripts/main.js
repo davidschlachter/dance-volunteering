@@ -48,6 +48,7 @@ $(document).ready(function () {
   if (typeof user === "object" && user.isAdmin === true) {
     var head = document.getElementsByTagName("head")[0];
     var script = document.createElement("script");
+    script.async = true;
     script.type = "text/javascript";
     script.src = "javascripts/admin.js";
     head.appendChild(script);
