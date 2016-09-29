@@ -440,7 +440,8 @@ function setPrintingText() {
     dataType: "JSON",
     data: extraText
   }).done(function (data) {
-    console.log(data);
+    $('#newExtraText').modal('show');
+    showPrinting();
     getExtraText();
   });
 };
