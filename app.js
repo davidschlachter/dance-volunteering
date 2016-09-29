@@ -109,7 +109,7 @@ app.use(helmet.contentSecurityPolicy({
     }],
     styleSrc: ["'self'"],
     //  sandbox: ['allow-forms', 'allow-scripts'],
-    reportUri: '/csp_reports'
+    //  reportUri: config.opt.base_url + '/csp_reports'
   },
   reportOnly: false,
   setAllHeaders: false,

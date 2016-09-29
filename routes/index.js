@@ -5,7 +5,7 @@ var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
 var Cancelled = require('../models/cancelledModel');
 var moment = require('moment');
-
+//var bodyParser = require('body-parser');
 
 // Get options from config file
 var config = require('../config');
@@ -271,10 +271,17 @@ router.get('/getExtraText', checkAuth, checkExec, extraText.getextraText);
 router.post('/setExtraText', checkAuth, checkExec, extraText.setextraText);
 
 /* POST CSP Reports */
-router.post('/csp_reports', function (req, res, next) {
-  console.log(req.body);
-  res.json("Successfully sent CSP report");
-});
+/*var jsonParser = bodyParser.json({
+  type: ['json', 'application/csp-report']
+  });
+router.post('/csp_reports', jsonParser, function (req, res) {
+  if (req.body) {
+    console.log('CSP Violation: ', req.body)
+  } else {
+    console.log('CSP Violation: No data received!')
+  }
+  res.status(204).end()
+});*/
 
 /* GET one's own user profile */
 //router.get('/getUser', checkAuth, userController.getUser);
