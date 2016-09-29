@@ -7,33 +7,23 @@ html(lang='en')
     title= title
     meta(name='description', content="Volunteer with the Ottawa Swing Dance Society! The Ottawa Swing Dance Society's success comes from the energy and dedication of our exceptional  team of volunteers.  In exchange for you spending time helping us out with that dance you will receive free admission.")
     // First, all the scripts
-    script
-      include ../public/javascripts/jquery224.min.js
-    script
-      include ../public/javascripts/moment.min.js
-    script
-      include ../public/bootstrap/bootstrap.min.js
-    script.
+    script(src="javascripts/jquery224.min.js")
+    script(src="javascripts/moment.min.js")
+    script(src="bootstrap/bootstrap.min.js")
+    script(nonce=nonce).
       user = !{JSON.stringify(user)};
-    script.
+    script(nonce=nonce).
       shifts = !{JSON.stringify(shifts)};
-    script
-      include ../public/javascripts/googleanalytics.js
-    script
-      include ../public/javascripts/pikaday.min.js
-    script
-      include ../public/javascripts/main.js
+    script(src="javascripts/googleanalytics.js")
+    script(src="javascripts/pikaday.min.js")
+    script(src="javascripts/main.js")
     // Then the stylesheets
-    style
-      include ../public/bootstrap/bootstrap.min.css
-    style
-      include ../public/bootstrap/bootstrap-theme.min.css
-    style
-      include ../public/stylesheets/pikaday.css
-    style
-      include ../public/stylesheets/style.css
+    link(rel='stylesheet', href="bootstrap/bootstrap.min.css")
+    link(rel='stylesheet', href="bootstrap/bootstrap-theme.min.css")
+    link(rel='stylesheet', href="stylesheets/pikaday.css")
+    link(rel='stylesheet', href="stylesheets/style.css")
   body
-    div.description(style="display:none;")
+    div.description
       img(src="android-chrome-192x192.png", alt="Ottawa Swing Dance Society")
       p Volunteer with the <a href="http://www.swingottawa.ca">Ottawa Swing Dance Society</a>! The Ottawa Swing Dance Society's success comes from the energy and dedication of our exceptional  team of volunteers.  In exchange for you spending time helping us out with that dance you will receive free admission.
     div.container
@@ -107,28 +97,28 @@ html(lang='en')
                   <input type="checkbox" name="sendLastCall" id="sendLastCall" /> A notification if any shifts are still available on Friday morning
                   br
                   br
-                  span#adminEmail(style="display:none;")
+                  span#adminEmail
                     strong Exec
                     br
                     <input type="checkbox" name="sendSchedule" id="sendSchedule" /> The volunteer schedule each week (Friday at 5 PM)
               .modal-footer
                 input.btn.btn-default(type='submit', value="Save")
-      div#extraText(style="display:none;")
-      div#adminTools(style="display:none;")
+      div#extraText
+      div#adminTools
         h2.center <br> Exec tools
         p.center
-          input#otherDel1.btn.btn-default.btnShow(value="Delete a shift",onclick="showDelButtons()")
-          input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons",onclick="showDelButtons()")
-          input#details1.btn.btn-default.btnShow(value="See volunteer details",onclick="showDetails()")
-          input#details2.btn.btn-primary.btnHide(value="Hide volunteer details",onclick="showDetails()")
-          input#printing1.btn.btn-default.btnShow(value="Change printing text",onclick="showPrinting()")
-          input#printing2.btn.btn-primary.btnHide(value="Hide printing text",onclick="showPrinting()")
-          input#execs1.btn.btn-default.btnShow(value="Manage admins",onclick="showAdmins()")
-          input#execs2.btn.btn-primary.btnHide(value="Hide admin management",onclick="showAdmins()")
-          input#cancel1.btn.btn-default.btnShow(value="Cancel a week",onclick="showCancel()")
-          input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks",onclick="showCancel()")
-          input#template1.btn.btn-default.btnShow(value="Modify template",onclick="showTemplate()")
-          input#template2.btn.btn-primary.btnHide(value="Hide template",onclick="showTemplate()")
+          input#otherDel1.btn.btn-default.btnShow(value="Delete a shift")
+          input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons")
+          input#details1.btn.btn-default.btnShow(value="See volunteer details")
+          input#details2.btn.btn-primary.btnHide(value="Hide volunteer details")
+          input#printing1.btn.btn-default.btnShow(value="Change printing text")
+          input#printing2.btn.btn-primary.btnHide(value="Hide printing text")
+          input#execs1.btn.btn-default.btnShow(value="Manage admins")
+          input#execs2.btn.btn-primary.btnHide(value="Hide admin management")
+          input#cancel1.btn.btn-default.btnShow(value="Cancel a week")
+          input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks")
+          input#template1.btn.btn-default.btnShow(value="Modify template")
+          input#template2.btn.btn-primary.btnHide(value="Hide template")
         table#userDetails.btnHide
           thead
             tr
@@ -142,7 +132,7 @@ html(lang='en')
           br
           textarea(id='printingTextArea')
           br
-          button#printingButton(type="button", class="btn btn-primary", onclick='setPrintingText()') Save
+          button#printingButton(type="button", class="btn btn-primary") Save
         div#adminDetails.btnHide
           h3 Add an admin
           p To add an admin, search volunteers by their name:
@@ -150,8 +140,8 @@ html(lang='en')
           span &nbsp;
           button#adminButton.btn.btn-primary Search
           br
-          div#tooShort.alert.alert-warning(style="display:none;") Search query is too short! (minimum four characters)
-          table#adminResults(style="display:none;")
+          div#tooShort.alert.alert-warning Search query is too short! (minimum four characters)
+          table#adminResults
             thead
               tr
                 th Name
@@ -177,7 +167,7 @@ html(lang='en')
         div#template.btnHide
           h3 Modify the shift template
           p To modify the layout of shifts, edit them below and then click 'Save'. &nbsp;
-            span(style="background-color: yellow;") The shifts will take effect starting next week. <br>
+            span#nextWeekWarning The shifts will take effect starting next week. <br>
           table#templateTable
             thead
               tr
@@ -186,12 +176,12 @@ html(lang='en')
                 th Number of <br>exec volunteers
                 th New volunteers can<br>sign up for this shift
             tbody
-          button.btn.btn-primary(type='button', onclick='addRow()') Add a row
+          button#templateAddRow.btn.btn-primary(type='button') Add a row
           span &nbsp;
-          button.btn.btn-primary(type='button', onclick='deleteLastRow()') Remove last row
+          button#templateRemoveRow.btn.btn-primary(type='button') Remove last row
           br
           br
-          button.btn.btn-primary(type='button', onclick='newTemplate()') Save
+          button#templateSaveTemplate.btn.btn-primary(type='button') Save
         
         #newTemplate.modal.fade(role='dialog')
           .modal-dialog
@@ -238,10 +228,10 @@ html(lang='en')
 
       div#footer
         p
-          a(href="https://github.com/davidschlachter/dance-volunteering/")
+          a(href="https://GitHub.com/davidschlachter/dance-volunteering/")
             include ../public/images/GitHub-Mark-32px.png.b64
             span Open-source on GitHub
           span &nbsp; |&nbsp; 
-          a(href="#", onclick="$('#privacyPolicy').modal('show');") Privacy policy
+          a#showPrivacyPolicy(href="#") Privacy policy
           span &nbsp; |&nbsp;
           a(href="http://www.swingottawa.ca/") Ottawa Swing Dance Society

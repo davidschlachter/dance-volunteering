@@ -94,10 +94,15 @@ function getCancelled() {
       return;
     }
     for (i = 0; i < data.length; i++) {
-      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" value="✘" onclick="unCancelWeek(\'' + data[i]._id + '\')" class="btn btn-danger btn-xs" /></td></tr>';
+      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" id="' + data[i]._id + '" value="✘" class="btn btn-danger btn-xs" /></td></tr>';
     }
     tbody += "</tbody>"
     $("#cancelledWeeks").append(tbody);
+    for (i = 0; i < data.length; i++) {
+      $('#' + data[i]._id).on('click', function () {
+        unCancelWeek($(this)[0].id)
+      });
+    }
   });
 };
 
@@ -190,12 +195,20 @@ var getAdmins = function () {
       if (data[i]._id.toString() === user._id.toString()) {
         dangerButton = ' <input type="button" disabled value="✘" class="btn btn-default btn-xs" />';
       } else {
-        dangerButton = ' <input type="button" value="✘" onclick=\'removeAdmin("' + data[i]._id + '", "' + data[i].firstName + ' ' + data[i].lastName + '")\' class="btn btn-danger btn-xs" />';
+        dangerButton = ' <input type="button" id="delAdmin' + data[i]._id + '" value="✘" data-adminName="' + data[i].firstName + ' ' + data[i].lastName + '" class="btn btn-danger btn-xs" />';
       }
       line = '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + dangerButton + '</td><td>' + data[i].email + '</td></tr>';
       lines += line;
     }
     $("#currentAdmins").append(lines);
+    // Add event listeners
+    for (i = 0; i < data.length; i++) {
+      if (data[i]._id.toString() !== user._id.toString()) {
+        $('#delAdmin' + data[i]._id).on('click', function () {
+          removeAdmin($(this)[0].id.replace('delAdmin', ''), $(this)[0].attributes['data-adminName'].value)
+        });
+      }
+    }
 
     // For admins, function to search users to add them as admins
     // (Inside the AJAX callback because it didn't work outside)
@@ -233,11 +246,17 @@ var searchAdmins = function () {
     $("#adminResults").find("tr:gt(0)").remove();
     var i, line, lines = "";
     for (i = 0; i < data.length; i++) {
-      line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button class="btn btn-success" onclick="makeAdmin(\'' + data[i]._id + '\')">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
+      line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button id="addAdmin' + data[i]._id + '" class="btn btn-success">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
       lines += line;
     }
     $("#adminResults").append(lines);
     $("#adminResults").show();
+    // Add event handlers
+    for (i = 0; i < data.length; i++) {
+      $('#addAdmin' + data[i]._id).on('click', function () {
+        makeAdmin($(this)[0].id.replace('addAdmin', ''))
+      });
+    }
   });
   return false;
 };
@@ -375,7 +394,6 @@ function getExtraText() {
     method: "GET",
     cache: false
   }).done(function (data) {
-    console.log('Extra text is', data);
     $("#extraText").html(data.text);
     $("#printingTextArea").val(data.text.replace(/<br>/g, '\n'));
   });
@@ -418,3 +436,21 @@ function setPrintingText() {
     getExtraText();
   });
 };
+
+// Event handlers for the admin buttons
+$("#otherDel1").on("click", showDelButtons);
+$("#otherDel2").on("click", showDelButtons);
+$("#details1").on("click", showDetails);
+$("#details2").on("click", showDetails);
+$("#printing1").on("click", showPrinting);
+$("#printing2").on("click", showPrinting);
+$("#execs1").on("click", showAdmins);
+$("#execs2").on("click", showAdmins);
+$("#cancel1").on("click", showCancel);
+$("#cancel2").on("click", showCancel);
+$("#template1").on("click", showTemplate);
+$("#template2").on("click", showTemplate);
+$("#printingButton").on("click", setPrintingText);
+$("#templateAddRow").on("click", addRow);
+$("#templateRemoveRow").on("click", deleteLastRow);
+$("#templateSaveTemplate").on("click", newTemplate);

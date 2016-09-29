@@ -6,6 +6,7 @@ var Shift = require('../models/shiftModel');
 var Cancelled = require('../models/cancelledModel');
 var moment = require('moment');
 
+
 // Get options from config file
 var config = require('../config');
 
@@ -47,6 +48,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
           res.render('index', {
             title: 'OSDS Volunteering',
             user: userQuery,
+            nonce: res.locals.nonce,
             shifts: shifts
           });
         } else {
@@ -60,6 +62,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
             res.render('index', {
               title: 'OSDS Volunteering',
               user: user,
+              nonce: res.locals.nonce,
               shifts: shifts
             });
           });
@@ -73,6 +76,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
         res.render('index', {
           title: 'OSDS Volunteering',
           user: userQuery,
+          nonce: res.locals.nonce,
           shifts: ""
         });
       } else {
@@ -89,6 +93,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
           res.render('index', {
             title: 'OSDS Volunteering',
             user: user,
+            nonce: res.locals.nonce,
             shifts: cancelled
           });
         });
@@ -264,6 +269,12 @@ router.get('/getExtraText', checkAuth, checkExec, extraText.getextraText);
 
 /* POST to save text for printing */
 router.post('/setExtraText', checkAuth, checkExec, extraText.setextraText);
+
+/* POST CSP Reports */
+router.post('/csp_reports', function (req, res, next) {
+  console.log(req.body);
+  res.json("Successfully sent CSP report");
+});
 
 /* GET one's own user profile */
 //router.get('/getUser', checkAuth, userController.getUser);

@@ -2,6 +2,18 @@ body {
   padding-bottom: 6em;
 }
 
+.description {
+  display: none;
+}
+
+#adminEmail {
+  display: none;
+}
+
+#dropdown {
+  color:white;
+}
+
 a {
   color: #00B7FF
 }
@@ -52,6 +64,10 @@ input[type=checkbox] {
   padding-left: 1em;
 }
 
+#extraText {
+  display: none;
+}
+
 #adminTools {
   display: none;
 
@@ -60,6 +76,16 @@ input[type=checkbox] {
   }
   .btn {
     margin: 2px;
+  }
+  
+  #tooShort {
+    display: none;
+  }
+  #adminResults {
+    display: none;
+  }
+  #nextWeekWarning {
+    background-color: yellow;
   }
 }
 
@@ -71,6 +97,11 @@ input[type=checkbox] {
   font-size:80%;
   text-align: center;
   margin-top: 5em;
+  
+  #gthublogo {
+    width:16px;
+    height:16px;
+  }
 }
 
 .center {
@@ -124,4 +155,12 @@ h2#friday {
     }
   }
 
+}
+
+p#Welcome {
+  display:none;
+  font-size:125%;
+}
+p#secondThoughts {
+  display:none;
 }

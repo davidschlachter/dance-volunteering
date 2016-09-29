@@ -21,6 +21,8 @@ var helmet = require('helmet');
 var Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 var validator = require('validator');
+var sassMiddleware = require('node-sass-middleware');
+var uuid = require('node-uuid');
 
 var routes = require('./routes/index');
 
@@ -51,12 +53,15 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(cookieParser(config.opt.sessionsecret));
-app.use(require('node-sass-middleware')({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
+app.use(sassMiddleware({
+  src: path.join(__dirname, 'public/stylesheets'),
+  dest: path.join(__dirname, 'public/stylesheets'),
+  force: false,
+  response: true,
   outputStyle: 'compressed',
   indentedSyntax: false,
-  sourceMap: true
+  sourceMap: true,
+  prefix: '/stylesheets',
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
@@ -81,6 +86,46 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(helmet({
   hsts: false
+}));
+/* Generate a nonce */
+function genNonce(req, res, next) {
+  console.log("About to generate the nonce, res.locals is", res.locals);
+  if (typeof res !== "undefined" && typeof res.locals !== "undefined") {
+    res.locals.nonce = uuid.v4();
+    console.log("Generated the nonce, res.locals is", res.locals);
+    next();
+  } else {
+    next();
+  }
+}
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    baseUri: ["'self'"],
+    childSrc: ["'none'"],
+    connectSrc: ["'self'"],
+    fontSrc: ["'none'"],
+    formAction: ["'self'"],
+    frameAncestors: ["'none'"],
+    imgSrc: ['data:', '*'],
+    mediaSrc: ["'none'"],
+    objectSrc: ["'none'"],
+    scriptSrc: ["'self'", function (req, res) {
+      if (typeof res !== "undefined" && typeof res.locals !== "undefined") {
+        res.locals.nonce = uuid.v4();
+        return "'nonce-" + res.locals.nonce + "'";
+      } else {
+        return null;
+      }
+    }],
+    styleSrc: ["'self'"],
+    //  sandbox: ['allow-forms', 'allow-scripts'],
+    reportUri: '/csp_reports'
+  },
+  reportOnly: false,
+  setAllHeaders: false,
+  disableAndroid: false,
+  browserSniff: true
 }));
 
 app.use('/', routes);

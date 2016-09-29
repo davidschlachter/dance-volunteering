@@ -42,7 +42,7 @@ $(document).ready(function () {
       $("#sendSchedule").prop('checked', user.sendSchedule);
     }
   } else {
-    $("#dropdown").html('<a class="btn btn-primary" style="color:white;" href="login">Log in</a>');
+    $("#dropdown").html('<a class="btn btn-primary" href="login">Log in</a>');
   }
 
   if (typeof user === "object" && user.isAdmin === true) {
@@ -72,6 +72,13 @@ $(document).ready(function () {
         return true;
       }
     }
+  });
+
+  // Add an event listener for the Privacy Policy
+  $("a#showPrivacyPolicy").click(function (e) {
+    e.preventDefault();
+    $('#privacyPolicy').modal('show');
+    return false;
   });
 });
 
@@ -165,6 +172,8 @@ function displayShifts(data) {
 
   // Set up the volunteering table
   var nSpots, nVol, nExec, colSpan, newUserText;
+  var delIDCounter = 0;
+  var delIDs = [];
   for (i = 0; i < data.length; i++) {
     nVol = data[i].nVol;
     nExec = data[i].nExec;
@@ -181,9 +190,13 @@ function displayShifts(data) {
         userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
         profilePicture = data[i].Vol[h].profilePicture;
         if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
-          deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick="deleteMyShift()" class="btn btn-danger btn-xs" />';
+          deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" />';
+          delIDs.push(['del' + delIDCounter, "deleteMyShift()"]);
+          delIDCounter = delIDCounter + 1;
         } else if (typeof user === 'object' && user.isAdmin === true) {
-          deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+          deleteButton = '<span class="otherDel"><input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Vol[h]._id + '"/></span>';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
         } else {
           deleteButton = ""
         }
@@ -213,9 +226,13 @@ function displayShifts(data) {
     for (h = 0; h < nExec; h++) {
       if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
         if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
-          deleteButton = '<input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" />';
+          deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Exec[h]._id + '" />';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
         } else if (typeof user === 'object' && user.isAdmin === true) {
-          deleteButton = '<span class="otherDel"><input type="button" value="✘" ' + delAction + ' onclick=\'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + '")\' class="btn btn-danger btn-xs" /></span>';
+          deleteButton = '<span class="otherDel"><input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Exec[h]._id + '" /></span>';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
         } else {
           deleteButton = ""
         }
@@ -231,6 +248,19 @@ function displayShifts(data) {
     lines += line;
   }
   $("#shifts").append(lines);
+  console.log(delIDs);
+  // Add the event handlers
+  for (var k = 0; k < delIDs.length; k++) {
+    if (delIDs[k][1] === "deleteMyShift()") {
+      $('#del' + k).on('click', deleteMyShift);
+    } else {
+      $('#del' + k).on('click', function () {
+        deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
+      });
+      //$(this)[0].attributes['data-shift'].value
+      //$(this)[0].attributes['data-user'].value
+    }
+  }
   // Make sure that we actually select the Friday for time zones west of EST
   var thisFriday;
   if (moment(data[0].date).weekday() != 5) {

@@ -20,6 +20,13 @@ $(document).ready(function() {
     $("#secondThoughts").show();
     $("#secondThoughts").html('<br><a href="login" onclick="clearCookies()">Not ' + userName + '?</a>');
   }
+  
+  // Add an event listener for the Privacy Policy
+  $("a#showPrivacyPolicy").click(function (e) {
+    e.preventDefault();
+    $('#privacyPolicy').modal('show');
+    return false;
+  });
 });
 
 
