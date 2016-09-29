@@ -248,7 +248,6 @@ function displayShifts(data) {
     lines += line;
   }
   $("#shifts").append(lines);
-  console.log(delIDs);
   // Add the event handlers
   for (var k = 0; k < delIDs.length; k++) {
     if (delIDs[k][1] === "deleteMyShift()") {
