@@ -87,17 +87,6 @@ app.use(passport.session());
 app.use(helmet({
   hsts: false
 }));
-/* Generate a nonce */
-function genNonce(req, res, next) {
-  console.log("About to generate the nonce, res.locals is", res.locals);
-  if (typeof res !== "undefined" && typeof res.locals !== "undefined") {
-    res.locals.nonce = uuid.v4();
-    console.log("Generated the nonce, res.locals is", res.locals);
-    next();
-  } else {
-    next();
-  }
-}
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
