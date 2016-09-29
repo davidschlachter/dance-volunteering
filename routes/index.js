@@ -5,6 +5,7 @@ var User = require('../models/userModel');
 var Shift = require('../models/shiftModel');
 var Cancelled = require('../models/cancelledModel');
 var moment = require('moment');
+var csrf = require('csurf');
 //var bodyParser = require('body-parser');
 
 // Get options from config file
@@ -14,12 +15,15 @@ var shift = require('../controllers/shift');
 var template = require('../controllers/template');
 var userController = require('../controllers/user');
 var extraText = require('../controllers/extraText');
+var csrfProtection = csrf({
+  cookie: false
+});
 
 var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
 
 /* GET home page. */
 
-router.get('/', shift.checkShifts, function (req, res, next) {
+router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
   // Get the shifts for this week
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
@@ -49,6 +53,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
             title: 'OSDS Volunteering',
             user: userQuery,
             nonce: res.locals.nonce,
+            csrfToken: req.csrfToken(),
             shifts: shifts
           });
         } else {
@@ -63,6 +68,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
               title: 'OSDS Volunteering',
               user: user,
               nonce: res.locals.nonce,
+              csrfToken: req.csrfToken(),
               shifts: shifts
             });
           });
@@ -77,6 +83,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
           title: 'OSDS Volunteering',
           user: userQuery,
           nonce: res.locals.nonce,
+          csrfToken: req.csrfToken(),
           shifts: ""
         });
       } else {
@@ -94,6 +101,7 @@ router.get('/', shift.checkShifts, function (req, res, next) {
             title: 'OSDS Volunteering',
             user: user,
             nonce: res.locals.nonce,
+            csrfToken: req.csrfToken(),
             shifts: cancelled
           });
         });
@@ -116,31 +124,31 @@ router.get('/logout', function (req, res) {
 });
 
 /* POST to volunteer for a shift */
-router.post('/volunteer', checkAuth, shift.volunteer, function (req, res, next) {
+router.post('/volunteer', checkAuth, csrfProtection, shift.volunteer, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
 /* POST to volunteer for an exec shift */
-router.post('/volunteerExec', checkAuth, checkExec, shift.volunteerExec, function (req, res, next) {
+router.post('/volunteerExec', checkAuth, checkExec, csrfProtection, shift.volunteerExec, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
 /* POST to delete user's own shift */
-router.post('/deleteMyShift', checkAuth, shift.deleteMyShift, function (req, res, next) {
+router.post('/deleteMyShift', checkAuth, csrfProtection, shift.deleteMyShift, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
-/* POST to delete exec's own shift */
-router.post('/deleteAnyShift', checkAuth, checkExec, shift.deleteAnyShift, function (req, res, next) {
+/* POST to delete any shift */
+router.post('/deleteAnyShift', checkAuth, checkExec, csrfProtection, shift.deleteAnyShift, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
 /* POST to change email preferences */
-router.post('/emailPrefs', checkAuth, userController.emailPrefs, function (req, res, next) {
+router.post('/emailPrefs', checkAuth, csrfProtection, userController.emailPrefs, function (req, res, next) {
   res.redirect(config.opt.base_url + '/');
 });
 
-/* POST logins to various services */
+/* GET logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
   scope: ['email'],
   successRedirect: config.opt.base_url + '/',
@@ -234,41 +242,41 @@ router.get('/auth/live/callback',
 /* GET the shifts */
 router.get('/getShifts', shift.getShifts);
 
-/* Get volunteer details */
+/* GET volunteer details */
 router.get('/getDetails', checkAuth, checkExec, shift.getDetails);
 
-/* Get list of admins */
+/* GET list of admins */
 router.get('/getAdmins', checkAuth, checkExec, userController.getAdmins);
 
 /* POST to add a user as an admin */
-router.post('/makeAdmin', checkAuth, checkExec, userController.makeAdmin);
+router.post('/makeAdmin', checkAuth, checkExec, csrfProtection, userController.makeAdmin);
 
-/* POST to add a user as an admin */
-router.post('/removeAdmin', checkAuth, checkExec, userController.removeAdmin);
+/* POST to remove a user as an admin */
+router.post('/removeAdmin', checkAuth, checkExec, csrfProtection, userController.removeAdmin);
 
 /* POST to cancel a week */
-router.post('/cancelWeek', checkAuth, checkExec, shift.cancelWeek);
+router.post('/cancelWeek', checkAuth, checkExec, csrfProtection, shift.cancelWeek);
 
 /* POST to uncancel a week */
-router.post('/unCancelWeek', checkAuth, checkExec, shift.unCancelWeek);
+router.post('/unCancelWeek', checkAuth, checkExec, csrfProtection, shift.unCancelWeek);
 
 /* GET to get cancelled weeks */
 router.get('/getCancelled', checkAuth, checkExec, shift.getCancelled);
 
-/* Get users for admin adding */
+/* GET users for admin adding */
 router.get('/searchAdmins', checkAuth, checkExec, userController.searchAdmins);
 
-/* Get the current shift template */
+/* GET the current shift template */
 router.get('/getTemplate', checkAuth, checkExec, template.getTemplate);
 
 /* POST a new set of templates */
-router.post('/newTemplate', checkAuth, checkExec, template.newTemplate);
+router.post('/newTemplate', checkAuth, checkExec, csrfProtection, template.newTemplate);
 
 /* Get extra text for printing */
 router.get('/getExtraText', checkAuth, checkExec, extraText.getextraText);
 
 /* POST to save text for printing */
-router.post('/setExtraText', checkAuth, checkExec, extraText.setextraText);
+router.post('/setExtraText', checkAuth, checkExec, csrfProtection, extraText.setextraText);
 
 /* POST CSP Reports */
 /*var jsonParser = bodyParser.json({

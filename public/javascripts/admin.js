@@ -59,7 +59,8 @@ function cancelWeek(week) {
     $.ajax({
       url: "cancelWeek",
       data: {
-        week: week
+        week: week,
+        _csrf: csrf
       },
       method: "POST"
     }).done(function (data) {
@@ -73,7 +74,8 @@ function unCancelWeek(id) {
     url: "unCancelWeek",
     method: "POST",
     data: {
-      weekID: id
+      weekID: id,
+      _csrf: csrf
     }
   }).done(function (data) {
     getCancelled();
@@ -110,9 +112,11 @@ function getCancelled() {
 function deleteAnyShift(shiftID, volID) {
   $.ajax({
     url: "deleteAnyShift",
+    dataType: 'json',
     data: {
       shiftID: shiftID,
-      volID: volID
+      volID: volID,
+      _csrf: csrf
     },
     method: "POST"
   }).done(function (data) {
@@ -268,7 +272,8 @@ var makeAdmin = function (userid) {
     dataType: "json",
     method: "POST",
     data: {
-      userid: userid
+      userid: userid,
+      _csrf: csrf
     }
   }).done(function (data) {
     $("#adminResults").hide();
@@ -283,7 +288,8 @@ var removeAdmin = function (userid, adminName) {
     dataType: "json",
     method: "POST",
     data: {
-      userid: userid
+      userid: userid,
+      _csrf: csrf
     }
   }).done(function (data) {
     $('#delAdmin .modal-body').html('<p>' + adminName + ' has been removed as an admin and will be notified of the change by email.</p>')
@@ -358,7 +364,8 @@ function addRow() {
 // Save the new templates
 function newTemplate() {
   var templates = {
-      d: []
+      d: [],
+      _csrf: csrf
     },
     check, i, table = $("#templateTable tbody")[0];
   for (i = 0; i < table.rows.length; i++) {
@@ -423,7 +430,8 @@ function showPrinting() {
 // For admins, set the printing text
 function setPrintingText() {
   var extraText = {
-    "extraText": $("#printingTextArea").val()
+    "extraText": $("#printingTextArea").val(),
+    _csrf: csrf
   };
   console.log("Sending:", extraText);
   $.ajax({

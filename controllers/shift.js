@@ -263,8 +263,8 @@ exports.deleteMyShift = function (req, res, next) {
     if (result != null) {
       email.cancelled(req.user._id, result, config.opt.email);
     }
+    res.json("Successfully cancelled the shift");
   });
-  return next();
 };
 
 exports.deleteAnyShift = function (req, res, next) {
@@ -300,6 +300,7 @@ exports.deleteAnyShift = function (req, res, next) {
     }
     if (result != null) {
       email.cancelled(volID, result, config.opt.email);
+      res.json("Successfully cancelled the shift");
     }
     if (result === null) {
       delete query.Vol;
@@ -315,11 +316,11 @@ exports.deleteAnyShift = function (req, res, next) {
         }
         if (result != null) {
           email.cancelled(volID, result, config.opt.email);
+          res.json("Successfully cancelled the shift");
         }
       });
     }
   });
-  return next();
 };
 
 exports.getCancelled = function (req, res, next) {

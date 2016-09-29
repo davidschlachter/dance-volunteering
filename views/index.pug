@@ -12,8 +12,8 @@ html(lang='en')
     script(src="bootstrap/bootstrap.min.js")
     script(nonce=nonce).
       user = !{JSON.stringify(user)};
-    script(nonce=nonce).
       shifts = !{JSON.stringify(shifts)};
+      csrf = !{JSON.stringify(csrfToken)};
     script(src="javascripts/googleanalytics.js")
     script(src="javascripts/pikaday.min.js")
     script(src="javascripts/main.js")
@@ -76,6 +76,7 @@ html(lang='en')
                   br
                   strong Signing up for shifts
                   br
+                  input(type="text", name="_csrf", value=csrfToken, class="csrf")
                   <input type="checkbox" name="sendChangedShift" id="sendChangedShift" /> I change the time of my volunteering shift
                   br
                   <input type="checkbox" name="sendDeletedShift" id="sendDeletedShift" /> I cancel my volunteering shift
