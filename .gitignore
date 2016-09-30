@@ -39,9 +39,6 @@ jspm_packages
 # Config file
 config.js
 
-# Google Analytics
-googleanalytics.js
-
 # PM2 config
 pm2config.json
 
