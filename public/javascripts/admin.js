@@ -3,6 +3,19 @@ $(document).ready(function () {
   $("#adminTools").show();
   $("#adminEmail").show();
   getExtraText();
+
+  // Set up the date picker for cancelling a week
+  var picker = new Pikaday({
+    field: $('#datepicker')[0],
+    minDate: new Date(),
+    disableDayFn: function (day) {
+      if (moment(day).day() === 5) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  });
 });
 
 // For admins, show the buttons to delete other users' shifts after clicking the button for this

@@ -1,6 +1,8 @@
+var shouldWriteStatus = shouldWrite();
+
 $(document).ready(function () {
   // If we had clicked 'Volunteer' and are now coming back from the login page, then volunteer for the shift we had clicked
-  if (typeof user === "object" && getCookie("shiftID") != false) {
+  if (typeof user === "object" && getCookie("shiftID") !== false) {
     var shiftID = getCookie("shiftID");
     document.cookie = "shiftID" + '=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
     var myForm = document.createElement("form");
@@ -22,58 +24,43 @@ $(document).ready(function () {
     document.body.removeChild(myForm);
   }
 
-  // Open the email preferences if we came here from an email link
-  if (window.location.href.indexOf('#emailPrefs') != -1 && typeof user === "object") {
-    $('#emailPrefs').modal('show');
-  }
 
   // Node passes us the user's profile
   // If logged in, autofill the email preferences and show the admin tools if applicable
   // If not logged in, show the login button
   if (typeof user === "object") {
-    if (typeof user === "object") {
-      $("#drop3").html(user.userName + ' <span class="caret"></span>');
-      $("#sendChangedShift").prop('checked', user.sendChangedShift);
-      $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
-      $("#sendNewShift").prop('checked', user.sendNewShift);
-      $("#sendReminder").prop('checked', user.sendReminder);
-      $("#sendThanks").prop('checked', user.sendThanks);
-      $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
-      $("#sendLastCall").prop('checked', user.sendLastCall);
-      $("#sendSchedule").prop('checked', user.sendSchedule);
+    $("#drop3").html(user.userName + ' <span class="caret"></span>');
+    $("#sendChangedShift").prop('checked', user.sendChangedShift);
+    $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
+    $("#sendNewShift").prop('checked', user.sendNewShift);
+    $("#sendReminder").prop('checked', user.sendReminder);
+    $("#sendThanks").prop('checked', user.sendThanks);
+    $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
+    $("#sendLastCall").prop('checked', user.sendLastCall);
+    $("#sendSchedule").prop('checked', user.sendSchedule);
+    // If user is an admin, load admin.js
+    if (user.isAdmin === true) {
+      var head = document.getElementsByTagName("head")[0];
+      var script = document.createElement("script");
+      script.async = true;
+      script.type = "text/javascript";
+      script.src = "javascripts/admin.js";
+      head.appendChild(script);
+    }
+    // Open the email preferences if we came here from an email link
+    if (window.location.href.indexOf('#emailPrefs') !== -1) {
+      $('#emailPrefs').modal('show');
     }
   } else {
     $("#dropdown").html('<a class="btn btn-primary" href="login">Log in</a>');
   }
 
-  if (typeof user === "object" && user.isAdmin === true) {
-    var head = document.getElementsByTagName("head")[0];
-    var script = document.createElement("script");
-    script.async = true;
-    script.type = "text/javascript";
-    script.src = "javascripts/admin.js";
-    head.appendChild(script);
-  }
-
   // Fetch the volunteer shifts
-  if (typeof shifts === "object" && shifts.cancelled != true) {
+  if (typeof shifts === "object" && shifts.cancelled !== true) {
     displayShifts(shifts)
   } else {
     updateShifts();
   }
-
-  // Set up the date picker for cancelling a week
-  var picker = new Pikaday({
-    field: $('#datepicker')[0],
-    minDate: new Date(),
-    disableDayFn: function (day) {
-      if (moment(day).day() === 5) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-  });
 
   // Add an event listener for the Privacy Policy
   $("a#showPrivacyPolicy").click(function (e) {
@@ -83,8 +70,9 @@ $(document).ready(function () {
   });
 });
 
+
 $(window).load(function () {
-  if (shouldWrite() === false && getCookie("noShifts") === false) {
+  if (shouldWriteStatus === false && getCookie("noShifts") === false) {
     var rightNow = moment();
     if (rightNow.day() === 7 && rightNow.hour() < 12) {
       $("#noShiftsMessage").html("Shifts are closed for this week! Volunteering shifts for next Friday open today at 12 PM.");
@@ -165,7 +153,7 @@ function displayShifts(data) {
   $("#volCol").attr('colspan', nCol);
 
   // Are shifts open?
-  var areOpen = shouldWrite(),
+  var areOpen = shouldWriteStatus,
     action;
   if (areOpen) {
     action = 'type="submit"';
@@ -221,7 +209,7 @@ function displayShifts(data) {
     }
     var execClass;
     var action2;
-    if (typeof user === "object" && user.isAdmin === true && shouldWrite()) {
+    if (typeof user === "object" && user.isAdmin === true && shouldWriteStatus) {
       execClass = "btn btn-primary";
       action2 = 'type="submit"';
     } else {
@@ -261,13 +249,11 @@ function displayShifts(data) {
       $('#del' + k).on('click', function () {
         deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
       });
-      //$(this)[0].attributes['data-shift'].value
-      //$(this)[0].attributes['data-user'].value
     }
   }
   // Make sure that we actually select the Friday for time zones west of EST
   var thisFriday;
-  if (moment(data[0].date).weekday() != 5) {
+  if (moment(data[0].date).weekday() !== 5) {
     thisFriday = moment(data[0].date).weekday(5);
   } else {
     thisFriday = moment(data[0].date);
@@ -282,7 +268,7 @@ var weekCancelled = function () {
   $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next week!');
   $("#date").addClass('well-lg');
   $("#date").css('padding', '6em;');
-  if (shouldWrite() == false && moment().day() != 5) {
+  if (shouldWriteStatus == false && moment().day() !== 5) {
     $("#date").html('There was no dance last Friday! Thank you for helping out and see you next week!');
   }
 };
