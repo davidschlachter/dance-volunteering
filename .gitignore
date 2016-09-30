@@ -46,3 +46,6 @@ pm2config.json
 .sass-cache
 style.css
 style.css.map
+
+# Don't track the minifier's cache
+cache/*

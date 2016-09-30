@@ -23,6 +23,7 @@ var entities = new Entities();
 var validator = require('validator');
 var sassMiddleware = require('node-sass-middleware');
 var uuid = require('node-uuid');
+var minify = require('express-minify');
 
 var routes = require('./routes/index');
 
@@ -62,6 +63,9 @@ app.use(sassMiddleware({
   indentedSyntax: false,
   sourceMap: true,
   prefix: '/stylesheets',
+}));
+app.use(minify({
+  cache: path.join(__dirname, 'cache')
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
