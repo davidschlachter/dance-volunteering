@@ -166,7 +166,7 @@ function showDetails() {
     var i, j, line, lines = "";
     for (i = 0; i < data.length; i++) {
       for (j = 0; j < data[i].Vol.length; j++) {
-        line = '<tr><td>' + data[i].time + '</td><td>' + data[i].Vol[j].firstName + ' ' + data[i].Vol[j].lastName + '</td><td>' + data[i].Vol[j].email + '</td></tr>';
+        line = '<tr><td>' + data[i].time.replace(/<br[\/]{0,1}>/, ' ') + '</td><td>' + data[i].Vol[j].firstName + ' ' + data[i].Vol[j].lastName + '</td><td>' + data[i].Vol[j].email + '</td></tr>';
         lines += line;
       }
     }
