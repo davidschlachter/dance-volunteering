@@ -56,7 +56,7 @@ $(document).ready(function () {
   }
 
   // If there are no shifts in the table, the week is probably cancelled...
-  if ($("#shifts").length === 1) {
+  if ($("#shifts tr").length === 0) {
     updateShifts();
   }
 
