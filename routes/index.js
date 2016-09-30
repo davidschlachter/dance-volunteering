@@ -60,7 +60,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
             datewell: shiftsTextVals.datewell,
             delIDs: shiftsTextVals.delIDs
           });
-        // If logged in,
+          // If logged in,
         } else {
           var userQuery = req.user._id;
           User.findOne({
@@ -332,9 +332,9 @@ function checkExec(req, res, next) {
 /* Generate the HTML for the table server-side */
 function shiftsText(data, user, csrf) {
   var shouldWriteStatus = shouldWrite();
-  
+
   var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText, deleteButton;
-  
+
   var lines = "<thead><tr><th>Time</th>";
 
   // Determine the number of columns
@@ -435,7 +435,7 @@ function shiftsText(data, user, csrf) {
     line += "</tbody>"
     lines += line;
   }
-  
+
   // Make sure that we actually select the Friday for time zones west of EST
   var thisFriday;
   if (typeof data === "object" && typeof data[0] === "object") {
@@ -450,15 +450,15 @@ function shiftsText(data, user, csrf) {
     var datewell = "Generating volunteering shifts for this week... Please refresh the page!";
     var friday = "";
   }
-  
-  
+
+
   var values = {};
   values.lines = lines;
   values.datewell = datewell;
   values.friday = friday;
   values.delIDs = delIDs;
   return values;
-  
+
   /*
   $("#shifts").append(lines);
   // Add the event handlers
