@@ -69,7 +69,9 @@ app.use(sassMiddleware({
 app.use(minify({
   cache: path.join(__dirname, 'cache')
 }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')), {
+  maxAge: 7 d
+});
 app.set('trust proxy', 1);
 app.use(session({
   proxy: true,
