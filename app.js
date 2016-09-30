@@ -63,7 +63,7 @@ app.use(sassMiddleware({
   response: true,
   outputStyle: 'compressed',
   indentedSyntax: false,
-  sourceMap: true,
+  sourceMap: false,
   prefix: '/stylesheets',
 }));
 app.use(minify({
