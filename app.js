@@ -24,6 +24,7 @@ var validator = require('validator');
 var sassMiddleware = require('node-sass-middleware');
 var uuid = require('node-uuid');
 var minify = require('express-minify');
+var compression = require('compression')
 
 var routes = require('./routes/index');
 
@@ -54,6 +55,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(cookieParser(config.opt.sessionsecret));
+app.use(compression());
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public/stylesheets'),
   dest: path.join(__dirname, 'public/stylesheets'),

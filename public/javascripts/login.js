@@ -19,6 +19,10 @@ $(document).ready(function() {
     
     $("#secondThoughts").show();
     $("#secondThoughts").html('<br><a href="login" onclick="clearCookies()">Not ' + userName + '?</a>');
+    $("#secondThoughts").click(function (e) {
+      clearCookies();
+      return true;
+    });
   }
   
   // Add an event listener for the Privacy Policy
@@ -27,6 +31,7 @@ $(document).ready(function() {
     $('#privacyPolicy').modal('show');
     return false;
   });
+  
 });
 
 

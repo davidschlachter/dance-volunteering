@@ -394,14 +394,12 @@ function newTemplate() {
       newUsers: check
     });
   }
-  console.log("Sending:", templates);
   $.ajax({
     url: "newTemplate",
     method: "POST",
     dataType: "JSON",
     data: templates
   }).done(function (data) {
-    console.log(data);
     showTemplate();
     $('#newTemplate').modal('show');
   });
@@ -446,7 +444,6 @@ function setPrintingText() {
     "extraText": $("#printingTextArea").val(),
     _csrf: csrf
   };
-  console.log("Sending:", extraText);
   $.ajax({
     url: "setExtraText",
     method: "POST",

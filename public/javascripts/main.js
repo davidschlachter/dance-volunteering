@@ -38,13 +38,13 @@ $(document).ready(function () {
     $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
     $("#sendLastCall").prop('checked', user.sendLastCall);
     $("#sendSchedule").prop('checked', user.sendSchedule);
-    // If user is an admin, load admin.js
+    // If user is an admin, load admin.js and Friday.min.js
     if (user.isAdmin === true) {
+      // Load pikaday, which will load admin.js
       var head = document.getElementsByTagName("head")[0];
       var script = document.createElement("script");
-      script.async = true;
       script.type = "text/javascript";
-      script.src = "javascripts/admin.js";
+      script.src = "javascripts/pikaday+adminloader.min.js";
       head.appendChild(script);
     }
     // Open the email preferences if we came here from an email link
@@ -55,11 +55,14 @@ $(document).ready(function () {
     $("#dropdown").html('<a class="btn btn-primary" href="login">Log in</a>');
   }
 
-  // Fetch the volunteer shifts
-  if (typeof shifts === "object" && shifts.cancelled !== true) {
-    displayShifts(shifts)
-  } else {
+  // If there are no shifts in the table, the week is probably cancelled...
+  if ($("#shifts").length === 1) {
     updateShifts();
+  }
+
+  // Add event listeners for the delete buttons
+  if (typeof delIDs === "object") {
+    delIDEvents(delIDs);
   }
 
   // Add an event listener for the Privacy Policy
@@ -242,15 +245,7 @@ function displayShifts(data) {
   }
   $("#shifts").append(lines);
   // Add the event handlers
-  for (var k = 0; k < delIDs.length; k++) {
-    if (delIDs[k][1] === "deleteMyShift()") {
-      $('#del' + k).on('click', deleteMyShift);
-    } else {
-      $('#del' + k).on('click', function () {
-        deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
-      });
-    }
-  }
+  delIDEvents(delIDs);
   // Make sure that we actually select the Friday for time zones west of EST
   var thisFriday;
   if (moment(data[0].date).weekday() !== 5) {
@@ -261,6 +256,19 @@ function displayShifts(data) {
   $("#date").html("Volunteering shifts for <strong>" + thisFriday.format("dddd MMMM D, YYYY") + '</strong>:');
   $("#friday").text(thisFriday.format("dddd MMMM D, YYYY"));
 };
+
+// Add event handlers for the delete buttons
+function delIDEvents(delIDs) {
+  for (var k = 0; k < delIDs.length; k++) {
+    if (delIDs[k][1] === "deleteMyShift()") {
+      $('#del' + k).on('click', deleteMyShift);
+    } else {
+      $('#del' + k).on('click', function () {
+        deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
+      });
+    }
+  }
+}
 
 
 var weekCancelled = function () {
@@ -275,7 +283,7 @@ var weekCancelled = function () {
 
 
 // Function to get a cookie
-var getCookie = function (name) {
+function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) {

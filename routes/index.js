@@ -26,6 +26,7 @@ var cookieExpiryDate = new Date(Number(new Date()) + 31536000000);
 router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
   // Get the shifts for this week
   var query = shift.getFriday(moment());
+  var csrfToken = req.csrfToken();
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {
       return console.log(err0);
@@ -46,63 +47,66 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
           return console.log(err1);
         }
         // Get the user's profile as well
-        var userQuery;
+        // If not logged in,
         if (typeof req.user === "undefined") {
-          userQuery = "";
+          var shiftsTextVals = shiftsText(shifts, "", csrfToken);
           res.render('index', {
             title: 'OSDS Volunteering',
-            user: userQuery,
+            user: "",
             nonce: res.locals.nonce,
-            csrfToken: req.csrfToken(),
-            shifts: shifts
+            csrfToken: csrfToken,
+            shiftsText: shiftsTextVals.lines,
+            friday: shiftsTextVals.friday,
+            datewell: shiftsTextVals.datewell,
+            delIDs: shiftsTextVals.delIDs
           });
+        // If logged in,
         } else {
-          userQuery = req.user._id;
+          var userQuery = req.user._id;
           User.findOne({
             _id: userQuery
           }, function (err1, user) {
             if (err1) {
               return console.log(err1);
             }
+            var shiftsTextVals = shiftsText(shifts, user, csrfToken);
             res.render('index', {
               title: 'OSDS Volunteering',
               user: user,
               nonce: res.locals.nonce,
-              csrfToken: req.csrfToken(),
-              shifts: shifts
+              csrfToken: csrfToken,
+              shiftsText: shiftsTextVals.lines,
+              friday: shiftsTextVals.friday,
+              datewell: shiftsTextVals.datewell,
+              delIDs: shiftsTextVals.delIDs
             });
           });
         }
       });
       // If the week is cancelled...
     } else {
-      var userQuery;
       if (typeof req.user === "undefined") {
-        userQuery = "";
         res.render('index', {
           title: 'OSDS Volunteering',
-          user: userQuery,
+          user: "",
           nonce: res.locals.nonce,
-          csrfToken: req.csrfToken(),
-          shifts: ""
+          csrfToken: csrfToken,
+          delIDs: ""
         });
       } else {
-        userQuery = req.user._id;
+        var userQuery = req.user._id;
         User.findOne({
           _id: userQuery
         }, function (err1, user) {
           if (err1) {
             return console.log(err1);
           }
-          var cancelled = {
-            "cancelled": true
-          };
           res.render('index', {
             title: 'OSDS Volunteering',
             user: user,
             nonce: res.locals.nonce,
-            csrfToken: req.csrfToken(),
-            shifts: cancelled
+            csrfToken: csrfToken,
+            delIDs: ""
           });
         });
       }
@@ -323,6 +327,172 @@ function checkExec(req, res, next) {
       }
     }
   });
+}
+
+/* Generate the HTML for the table server-side */
+function shiftsText(data, user, csrf) {
+  var shouldWriteStatus = shouldWrite();
+  
+  var g, h, i, line, lines, colSpanText, userName, profilePicture, tableText, deleteButton;
+  
+  var lines = "<thead><tr><th>Time</th>";
+
+  // Determine the number of columns
+  var nCol = 0;
+  for (i = 0; i < data.length; i++) {
+    if (data[i].nVol + data[i].nExec > nCol) {
+      nCol = data[i].nVol + data[i].nExec;
+    }
+  }
+  lines += "<th id='volCol' colspan='" + nCol + "'>Volunteer(s)</th></tr></thead><tbody>";
+
+  // Are shifts open?
+  var areOpen = shouldWriteStatus,
+    action;
+  if (areOpen) {
+    action = 'type="submit"';
+    delAction = ''
+  } else {
+    action = 'disabled type="button"';
+    delAction = 'disabled'
+  }
+
+  // Set up the volunteering table
+  var nSpots, nVol, nExec, colSpan, newUserText;
+  var delIDCounter = 0;
+  var delIDs = [];
+  for (i = 0; i < data.length; i++) {
+    nVol = data[i].nVol;
+    nExec = data[i].nExec;
+    nSpots = nVol + nExec;
+    colSpan = nCol - nSpots;
+    line = '<tr><td>' + data[i].time + '</td>';
+    for (h = 0; h < nVol; h++) {
+      if (h === 0 && colSpan !== 0) {
+        colSpanText = ' colspan = "' + (colSpan + 1) + '"';
+      } else {
+        colSpanText = "";
+      }
+      if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
+        userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
+        profilePicture = data[i].Vol[h].profilePicture;
+        if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
+          deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" />';
+          delIDs.push(['del' + delIDCounter, "deleteMyShift()"]);
+          delIDCounter = delIDCounter + 1;
+        } else if (typeof user === 'object' && user.isAdmin === true) {
+          deleteButton = '<span class="otherDel"><input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Vol[h]._id + '"/></span>';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Vol[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
+        } else {
+          deleteButton = ""
+        }
+        tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
+      } else {
+        deleteButton = "";
+        if (areOpen && typeof user === 'object' && user.isNewUser === false) {
+          action = 'type="submit"';
+        } else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === true) {
+          action = 'type="submit"';
+        } else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === false) {
+          action = 'disabled type="button"';
+        }
+        tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
+      }
+      line += '<td' + colSpanText + '>' + tableText + '</td>';
+    }
+    var execClass;
+    var action2;
+    if (typeof user === "object" && user.isAdmin === true && shouldWriteStatus) {
+      execClass = "btn btn-primary";
+      action2 = 'type="submit"';
+    } else {
+      execClass = "btn btn-default";
+      action2 = 'disabled type="button"';
+    }
+    for (h = 0; h < nExec; h++) {
+      if (data[i].Exec[h] !== null && typeof data[i].Exec[h] === 'object') {
+        if (typeof user === 'object' && user._id.toString() === data[i].Exec[h]._id.toString()) {
+          deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Exec[h]._id + '" />';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
+        } else if (typeof user === 'object' && user.isAdmin === true) {
+          deleteButton = '<span class="otherDel"><input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" data-shift="' + data[i]._id + '" data-user="' + data[i].Exec[h]._id + '" /></span>';
+          delIDs.push(['del' + delIDCounter, 'deleteAnyShift("' + data[i]._id + '", "' + data[i].Exec[h]._id + ')']);
+          delIDCounter = delIDCounter + 1;
+        } else {
+          deleteButton = ""
+        }
+        userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
+        profilePicture = data[i].Exec[h].profilePicture;
+        tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
+      } else {
+        tableText = '<form action="volunteerExec" method="post"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
+      }
+      line += '<td>' + tableText + '</td>';
+    }
+    line += "</tr>"
+    line += "</tbody>"
+    lines += line;
+  }
+  
+  // Make sure that we actually select the Friday for time zones west of EST
+  var thisFriday;
+  if (typeof data === "object" && typeof data[0] === "object") {
+    if (moment(data[0].date).weekday() !== 5) {
+      thisFriday = moment(data[0].date).weekday(5);
+    } else {
+      thisFriday = moment(data[0].date);
+    }
+    var datewell = "Volunteering shifts for <strong>" + thisFriday.format("dddd MMMM D, YYYY") + '</strong>:';
+    var friday = thisFriday.format("dddd MMMM D, YYYY");
+  } else {
+    var datewell = "Generating volunteering shifts for this week... Please refresh the page!";
+    var friday = "";
+  }
+  
+  
+  var values = {};
+  values.lines = lines;
+  values.datewell = datewell;
+  values.friday = friday;
+  values.delIDs = delIDs;
+  return values;
+  
+  /*
+  $("#shifts").append(lines);
+  // Add the event handlers
+  for (var k = 0; k < delIDs.length; k++) {
+    if (delIDs[k][1] === "deleteMyShift()") {
+      $('#del' + k).on('click', deleteMyShift);
+    } else {
+      $('#del' + k).on('click', function () {
+        deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
+      });
+    }
+  }
+  */
+};
+
+
+function shouldWrite() {
+  var now = moment();
+  if (now.day() < 5 && now.day() > 0) { // Monday - Thursday: YES
+    return true;
+  } else if (now.day() === 5 && now.hour() < 17) { // Friday before 5 PM: YES
+    return true;
+  } else if (now.day() === 5 && now.hour() >= 17) { // Friday after 5 PM: NO
+    return false;
+  } else if (now.day() === 0 && now.hour() >= 12) { // Sunday after 12 PM: YES
+    return true;
+  } else if (now.day() === 0 && now.hour() < 12) { // Sunday before 12 PM: NO
+    return false;
+  } else if (now.day() === 6) { // Saturday: NO
+    return false;
+  } else {
+    console.log("Could not interpret time in shouldWrite. Had now.day() = ", now.day(), "and now.hour() = ", now.hour());
+    return false;
+  }
 }
 
 module.exports = router;

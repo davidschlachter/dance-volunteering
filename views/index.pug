@@ -6,20 +6,11 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     title= title
     meta(name='description', content="Volunteer with the Ottawa Swing Dance Society! The Ottawa Swing Dance Society's success comes from the energy and dedication of our exceptional  team of volunteers.  In exchange for you spending time helping us out with that dance you will receive free admission.")
-    // First, all the scripts
-    script(src="javascripts/jquery224.min.js")
-    script(src="javascripts/moment.min.js")
-    script(src="bootstrap/bootstrap.min.js")
-    script(nonce=nonce).
-      user = !{JSON.stringify(user)};
-      shifts = !{JSON.stringify(shifts)};
-      csrf = !{JSON.stringify(csrfToken)};
-    script(src="javascripts/pikaday.min.js")
-    script(src="javascripts/main.js")
     // Then the stylesheets
-    link(rel='stylesheet', href="bootstrap/bootstrap.min.css")
-    link(rel='stylesheet', href="bootstrap/bootstrap-theme.min.css")
-    link(rel='stylesheet', href="stylesheets/pikaday.css")
+    link(rel='stylesheet', href="bootstrap/bootstrap+theme.min.css")
+    if typeof user === "object"
+      if user.isAdmin === true
+        link(rel='stylesheet', href="stylesheets/pikaday.css")
     link(rel='stylesheet', href="stylesheets/style.css")
   body
     div.description
@@ -40,15 +31,10 @@ html(lang='en')
               a(href='logout') Log out
               
       h1= title
-      h2#friday
+      h2#friday= friday
       p#user
-      p#date.well
-      table(id='shifts')
-        thead
-          tr
-            th Time
-            th#volCol Volunteer(s)
-        tbody
+      p#date.well!= datewell
+      table#shifts!= shiftsText
       
       #noShifts.modal.fade(role='dialog')
         .modal-dialog
@@ -114,7 +100,7 @@ html(lang='en')
           input#printing1.btn.btn-default.btnShow(value="Change printing text")
           input#printing2.btn.btn-primary.btnHide(value="Hide printing text")
           input#execs1.btn.btn-default.btnShow(value="Manage admins")
-          input#execs2.btn.btn-primary.btnHide(value="Hide admin management")
+          input#execs2.btn.btn-primary.btnHide(value="Hide admins")
           input#cancel1.btn.btn-default.btnShow(value="Cancel a week")
           input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks")
           input#template1.btn.btn-default.btnShow(value="Modify template")
@@ -245,3 +231,11 @@ html(lang='en')
           a#showPrivacyPolicy(href="#") Privacy policy
           span &nbsp; |&nbsp;
           a(href="http://www.swingottawa.ca/") Ottawa Swing Dance Society
+    script(src="javascripts/jquery224.min.js")
+    script(src="javascripts/moment.min.js")
+    script(src="bootstrap/bootstrap.min.js")
+    script(nonce=nonce).
+      user = !{JSON.stringify(user)};
+      csrf = !{JSON.stringify(csrfToken)};
+      delIDs = !{JSON.stringify(delIDs)};
+    script(src="javascripts/main.js", async="async")
