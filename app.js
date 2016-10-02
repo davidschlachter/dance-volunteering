@@ -362,12 +362,20 @@ passport.use(new LiveStrategy({
 //
 
 // Sunday 12 PM -- create shifts, notify users
-cron.schedule('15 0 12 * * 7', function () {
+cron.schedule('1 0 12 * * 7', function () {
   console.log('Updating isNewUser');
   userController.updateNewUsers();
   console.log("Running checkShifts from cron");
   shiftController.checkShifts();
+});
+cron.schedule('15 0 12 * * 7', function () {
   console.log('Sending out volunteering call');
+  email.shiftsAvailable(config.opt.email);
+});
+
+// TEST volunteering call
+cron.schedule('58 19 * * 7', function () {
+  console.log("Sending call");
   email.shiftsAvailable(config.opt.email);
 });
 
