@@ -373,12 +373,6 @@ cron.schedule('15 0 12 * * 7', function () {
   email.shiftsAvailable(config.opt.email);
 });
 
-// TEST volunteering call
-cron.schedule('58 19 * * 7', function () {
-  console.log("Sending call");
-  email.shiftsAvailable(config.opt.email);
-});
-
 // Thursday 6 PM -- send reminders to volunteers with a shift
 cron.schedule('0 18 * * 4', function () {
   console.log('Sending out reminders');

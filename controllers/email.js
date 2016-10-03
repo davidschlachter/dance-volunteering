@@ -12,7 +12,6 @@ var entities = new Entities();
 var config = require('../config');
 
 exports.welcome = function (user, email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
@@ -21,23 +20,7 @@ exports.welcome = function (user, email) {
     html: "<p>Welcome to OSDS Volunteering!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
   };
 
-  function faultTolerantSend(cb) {
-    var operation = retry.operation();
-
-    operation.attempt(function (currentAttempt) {
-      transporter.sendMail(mailOpts, function (err, info) {
-        if (operation.retry(err)) {
-          console.log("Error for " + info.envelope.to[0] + ": ", err);
-          return;
-        }
-
-        cb(err ? operation.mainError() : null, info.response);
-        console.log('Welcome message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-      });
-    });
-  }
-
-  faultTolerantSend(function (err, info) {});
+  faultTolerantSend(function (err, info) {}, email, mailOpts, "Welcome message ");
 };
 
 exports.cancelled = function (userid, shift, email) {
@@ -45,7 +28,6 @@ exports.cancelled = function (userid, shift, email) {
     _id: userid
   }, function (err, user) {
     if (user.sendDeletedShift != false) {
-      var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
       var date = moment(query.date).format("MMMM D, YYYY");
       var mailOpts = {
         from: '"' + email.name + '" <' + email.user + '>',
@@ -55,23 +37,7 @@ exports.cancelled = function (userid, shift, email) {
         html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
       };
 
-      function faultTolerantSend(cb) {
-        var operation = retry.operation();
-
-        operation.attempt(function (currentAttempt) {
-          transporter.sendMail(mailOpts, function (err, info) {
-            if (operation.retry(err)) {
-              console.log("Error for " + info.envelope.to[0] + ": ", err);
-              return;
-            }
-
-            cb(err ? operation.mainError() : null, info.response);
-            console.log('Cancelled shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-          });
-        });
-      }
-
-      faultTolerantSend(function (err, info) {});
+      faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
 
 
     }
@@ -86,7 +52,6 @@ exports.newShift = function (userid, uQuery, email) {
       _id: userid
     }, function (err, user) {
       if (user.sendNewShift != false) {
-        var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
@@ -97,23 +62,7 @@ exports.newShift = function (userid, uQuery, email) {
         };
 
 
-        function faultTolerantSend(cb) {
-          var operation = retry.operation();
-
-          operation.attempt(function (currentAttempt) {
-            transporter.sendMail(mailOpts, function (err, info) {
-              if (operation.retry(err)) {
-                console.log("Error for " + info.envelope.to[0] + ": ", err);
-                return;
-              }
-
-              cb(err ? operation.mainError() : null, info.response);
-              console.log('New shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-            });
-          });
-        }
-
-        faultTolerantSend(function (err, info) {});
+        faultTolerantSend(function (err, info) {}, email, mailOpts, "New shift message ");
 
       }
     });
@@ -128,7 +77,6 @@ exports.newExecShift = function (userid, uQuery, email) {
       _id: userid
     }, function (err, user) {
       if (user.sendNewShift != false) {
-        var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
@@ -139,23 +87,7 @@ exports.newExecShift = function (userid, uQuery, email) {
         };
 
 
-        function faultTolerantSend(cb) {
-          var operation = retry.operation();
-
-          operation.attempt(function (currentAttempt) {
-            transporter.sendMail(mailOpts, function (err, info) {
-              if (operation.retry(err)) {
-                console.log("Error for " + info.envelope.to[0] + ": ", err);
-                return;
-              }
-
-              cb(err ? operation.mainError() : null, info.response);
-              console.log('New exec shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-            });
-          });
-        }
-
-        faultTolerantSend(function (err, info) {});
+        faultTolerantSend(function (err, info) {}, email, mailOpts, "New exec shift message ");
       }
     });
   });
@@ -169,7 +101,6 @@ exports.switching = function (userid, oldShift, uQuery, email) {
       _id: userid
     }, function (err, user) {
       if (user.sendChangedShift != false) {
-        var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
         var date = moment(shift.date).format("MMMM D, YYYY");
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
@@ -179,23 +110,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
         };
 
-        function faultTolerantSend(cb) {
-          var operation = retry.operation();
-
-          operation.attempt(function (currentAttempt) {
-            transporter.sendMail(mailOpts, function (err, info) {
-              if (operation.retry(err)) {
-                console.log("Error for " + info.envelope.to[0] + ": ", err);
-                return;
-              }
-
-              cb(err ? operation.mainError() : null, info.response);
-              console.log('Changed shift message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-            });
-          });
-        }
-
-        faultTolerantSend(function (err, info) {});
+        faultTolerantSend(function (err, info) {}, email, mailOpts, "Changed shift message ");
       }
     });
   });
@@ -204,7 +119,6 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 
 
 exports.mailOut = function (email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
   var shifts = Shift.find(query, null, {
     sort: {
@@ -254,23 +168,7 @@ exports.mailOut = function (email) {
             html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/\">the volunteering website</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
 
-          function faultTolerantSend(cb) {
-            var operation = retry.operation();
-
-            operation.attempt(function (currentAttempt) {
-              transporter.sendMail(mailOpts, function (err, info) {
-                if (operation.retry(err)) {
-                  console.log("Error for " + info.envelope.to[0] + ": ", err);
-                  return;
-                }
-
-                cb(err ? operation.mainError() : null, info.response);
-                console.log('Mail out sent to ' + info.envelope.to[0] + ': ' + info.response);
-              });
-            });
-          }
-
-          faultTolerantSend(function (err, info) {});
+          faultTolerantSend(function (err, info) {}, email, mailOpts, "Mail out message ");
 
 
         }
@@ -280,7 +178,6 @@ exports.mailOut = function (email) {
 };
 
 exports.shiftsAvailable = function (email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {
@@ -301,25 +198,9 @@ exports.shiftsAvailable = function (email) {
             html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
           };
 
-
-          function faultTolerantSend(cb) {
-            var operation = retry.operation();
-
-            operation.attempt(function (currentAttempt) {
-              transporter.sendMail(mailOpts, function (err, info) {
-                if (operation.retry(err)) {
-                  console.log("Error for " + info.envelope.to[0] + ": ", err);
-                  return;
-                }
-
-                cb(err ? operation.mainError() : null, info.response);
-                console.log('Shifts available message sent to ' + info.envelope.to[0] + ': ' + info.response);
-              });
-            });
-          }
-
-          faultTolerantSend(function (err, info) {});
-
+          faultTolerantSend(function (err, info) {
+            console.log("cb returned err", err, "info", info)
+          }, email, mailOpts, "Shifts available message ");
 
         }
       });
@@ -340,24 +221,7 @@ exports.shiftsAvailable = function (email) {
               html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next week! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
-
-            function faultTolerantSend(cb) {
-              var operation = retry.operation();
-
-              operation.attempt(function (currentAttempt) {
-                transporter.sendMail(mailOpts, function (err, info) {
-                  if (operation.retry(err)) {
-                    console.log("Error for " + info.envelope.to[0] + ": ", err);
-                    return;
-                  }
-
-                  cb(err ? operation.mainError() : null, info.response);
-                  console.log('No dance message sent to ' + info.envelope.to[0] + ': ' + info.response);
-                });
-              });
-            }
-
-            faultTolerantSend(function (err, info) {});
+            faultTolerantSend(function (err, info) {}, email, mailOpts, "No dance message ");
 
 
           }
@@ -370,7 +234,6 @@ exports.shiftsAvailable = function (email) {
 // Send every volunteer a reminder about their shift on Thusday at 6 PM
 exports.reminderVol = function (email) {
   var query = shift.getFriday(moment());
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {
       return console.log(err0);
@@ -399,23 +262,7 @@ exports.reminderVol = function (email) {
 
 
 
-                function faultTolerantSend(cb) {
-                  var operation = retry.operation();
-
-                  operation.attempt(function (currentAttempt) {
-                    transporter.sendMail(mailOpts, function (err, info) {
-                      if (operation.retry(err)) {
-                        console.log("Error for " + info.envelope.to[0] + ": ", err);
-                        return;
-                      }
-
-                      cb(err ? operation.mainError() : null, info.response);
-                      console.log('Reminder message sent to ' + info.envelope.to[0] + ': ' + info.response);
-                    });
-                  });
-                }
-
-                faultTolerantSend(function (err, info) {});
+                faultTolerantSend(function (err, info) {}, email, mailOpts, "Reminder message ");
 
               }
             }
@@ -435,7 +282,6 @@ exports.reminderVol = function (email) {
 // Send each volunteer a thank you note on Saturday morning
 exports.thankVol = function (email) {
   var query = shift.getFriday(moment());
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   Shift.find(query).populate({
     path: 'Vol',
     select: 'userName firstName lastName email sendReminder'
@@ -461,23 +307,7 @@ exports.thankVol = function (email) {
             };
 
 
-            function faultTolerantSend(cb) {
-              var operation = retry.operation();
-
-              operation.attempt(function (currentAttempt) {
-                transporter.sendMail(mailOpts, function (err, info) {
-                  if (operation.retry(err)) {
-                    console.log("Error for " + info.envelope.to[0] + ": ", err);
-                    return;
-                  }
-
-                  cb(err ? operation.mainError() : null, info.response);
-                  console.log('Thank you message sent to ' + info.envelope.to[0] + ': ' + info.response);
-                });
-              });
-            }
-
-            faultTolerantSend(function (err, info) {});
+            faultTolerantSend(function (err, info) {}, email, mailOpts, "Thank you message ");
 
 
           }
@@ -490,7 +320,6 @@ exports.thankVol = function (email) {
 
 
 exports.newAdmin = function (user, email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
 
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
@@ -501,28 +330,11 @@ exports.newAdmin = function (user, email) {
   };
 
 
-  function faultTolerantSend(cb) {
-    var operation = retry.operation();
-
-    operation.attempt(function (currentAttempt) {
-      transporter.sendMail(mailOpts, function (err, info) {
-        if (operation.retry(err)) {
-          console.log("Error for " + info.envelope.to[0] + ": ", err);
-          return;
-        }
-
-        cb(err ? operation.mainError() : null, info.response);
-        console.log('New admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-      });
-    });
-  }
-
-  faultTolerantSend(function (err, info) {});
+  faultTolerantSend(function (err, info) {}, email, mailOpts, "New admin message ");
 
 };
 
 exports.removedAdmin = function (user, email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
 
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
@@ -533,29 +345,12 @@ exports.removedAdmin = function (user, email) {
   };
 
 
-  function faultTolerantSend(cb) {
-    var operation = retry.operation();
-
-    operation.attempt(function (currentAttempt) {
-      transporter.sendMail(mailOpts, function (err, info) {
-        if (operation.retry(err)) {
-          console.log("Error for " + info.envelope.to[0] + ": ", err);
-          return;
-        }
-
-        cb(err ? operation.mainError() : null, info.response);
-        console.log('Removed admin message sent to ' + user.userName + ', ' + user.email + ': ' + info.response);
-      });
-    });
-  }
-
-  faultTolerantSend(function (err, info) {});
+  faultTolerantSend(function (err, info) {}, email, mailOpts, "Removed admin message ");
 
 };
 
 // Send a 'last-call' email if any shifts are available on Friday mid-day
 exports.lastCall = function (email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   var query = shift.getFriday(moment());
   Cancelled.findOne(query, function (err0, results0) {
     if (err0) {
@@ -595,23 +390,7 @@ exports.lastCall = function (email) {
             };
 
 
-            function faultTolerantSend(cb) {
-              var operation = retry.operation();
-
-              operation.attempt(function (currentAttempt) {
-                transporter.sendMail(mailOpts, function (err, info) {
-                  if (operation.retry(err)) {
-                    console.log("Error for " + info.envelope.to[0] + ": ", err);
-                    return;
-                  }
-
-                  cb(err ? operation.mainError() : null, info.response);
-                  console.log('Last call sent to ' + info.envelope.to[0] + ': ' + info.response);
-                });
-              });
-            }
-
-            faultTolerantSend(function (err, info) {});
+            faultTolerantSend(function (err, info) {}, email, mailOpts, "Last call message ");
 
           }
         });
@@ -627,7 +406,6 @@ exports.lastCall = function (email) {
 
 
 exports.newTemplate = function (email) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
   Template.findOne({}, null, {
     sort: {
       version: -1
@@ -678,23 +456,7 @@ exports.newTemplate = function (email) {
           };
 
 
-          function faultTolerantSend(cb) {
-            var operation = retry.operation();
-
-            operation.attempt(function (currentAttempt) {
-              transporter.sendMail(mailOpts, function (err, info) {
-                if (operation.retry(err)) {
-                  console.log("Error for " + info.envelope.to[0] + ": ", err);
-                  return;
-                }
-
-                cb(err ? operation.mainError() : null, info.response);
-                console.log('New template sent to ' + info.envelope.to[0] + ': ' + info.response);
-              });
-            });
-          }
-
-          faultTolerantSend(function (err, info) {});
+          faultTolerantSend(function (err, info) {}, email, mailOpts, "New template message ");
 
 
         }
@@ -705,3 +467,26 @@ exports.newTemplate = function (email) {
   });
 
 };
+
+// Function to send messages, and retry on errors
+function faultTolerantSend(cb, email, mailOpts, messageDescription) {
+  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
+
+  var operation = retry.operation({
+    retries: 10,
+    minTimeout: 5000,
+    randomize: true
+  });
+
+  operation.attempt(function (currentAttempt) {
+    transporter.sendMail(mailOpts, function (err, info) {
+      if (operation.retry(err)) {
+        console.log("Error for:", mailOpts.to, err);
+        return;
+      }
+
+      cb(err ? operation.mainError() : null, info.response);
+      console.log(messageDescription + 'sent to ' + info.envelope.to[0] + ': ' + info.response);
+    });
+  });
+}
