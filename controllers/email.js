@@ -260,7 +260,7 @@ exports.mailOut = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log("Error for " + user.email + ": ", err);
+                  console.log("Error for " + results[i].email + ": ", err);
                   return;
                 }
 
@@ -308,7 +308,7 @@ exports.shiftsAvailable = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log("Error for " + user.email + ": ", err);
+                  console.log("Error for " + results[i].email + ": ", err);
                   return;
                 }
 
@@ -347,7 +347,7 @@ exports.shiftsAvailable = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log("Error for " + user.email + ": ", err);
+                    console.log("Error for " + users[i].email + ": ", err);
                     return;
                   }
 
@@ -405,7 +405,7 @@ exports.reminderVol = function (email) {
                   operation.attempt(function (currentAttempt) {
                     transporter.sendMail(mailOpts, function (err, info) {
                       if (operation.retry(err)) {
-                        console.log("Error for " + user.email + ": ", err);
+                        console.log("Error for " + shifts[i].Vol[j].email + ": ", err);
                         return;
                       }
 
@@ -467,7 +467,7 @@ exports.thankVol = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log("Error for " + user.email + ": ", err);
+                    console.log("Error for " + shifts[i].Vol[j].email + ": ", err);
                     return;
                   }
 
@@ -601,7 +601,7 @@ exports.lastCall = function (email) {
               operation.attempt(function (currentAttempt) {
                 transporter.sendMail(mailOpts, function (err, info) {
                   if (operation.retry(err)) {
-                    console.log("Error for " + user.email + ": ", err);
+                    console.log("Error for " + results[i].email + ": ", err);
                     return;
                   }
 
@@ -684,7 +684,7 @@ exports.newTemplate = function (email) {
             operation.attempt(function (currentAttempt) {
               transporter.sendMail(mailOpts, function (err, info) {
                 if (operation.retry(err)) {
-                  console.log("Error for " + user.email + ": ", err);
+                  console.log("Error for " + results[i].email + ": ", err);
                   return;
                 }
 
