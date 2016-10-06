@@ -4,6 +4,9 @@ var base_url = '/dance-volunteering';
 var full_url = 'https://schlachter.ca' + base_url;
 var full_path = '/var/www/schl/dance-volunteering';
 
+var crypto = require('crypto');
+var linkSecret = crypto.randomBytes(64).toString('hex');
+
 var opt = {
   db: 'mongodb://127.0.0.1:27017/osdsvol',
   mongoose: {
@@ -16,6 +19,7 @@ var opt = {
   base_url: base_url,
   full_path: full_path,
   full_url: full_url,
+  linkSecret: linkSecret,
   // For passport-facebook
   facebook: {
     clientID: 'fb_clientid',
