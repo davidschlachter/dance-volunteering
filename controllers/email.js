@@ -362,31 +362,41 @@ exports.lastCall = function (email) {
         sort: {
           index: 1
         }
-      }).exec(function (err, results) {
+      }).exec(function (err, results1) {
         if (err) {
           return console.log(err);
         }
 
         var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
-        for (i = 0; i < results.length; i++) {
-          if (results[i].Vol.length < results[i].nVol) {
-            line = '<tr><td>' + results[i].time + '</td></tr>';
+        for (i = 0; i < results1.length; i++) {
+          if (results1[i].Vol.length < results1[i].nVol) {
+            line = '<tr><td>' + results1[i].time + '</td></tr>';
             lines += line;
           }
         }
         lines += "</tbody></table>";
+        lines = lines.replace(/<br>/g, ' ');
 
         User.find({
           sendLastCall: true
-        }, function (err, results) {
-          var i, mailOpts;
-          for (i = 0; i < results.length; i++) {
+        }, function (err, results2) {
+          var i, j, k, l, mailOpts;
+          for (j = 0; j < results2.length; j++) {
+            for (k = 0; k < results1.length; k++) {
+              for (l = 0; l < results1[k].Vol.length; l++) {
+                if (results1[k] && results1[k].Vol && results1[k].Vol.length > 0 && results2[j] && results2[j]._id && results2[j]._id.toString().indexOf(results1[k].Vol[l]) === 0) {
+                  results2.splice(j, 1);
+                }
+              }
+            }
+          }
+          for (i = 0; i < results2.length; i++) {
             mailOpts = {
               from: '"' + email.name + '" <' + email.user + '>',
-              to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+              to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
               subject: "Last call: volunteering shifts still available",
-              text: "Hi " + results[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + results[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+              text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
+              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
 

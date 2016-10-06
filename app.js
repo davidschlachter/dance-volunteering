@@ -379,7 +379,7 @@ cron.schedule('0 18 * * 4', function () {
   email.reminderVol(config.opt.email);
 });
 
-// Friday 7 AM -- send last call if any shifts are still available
+// Friday 9 AM -- send last call if any shifts are still available
 cron.schedule('0 9 * * 5', function () {
   console.log('Sending out last call');
   email.lastCall(config.opt.email);
