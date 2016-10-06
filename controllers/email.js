@@ -8,6 +8,9 @@ var Cancelled = require('../models/cancelledModel');
 var retry = require('retry');
 var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
+var crypto = require('crypto');
+
+
 
 var config = require('../config');
 
@@ -29,12 +32,13 @@ exports.cancelled = function (userid, shift, email) {
   }, function (err, user) {
     if (user.sendDeletedShift != false) {
       var date = moment(query.date).format("MMMM D, YYYY");
+      var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
       var mailOpts = {
         from: '"' + email.name + '" <' + email.user + '>',
         to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p> <p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
       };
 
       faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
@@ -53,12 +57,13 @@ exports.newShift = function (userid, uQuery, email) {
     }, function (err, user) {
       if (user.sendNewShift != false) {
         var date = moment(shift.date).format("MMMM D, YYYY");
+        var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
           to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
         };
 
 
@@ -78,12 +83,13 @@ exports.newExecShift = function (userid, uQuery, email) {
     }, function (err, user) {
       if (user.sendNewShift != false) {
         var date = moment(shift.date).format("MMMM D, YYYY");
+        var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
           to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
         };
 
 
@@ -102,12 +108,13 @@ exports.switching = function (userid, oldShift, uQuery, email) {
     }, function (err, user) {
       if (user.sendChangedShift != false) {
         var date = moment(shift.date).format("MMMM D, YYYY");
+        var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
           to: '"' + entities.encode(entities.decode(user.userName)).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendChangedShift&id=" + user.id + "\">Turn off changed shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
         };
 
         faultTolerantSend(function (err, info) {}, email, mailOpts, "Changed shift message ");
@@ -158,14 +165,15 @@ exports.mailOut = function (email) {
         isAdmin: true,
         sendSchedule: true
       }, function (err, results) {
-        var i, mailOpts;
+        var i, mailOpts, link;
         for (i = 0; i < results.length; i++) {
+          link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
           mailOpts = {
             from: '"' + email.name + '" <' + email.user + '>',
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts for this week",
             text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines.replace(/<\/td><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, ' ').replace(/<\/td><\/tr>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '').replace(/<tr><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, '').replace(/<br>/g, ' ').replace('</tbody></table>', '').replace('<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>', '\n') + "\nYou can print the full schedule on the volunteering website. \n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/\">the volunteering website</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+            html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
           };
 
           faultTolerantSend(function (err, info) {}, email, mailOpts, "Mail out message ");
@@ -188,14 +196,15 @@ exports.shiftsAvailable = function (email) {
       User.find({
         sendVolunteeringCall: true
       }, function (err, results) {
-        var i, mailOpts;
+        var i, mailOpts, link;
         for (i = 0; i < results.length; i++) {
+          link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
           mailOpts = {
             from: '"' + email.name + '" <' + email.user + '>',
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts open for this Friday",
             text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit " + config.opt.full_url + "/\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendVolunteeringCall&id=" + results[i].id + "\">Turn off weekly volunteering call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
           };
 
           faultTolerantSend(function (err, info) {
@@ -209,7 +218,7 @@ exports.shiftsAvailable = function (email) {
       User.find({
         sendVolunteeringCall: true
       }, function (err, users) {
-        var i, mailOpts;
+        var i, mailOpts, link;
         if (users) {
           for (i = 0; i < users.length; i++) {
             console.log("We have:", users[i].userName.replace(/"/g, ''), users[i].email, users[i].firstName, users[i].userName);
@@ -247,17 +256,18 @@ exports.reminderVol = function (email) {
           return console.log(err);
         }
         var date = moment(shifts[0].date).format("MMMM D, YYYY");
-        var i, j, mailOpts;
+        var i, j, mailOpts, link;
         for (i = 0; i < shifts.length; i++) {
           if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
             for (j = 0; j < shifts[i].Vol.length; j++) {
               if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
+                link = crypto.createHmac('sha1', config.opt.linkSecret).update(shifts[i].Vol[j].id).digest('hex');
                 mailOpts = {
                   from: '"' + email.name + '" <' + email.user + '>',
                   to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
                   subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
                   text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit " + config.opt.full_url + "/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-                  html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+                  html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendReminder&id=" + shifts[i].Vol[j].id + "\">Turn off weekly reminder emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
                 };
 
 
@@ -293,17 +303,18 @@ exports.thankVol = function (email) {
       return console.log("No shifts this week -- not sending thank you emails");
     }
     var date = moment(shifts[0].date).format("MMMM D, YYYY");
-    var i, j, mailOpts;
+    var i, j, mailOpts, link;
     for (i = 0; i < shifts.length; i++) {
       if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
         for (j = 0; j < shifts[i].Vol.length; j++) {
-          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
+          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendThanks === true) {
+            link = crypto.createHmac('sha1', config.opt.linkSecret).update(shifts[i].Vol[j].id).digest('hex');
             mailOpts = {
               from: '"' + email.name + '" <' + email.user + '>',
               to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
               subject: "Thank you for volunteering!",
               text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendThanks&id=" + shifts[i].Vol[j].id + "\">Turn off thank you emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
             };
 
 
@@ -380,7 +391,7 @@ exports.lastCall = function (email) {
         User.find({
           sendLastCall: true
         }, function (err, results2) {
-          var i, j, k, l, mailOpts;
+          var i, j, k, l, mailOpts, link;
           for (j = 0; j < results2.length; j++) {
             for (k = 0; k < results1.length; k++) {
               for (l = 0; l < results1[k].Vol.length; l++) {
@@ -391,12 +402,13 @@ exports.lastCall = function (email) {
             }
           }
           for (i = 0; i < results2.length; i++) {
+            link = crypto.createHmac('sha1', config.opt.linkSecret).update(results2[i].id).digest('hex');
             mailOpts = {
               from: '"' + email.name + '" <' + email.user + '>',
               to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
               subject: "Last call: volunteering shifts still available",
               text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendLastCall&id=" + results2[i].id + "\">Turn off last call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a>.</p>"
             };
 
 

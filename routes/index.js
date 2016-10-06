@@ -152,6 +152,11 @@ router.post('/emailPrefs', checkAuth, csrfProtection, userController.emailPrefs,
   res.redirect(config.opt.base_url + '/');
 });
 
+/* GET to unsubscribe from an email */
+router.get('/unsubscribe', userController.unsubscribe, function (req, res, next) {
+  res.redirect(config.opt.base_url + '/#emailPrefs');
+});
+
 /* GET logins to various services */
 router.get('/loginFacebook', passport.authenticate('facebook', {
   scope: ['email'],

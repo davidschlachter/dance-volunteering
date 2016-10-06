@@ -5,6 +5,8 @@ var ObjectID = require('mongodb').ObjectID;
 var email = require('./email');
 var Shift = require('../models/shiftModel');
 var config = require('../config');
+var crypto = require('crypto');
+
 
 // Get the current user
 //exports.getUser = function (req, res, next) {
@@ -49,7 +51,7 @@ exports.makeAdmin = function (req, res, next) {
   // Just quit if the ObjectID isn't valid
   if (!mongoose.Types.ObjectId.isValid(userid)) {
     console.log("shiftID was invalid");
-    return next;
+    return next();
   }
   User.findOneAndUpdate({
     _id: userid
@@ -76,12 +78,12 @@ exports.removeAdmin = function (req, res, next) {
   // Just quit if the ObjectID isn't valid
   if (!mongoose.Types.ObjectId.isValid(userid)) {
     console.log("userid was invalid");
-    return next;
+    return next();
   }
   // Don't permit an admin to remove themselves!
   if (userid.toString() === req.user._id.toString()) {
     console.log("admin tried to delete themselves");
-    return next;
+    return next();
   }
   User.findOneAndUpdate({
     _id: userid
@@ -196,9 +198,62 @@ exports.emailPrefs = function (req, res, next) {
       return console.log(err);
     }
     console.log("Updated email preferences for " + result.userName);
+    return next();
   });
 
-  return next();
+};
+
+// Update email preferences when clicking an 'unsubscribe' link
+exports.unsubscribe = function (req, res, next) {
+  if (!req.query) {
+    return next();
+  }
+  var validParams = ['sendNewShift',
+    'sendChangedShift',
+    'sendDeletedShift',
+    'sendReminder',
+    'sendThanks',
+    'sendVolunteeringCall',
+    'sendLastCall',
+    'sendSchedule'
+  ];
+  if (req.query.hmac && typeof req.query.hmac === 'string') {
+    var hmac = req.query.hmac;
+  } else {
+    return next();
+  }
+  if (req.query.id && typeof req.query.id === 'string') {
+    var id = req.query.id;
+  } else {
+    return next();
+  }
+  if (req.query.param && typeof req.query.param === 'string' && validParams.indexOf(req.query.param) > -1) {
+    var param = req.query.param;
+  } else {
+    return next();
+  }
+
+  if (crypto.createHmac('sha1', config.opt.linkSecret).update(id).digest('hex') === hmac) {
+    console.log("Link was valid. req.query was:", req.query);
+    var update = {};
+    update[req.query.param] = false;
+
+    User.findOneAndUpdate({
+      _id: id
+    }, {
+      $set: update
+    }, function (err, result) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Unsubscribed " + result.userName + " from " + req.query.param.replace('send', ''));
+      return next();
+    });
+  } else {
+    console.log("Link was NOT valid. req.query was:", req.query);
+    return next();
+  }
+
 };
 
 // Update the isNewUser flag for users
