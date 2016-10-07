@@ -265,7 +265,7 @@ exports.reminderVol = function (email) {
                 mailOpts = {
                   from: '"' + email.name + '" <' + email.user + '>',
                   to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
-                  subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time,
+                  subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time.replace(/<br>/g, ' '),
                   text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit " + config.opt.full_url + "/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
                   html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendReminder&id=" + shifts[i].Vol[j].id + "\">Turn off weekly reminder emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
                 };
