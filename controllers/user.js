@@ -206,7 +206,7 @@ exports.emailPrefs = function (req, res, next) {
 // Update email preferences when clicking an 'unsubscribe' link
 exports.unsubscribe = function (req, res, next) {
   if (!req.query) {
-    return next();
+    return res.redirect(config.opt.base_url + '/#emailPrefs');
   }
   var validParams = ['sendNewShift',
     'sendChangedShift',
@@ -220,21 +220,20 @@ exports.unsubscribe = function (req, res, next) {
   if (req.query.hmac && typeof req.query.hmac === 'string') {
     var hmac = req.query.hmac;
   } else {
-    return next();
+    return res.redirect(config.opt.base_url + '/#emailPrefs');
   }
   if (req.query.id && typeof req.query.id === 'string') {
     var id = req.query.id;
   } else {
-    return next();
+    return res.redirect(config.opt.base_url + '/#emailPrefs');
   }
   if (req.query.param && typeof req.query.param === 'string' && validParams.indexOf(req.query.param) > -1) {
     var param = req.query.param;
   } else {
-    return next();
+    return res.redirect(config.opt.base_url + '/#emailPrefs');
   }
 
   if (crypto.createHmac('sha1', config.opt.linkSecret).update(id).digest('hex') === hmac) {
-    console.log("Link was valid. req.query was:", req.query);
     var update = {};
     update[req.query.param] = false;
 
@@ -247,11 +246,14 @@ exports.unsubscribe = function (req, res, next) {
         return console.log(err);
       }
       console.log("Unsubscribed " + result.userName + " from " + req.query.param.replace('send', ''));
-      return next();
+      return res.render('unsubscribe', {
+        title: 'Unsubscribed',
+        unsubscribeText: "Successfully unsubscribed " + result.email
+      });
     });
   } else {
     console.log("Link was NOT valid. req.query was:", req.query);
-    return next();
+    return res.redirect(config.opt.base_url + '/#emailPrefs');
   }
 
 };
