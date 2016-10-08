@@ -294,7 +294,7 @@ exports.thankVol = function (email) {
   var query = shift.getFriday(moment());
   Shift.find(query).populate({
     path: 'Vol',
-    select: 'userName firstName lastName email sendReminder'
+    select: 'userName firstName lastName email sendThanks'
   }).exec(function (err, shifts) {
     if (err) {
       return console.log(err);
