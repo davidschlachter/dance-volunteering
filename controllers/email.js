@@ -10,9 +10,8 @@ var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 var crypto = require('crypto');
 
-
-
 var config = require('../config');
+var transporter = nodemailer.createTransport('smtps://' + config.opt.email.user + ':' + config.opt.email.pass + '@' + config.opt.email.server);
 
 exports.welcome = function (user, email) {
   var mailOpts = {
@@ -492,7 +491,6 @@ exports.newTemplate = function (email) {
 
 // Function to send messages, and retry on errors
 function faultTolerantSend(cb, email, mailOpts, messageDescription) {
-  var transporter = nodemailer.createTransport('smtps://' + email.user + ':' + email.pass + '@' + email.server);
 
   var operation = retry.operation({
     retries: 10,
