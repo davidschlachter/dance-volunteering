@@ -366,7 +366,7 @@ exports.lastCall = function (email) {
     if (err0) {
       return console.log(err0);
     }
-    // If the week isn't cancelled, create the shifts
+    // If the week isn't cancelled, continue
     if (!results0) {
       var shifts = Shift.find(query, null, {
         sort: {
@@ -378,14 +378,20 @@ exports.lastCall = function (email) {
         }
 
         var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
+        var shouldSend = false;
         for (i = 0; i < results1.length; i++) {
           if (results1[i].Vol.length < results1[i].nVol) {
             line = '<tr><td>' + results1[i].time + '</td></tr>';
             lines += line;
+            shouldSend = true;
           }
         }
         lines += "</tbody></table>";
         lines = lines.replace(/<br>/g, ' ');
+
+        if (shouldSend === false) {
+          return console.log("No shifts are available -- not sending lastCall");
+        }
 
         User.find({
           sendLastCall: true
