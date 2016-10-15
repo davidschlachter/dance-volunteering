@@ -71,6 +71,10 @@ input[type=checkbox] {
   display: none;
 }
 
+.execBracket {
+  display: none;
+}
+
 #adminTools {
   display: none;
 
@@ -150,11 +154,31 @@ h2#friday {
   #adminTools > p {
     display: none;
   }
+  .btnHide {
+    display: none !important;
+  }
   .btn {
     visibility: hidden;
   }
-  .btnHide {
-    display: none !important;
+  .volButton {
+    visibility: hidden;
+  }
+  .volForm {
+    border: none;
+    border-bottom: dashed 1px black;
+    width: 16em;
+  }
+  .execButton {
+    visibility: visible;
+    background-color: white;
+    border: none;
+    color: black !important;
+    opacity: 1 !important;
+    text-shadow: none;
+    padding: 0;
+  }
+  .execBracket {
+    display: inline;
   }
   #footer {
     opacity: 0.5;

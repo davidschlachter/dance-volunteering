@@ -400,7 +400,7 @@ function shiftsText(data, user, csrf) {
         } else if (areOpen && typeof user === 'object' && user.isNewUser === true && data[i].newUsers === false) {
           action = 'disabled type="button"';
         }
-        tableText = '<form action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input ' + action + ' value="Volunteer" class="btn btn-primary" /></form>';
+        tableText = '<form class="volForm" action="volunteer" method="post"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input ' + action + ' value="Volunteer" class="volButton btn btn-primary" /></form>';
       }
       line += '<td' + colSpanText + '>' + tableText + '</td>';
     }
@@ -430,7 +430,7 @@ function shiftsText(data, user, csrf) {
         profilePicture = data[i].Exec[h].profilePicture;
         tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
-        tableText = '<form action="volunteerExec" method="post"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><input ' + action2 + ' value="Exec" class="' + execClass + '" /></form>'
+        tableText = '<form action="volunteerExec" method="post"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><span class="execBracket">(</span><input ' + action2 + ' value="Exec" class="execButton ' + execClass + '" /><span class="execBracket">)</span></form>'
       }
       line += '<td>' + tableText + '</td>';
     }
