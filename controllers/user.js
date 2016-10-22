@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
 var email = require('./email');
 var Shift = require('../models/shiftModel');
+var shift = require('../controllers/shift');
+var moment = require('moment');
 var config = require('../config');
 var crypto = require('crypto');
 
@@ -260,57 +262,40 @@ exports.unsubscribe = function (req, res, next) {
 
 // Update the isNewUser flag for users
 exports.updateNewUsers = function () {
-  User.find({
-    isNewUser: true,
-    isAdmin: false
-  }).exec(function (err0, users) {
-    if (err0) {
-      return console.log(err0);
+  var query = shift.getFriday(moment());
+  var shifts = Shift.find(query, null, {
+    sort: {
+      index: 1
     }
-    var i, query = {};
-    for (i = 0; i < users.length; i++) {
-      query.Vol = [];
-      query.Vol[0] = users[i]._id;
-      console.log("Starting the loop with query:", query);
-      Shift.findOne(query, function (err1, shift) {
-        if (err1) {
-          return console.log(err1);
-        }
-        if (shift != null && shift.Vol) {
-          // Note: accessing shift.Vol[0] is dangerous because if the array.length is > 0, we could miss a user here
-          User.findOneAndUpdate({
-            _id: shift.Vol[0]
-          }, {
-            $set: {
-              isNewUser: false
-            }
-          }, function (err2, result) {
-            if (err2) {
-              return console.log(err2);
-            }
-            console.log("User", result.userName, "is no longer a NewUser.");
-          });
-        } else {
-          console.log("User is still a NewUser.");
-        }
-      });
-    }
-  });
-  // Now for the Exec version!
-  User.update({
-    isNewUser: true,
-    isAdmin: true
-  }, {
-    $set: {
-      isNewUser: false
-    }
-  }, {
-    multi: true
-  }, function (err, admins) {
+  }).populate({
+    path: 'Vol',
+    select: '_id firstName lastNameInitial email isNewUser'
+  }).exec(function (err, results) {
     if (err) {
       return console.log(err);
     }
-    var i;
-    console.log("Exec function returned:", admins);
+    if (results.length) {
+      var i, j;
+      for (i = 0; i < results.length; i++) {
+        if (results[i].Vol.length > 0) {
+          for (j = 0; j < results[i].Vol.length; j++) {
+            if (results[i].Vol[j].isNewUser === true) {
+              User.findOneAndUpdate({
+                _id: results[i].Vol[j]._id
+              }, {
+                $set: {
+                  isNewUser: false
+                }
+              }, function (err2, result) {
+                if (err2) {
+                  return console.log(err2);
+                }
+                console.log("User", result.userName, "is no longer a NewUser.");
+              });
+            }
+          }
+        }
+      }
+    }
   });
 };
