@@ -33,6 +33,9 @@ html(lang='en')
       h1= title
       h2#friday= friday
       p#user
+      if typeof user === "object"
+        if user.isNewUser === true
+          div.alert.alert-warning Note: some shifts are not available for new volunteers.
       p#date.well!= datewell
       table#shifts!= shiftsText
       
