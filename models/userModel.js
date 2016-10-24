@@ -59,6 +59,11 @@ var userSchema = new mongoose.Schema({
   sendSchedule: {
     type: Boolean,
     default: true
+  },
+  // Update user details automatically?
+  autoUpdateDetails: {
+    type: Boolean,
+    default: true
   }
 });
 
