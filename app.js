@@ -198,9 +198,11 @@ passport.use(new FacebookStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, user);
+              done(null, doc);
             }
           });
+        } else {
+          done(null, user);
         }
       } else {
         // Quit if the email is invalid
@@ -264,9 +266,11 @@ passport.use(new GoogleStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, user);
+              done(null, doc);
             }
           });
+        } else {
+          done(null, user);
         }
       } else {
         // Quit if the email is invalid
@@ -331,9 +335,11 @@ passport.use(new LiveStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, user);
+              done(null, doc);
             }
           });
+        } else {
+          done(null, user);
         }
       } else {
         // Quit if the email is invalid
