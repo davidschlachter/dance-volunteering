@@ -198,7 +198,7 @@ passport.use(new FacebookStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, doc);
+              done(null, user);
             }
           });
         } else {
@@ -266,7 +266,7 @@ passport.use(new GoogleStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, doc);
+              done(null, user);
             }
           });
         } else {
@@ -335,7 +335,7 @@ passport.use(new LiveStrategy({
               return console.log(err);
             } else {
               console.log("Updated user");
-              done(null, doc);
+              done(null, user);
             }
           });
         } else {
