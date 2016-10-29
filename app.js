@@ -35,6 +35,7 @@ var config = require('./config');
 
 // Connect to the database
 mongoose.connect(config.opt.db, config.opt.mongoose);
+mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', function (err) {
   console.log('Connection error to MongoDB database ', err);
