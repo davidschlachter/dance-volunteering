@@ -262,17 +262,23 @@ var searchAdmins = function () {
   }).done(function (data) {
     $("#adminResults").find("tr:gt(0)").remove();
     var i, line, lines = "";
-    for (i = 0; i < data.length; i++) {
-      line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button id="addAdmin' + data[i]._id + '" class="btn btn-success">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
-      lines += line;
-    }
-    $("#adminResults").append(lines);
-    $("#adminResults").show();
-    // Add event handlers
-    for (i = 0; i < data.length; i++) {
-      $('#addAdmin' + data[i]._id).on('click', function () {
-        makeAdmin($(this)[0].id.replace('addAdmin', ''))
-      });
+    if (typeof data[0] === "undefined") {
+      lines = '<tr><td colspan=2>No users found!</td></tr>';
+      $("#adminResults").append(lines);
+      $("#adminResults").show();
+    } else {
+      for (i = 0; i < data.length; i++) {
+        line = '<tr><td><img class="user" src="' + data[i].profilePicture + '" /> ' + data[i].firstName + ' ' + data[i].lastName + ' <button id="addAdmin' + data[i]._id + '" class="btn btn-success">Add as admin</button></td><td>' + data[i].email + '</td></tr>';
+        lines += line;
+      }
+      $("#adminResults").append(lines);
+      $("#adminResults").show();
+      // Add event handlers
+      for (i = 0; i < data.length; i++) {
+        $('#addAdmin' + data[i]._id).on('click', function () {
+          makeAdmin($(this)[0].id.replace('addAdmin', ''))
+        });
+      }
     }
   });
   return false;
