@@ -203,7 +203,21 @@ passport.use(new FacebookStrategy({
             }
           });
         } else {
-          done(null, user);
+          User.update({
+            facebookID: profile.id
+          }, {
+            $set: {
+              profilePicture: encodeURI(profile.photos[0].value),
+              email: profile.emails[0].value
+            }
+          }, function (err, doc) {
+            if (err) {
+              return console.log(err);
+            } else {
+              console.log("Updated user");
+              done(null, user);
+            }
+          });
         }
       } else {
         // Quit if the email is invalid
@@ -271,7 +285,21 @@ passport.use(new GoogleStrategy({
             }
           });
         } else {
-          done(null, user);
+          User.update({
+            googleID: profile.id
+          }, {
+            $set: {
+              profilePicture: encodeURI(profile.photos[0].value),
+              email: profile.emails[0].value
+            }
+          }, function (err, doc) {
+            if (err) {
+              return console.log(err);
+            } else {
+              console.log("Updated user");
+              done(null, user);
+            }
+          });
         }
       } else {
         // Quit if the email is invalid
@@ -340,7 +368,21 @@ passport.use(new LiveStrategy({
             }
           });
         } else {
-          done(null, user);
+          User.update({
+            liveID: profile.id
+          }, {
+            $set: {
+              profilePicture: encodeURI(profile.photos[0].value),
+              email: profile.emails[0].value
+            }
+          }, function (err, doc) {
+            if (err) {
+              return console.log(err);
+            } else {
+              console.log("Updated user");
+              done(null, user);
+            }
+          });
         }
       } else {
         // Quit if the email is invalid
