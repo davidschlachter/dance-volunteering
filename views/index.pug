@@ -36,7 +36,7 @@ html(lang='en')
       if typeof user === "object"
         if user.isNewUser === true
           div.alert.alert-warning Note: some shifts are not available for new volunteers.
-      p#date.well!= datewell
+      p#date!= datewell
       table#shifts!= shiftsText
       
       #noShifts.modal.fade(role='dialog')

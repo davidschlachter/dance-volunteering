@@ -7,6 +7,24 @@ body, html {
   display: none;
 }
 
+#date {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 1em;
+  color: black;
+  width: calc(100% + 30px);
+  left: -15px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  #date {
+    width: 100%;
+    left: 0px;
+    text-align: left;
+    }
+}
+
 #adminEmail {
   display: none;
 }
@@ -138,7 +156,7 @@ h2#friday {
   h2#friday {
     display: block;
   }
-  .well {
+  #date {
     display: none;
   }
   div#extraText {

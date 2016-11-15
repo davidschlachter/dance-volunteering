@@ -274,7 +274,6 @@ function delIDEvents(delIDs) {
 var weekCancelled = function () {
   $("#shifts").hide();
   $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next week!');
-  $("#date").addClass('well-lg');
   $("#date").css('padding', '6em;');
   if (shouldWriteStatus == false && moment().day() !== 5) {
     $("#date").html('There was no dance last Friday! Thank you for helping out and see you next week!');
