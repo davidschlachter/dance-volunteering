@@ -387,9 +387,9 @@
     "tables.less",
     "forms.less",
     "buttons.less",
+    "navs.less",
     "alerts.less",
     "panels.less",
-    "wells.less",
     "close.less",
     "component-animations.less",
     "dropdowns.less",
@@ -402,5 +402,5 @@
     "modal.js",
     "transition.js"
   ],
-  "customizerUrl": "https://getbootstrap.com/customize/?id=6d24cbc6521d0517ff495ec22d608f07"
+  "customizerUrl": "https://getbootstrap.com/customize/?id=036d78da10e7a8f026a2473c5fa660d7"
 }
