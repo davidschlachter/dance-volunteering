@@ -47,6 +47,14 @@ $(document).ready(function () {
       script.src = "javascripts/pikaday+adminloader.min.js";
       head.appendChild(script);
     }
+    // If user is a teacher, load teacher.js
+    if (user.isTeacher === true) {
+      var head = document.getElementsByTagName("head")[0];
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "javascripts/teacher.js";
+      head.appendChild(script);
+    }
     // Open the email preferences if we came here from an email link
     if (window.location.href.indexOf('#emailPrefs') !== -1) {
       $('#emailPrefs').modal('show');
