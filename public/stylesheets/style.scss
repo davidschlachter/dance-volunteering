@@ -7,6 +7,16 @@ body, html {
   display: none;
 }
 
+#navBar {
+  margin-bottom: 0.4em;
+  ul {
+    display: inline-block;
+  }
+}
+
+#doorShiftsDiv {}
+#teachingDiv {display:none;}
+
 #date {
   position: relative;
   background-color: rgba(0, 0, 0, 0.1);
