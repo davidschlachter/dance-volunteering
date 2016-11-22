@@ -15,6 +15,7 @@ var shift = require('../controllers/shift');
 var template = require('../controllers/template');
 var userController = require('../controllers/user');
 var extraText = require('../controllers/extraText');
+var teachingWeek = require('../controllers/teachingWeek');
 var csrfProtection = csrf({
   cookie: false
 });
@@ -301,6 +302,16 @@ router.post('/csp_reports', jsonParser, function (req, res) {
 /* GET one's own user profile */
 //router.get('/getUser', checkAuth, userController.getUser);
 
+
+// For the teaching module,
+
+// GET the list of current teachingWeeks
+router.get('/getTeachingWeeks', checkAuth, checkTeacher, teachingWeek.getTeachingWeeks);
+
+// POST a new teachingWeek, or update an existing teachingWeek
+router.post('/newTeachingWeek', checkAuth, checkTeacher, csrfProtection, teachingWeek.newTeachingWeek);
+
+
 /* Check if authenticated */
 function checkAuth(req, res, next) {
   if (req.user) {
@@ -326,6 +337,23 @@ function checkExec(req, res, next) {
         return next();
       } else {
         console.log("Not exec");
+        res.redirect(config.opt.base_url + '/');
+      }
+    }
+  });
+}
+
+/* Check if teacher */
+function checkTeacher(req, res, next) {
+  User.findById(req.user._id, function (err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect(config.opt.base_url + '/');
+    } else {
+      if (user.isTeacher === true) {
+        return next();
+      } else {
+        console.log("Not a teacher");
         res.redirect(config.opt.base_url + '/');
       }
     }
