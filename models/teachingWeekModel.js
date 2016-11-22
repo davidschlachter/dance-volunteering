@@ -1,10 +1,10 @@
+// Load required packages
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
 // Define the teachingWeek model
 var teachingWeek = new mongoose.Schema({
   date: Date, // The date
-  version: { // The version of the change to this week
-    type: Number,
-    min: 0
-  },
   intermediateTeachers: [{ // An array of teachers 
     type: Schema.Types.ObjectId,
     ref: 'User'

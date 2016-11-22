@@ -1,7 +1,6 @@
 // Load required packages
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var User = require('./userModel');
 
 // Define the Shift schema
 var ShiftSchema = new mongoose.Schema({

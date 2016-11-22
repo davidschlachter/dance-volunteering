@@ -1,5 +1,6 @@
 // Load required packages
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 // Define the todo schema
 var userSchema = new mongoose.Schema({
