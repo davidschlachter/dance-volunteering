@@ -225,8 +225,8 @@ exports.shiftsAvailable = function (email) {
               from: '"' + email.name + '" <' + email.user + '>',
               to: '"' + users[i].userName.replace(/"/g, '') + '" <' + users[i].email + '>',
               subject: "No dance this Friday",
-              text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next week! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next week! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+              text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next time! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
+              html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next time! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
             };
 
             faultTolerantSend(function (err, info) {}, email, mailOpts, "No dance message ");
