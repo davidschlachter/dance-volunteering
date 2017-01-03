@@ -191,7 +191,7 @@ passport.use(new FacebookStrategy({
               firstName: entities.encode(profile.name.givenName),
               lastName: entities.encode(profile.name.familyName),
               lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
-              profilePicture: encodeURI(profile.photos[0].value),
+              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
               email: profile.emails[0].value
             }
           }, function (err, doc) {
@@ -207,7 +207,7 @@ passport.use(new FacebookStrategy({
             facebookID: profile.id
           }, {
             $set: {
-              profilePicture: encodeURI(profile.photos[0].value),
+              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
               email: profile.emails[0].value
             }
           }, function (err, doc) {
@@ -230,7 +230,7 @@ passport.use(new FacebookStrategy({
           firstName: entities.encode(profile.name.givenName),
           lastName: entities.encode(profile.name.familyName),
           lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
-          profilePicture: encodeURI(profile.photos[0].value),
+          profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
           email: profile.emails[0].value
         });
         user.save(function (err) {
