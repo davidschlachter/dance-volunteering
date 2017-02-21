@@ -378,7 +378,7 @@ function shiftsText(data, user, csrf) {
       }
       if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
         userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
-        profilePicture = data[i].Vol[h].profilePicture;
+        profilePicture = data[i].Vol[h].profilePicture.replace("http:", "https:");
         if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
           deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" />';
           delIDs.push(['del' + delIDCounter, "deleteMyShift()"]);
@@ -427,7 +427,7 @@ function shiftsText(data, user, csrf) {
           deleteButton = ""
         }
         userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
-        profilePicture = data[i].Exec[h].profilePicture;
+        profilePicture = data[i].Exec[h].profilePicture.replace("http:", "https:");
         tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         tableText = '<form action="volunteerExec" method="post"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><span class="execBracket">(</span><input ' + action2 + ' value="Exec" class="execButton ' + execClass + '" /><span class="execBracket">)</span></form>'
