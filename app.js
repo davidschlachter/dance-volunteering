@@ -125,6 +125,9 @@ app.use(helmet.contentSecurityPolicy({
   disableAndroid: false,
   browserSniff: true
 }));
+app.use(helmet.referrerPolicy({
+  policy: 'same-origin'
+}));
 
 app.use('/', routes);
 
