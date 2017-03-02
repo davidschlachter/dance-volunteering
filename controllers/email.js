@@ -9,6 +9,7 @@ var retry = require('retry');
 var Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 var crypto = require('crypto');
+var ICS = require('ics');
 
 var config = require('../config');
 var transporter = nodemailer.createTransport('smtps://' + config.opt.email.user + ':' + config.opt.email.pass + '@' + config.opt.email.server);
@@ -56,13 +57,48 @@ exports.newShift = function (userid, uQuery, email) {
     }, function (err, user) {
       if (user.sendNewShift != false) {
         var date = moment(shift.date).format("MMMM D, YYYY");
+        var shiftStart, shiftDate, shiftTime;
+        if (Number(shift.time.match(/([\d]+):\d\d/)[1]) > 11) {
+          shiftDate = moment(shift.date).add(1, "day");
+          shiftTime = moment(shift.time.match(/[\d]+:\d\d/)[0] + " AM", ["h:mm A"]);
+          shiftStart = moment(shiftDate.format("MMMM D, YYYY") + " " + shiftTime.format("h:mm A"), "MMMM D, YYYY h:mm A");
+        } else {
+          shiftTime = moment(shift.time.match(/[\d]+:\d\d/)[0] + " PM", ["h:mm A"]);
+          shiftStart = moment(moment(shift.date).format("MMMM D, YYYY") + " " + shiftTime.format("h:mm A"), "MMMM D, YYYY h:mm A");
+        }
         var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
+        var ics = new ICS();
+        var icsstring = ics.buildEvent({
+          start: shiftStart.toISOString(),
+          end: shiftStart.add(30, "minutes").toISOString(), // Danger: assumes 30 minutes shifts
+          title: 'OSDS Volunteering Shift',
+          description: 'Volunteering shift at the Ottawa Swing Dance Society',
+          location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
+          url: 'https://volunteer.swingottawa.ca/',
+          status: 'confirmed',
+          geo: {
+            lat: 45.425495,
+            lon: -75.685101
+          },
+          organizer: {
+            name: email.name,
+            email: email.user
+          },
+          attendees: [{
+            name: entities.decode(user.userName).replace(/"/g, ''),
+            email: user.email
+          }]
+        });
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>",
+          alternatives: [{
+            contentType: 'text/calendar',
+            content: icsstring
+          }]
         };
 
 
