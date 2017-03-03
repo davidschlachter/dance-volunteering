@@ -1,7 +1,7 @@
 var extraText = require('../models/extraTextModel');
 var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
-var Entities = require('html-entities').Html5Entities;
+var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 
 // Get options from config file

@@ -419,7 +419,8 @@ function getExtraText() {
     cache: false
   }).done(function (data) {
     $("#extraText").html(data.text);
-    $("#printingTextArea").val(data.text.replace(/<br>/g, '\n'));
+    var textBoxText = data.text.replace(/<br>/g, '\n').replace(/\&amp;/g, '&').replace(/\&quot;/g, '"').replace(/\&lt;/g, '<').replace(/\&gt;/g, '>').replace(/\&apos;/g, '\'');
+    $("#printingTextArea").val(textBoxText);
   });
 };
 
