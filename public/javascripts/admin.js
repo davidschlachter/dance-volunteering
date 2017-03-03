@@ -69,10 +69,12 @@ function cancelWeek(week) {
   if (typeof week === "undefined" || week === "") {
     return (console.log("No week selected"));
   } else {
+    var actuallyCancelled = $('input[name=actuallyCancelled]:checked').val();
     $.ajax({
       url: "cancelWeek",
       data: {
         week: week,
+        actuallyCancelled: actuallyCancelled,
         _csrf: csrf
       },
       method: "POST"
@@ -102,14 +104,20 @@ function getCancelled() {
     method: "GET",
     cache: false
   }).done(function (data) {
-    var i, tbody = "<tbody>";
+    var i, detail, tbody = "<tbody>";
     if (data.length === 0) {
-      tbody += "<tr><td>No cancelled weeks</td></tr></tbody>";
+      tbody += "<tr><td>(No cancelled weeks)</td></tr></tbody>";
       $("#cancelledWeeks").append(tbody);
       return;
     }
     for (i = 0; i < data.length; i++) {
-      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" id="' + data[i]._id + '" value="✘" class="btn btn-danger btn-xs" /></td></tr>';
+      console.log(data[i]);
+      if (data[i].actuallyCancelled === true) {
+        detail = "(Dance is cancelled)";
+      } else {
+        detail = "(Not using volunteering tool)";
+      }
+      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" id="' + data[i]._id + '" value="✘" class="btn btn-danger btn-xs" /> &nbsp;&nbsp;&nbsp;' + detail + '</td></tr>';
     }
     tbody += "</tbody>"
     $("#cancelledWeeks").append(tbody);

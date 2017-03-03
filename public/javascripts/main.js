@@ -133,7 +133,7 @@ function updateShifts() {
     method: "GET"
   }).done(function (data) {
     if (data.cancelled) {
-      weekCancelled();
+      weekCancelled(data.actuallyCancelled);
     } else {
       displayShifts(data);
     }
@@ -271,12 +271,20 @@ function delIDEvents(delIDs) {
 }
 
 
-var weekCancelled = function () {
+var weekCancelled = function (actuallyCancelled) {
   $("#shifts").hide();
-  $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next time!');
+  if (actuallyCancelled) {
+    $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next time!');
+  } else {
+    $("#date").html('The volunteering tool won\'t be used this week. For more information, go to <a href="http://www.swingottawa.ca/">swingottawa.ca</a> or contact <a href="mailto:osdsvol@gmail.com">osdsvol@gmail.com</a>. Thank you for helping out and see you next time!');
+  }
   $("#date").css('padding', '6em;');
   if (shouldWriteStatus == false && moment().day() !== 5) {
-    $("#date").html('There was no dance last Friday! Thank you for helping out and see you next time!');
+    if (actuallyCancelled) {
+      $("#date").html('There was no dance last Friday! Thank you for helping out and see you next time!');
+    } else {
+      $("#date").html('The volunteering tool wasn\'t used last Friday. For more information, go to <a href="http://www.swingottawa.ca/">swingottawa.ca</a> or contact <a href="mailto:osdsvol@gmail.com">osdsvol@gmail.com</a>. Thank you for helping out and see you next time!');
+    }
   }
 };
 

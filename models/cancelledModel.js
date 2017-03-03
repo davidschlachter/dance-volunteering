@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 
 // Define the Shift schema
 var CancelledSchema = new mongoose.Schema({
-  date: Date
+  date: Date,
+  actuallyCancelled: Boolean
 });
 
 // Export the Mongoose model

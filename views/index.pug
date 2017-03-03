@@ -148,10 +148,19 @@ html(lang='en')
           table#cancelledWeeks
             thead
               tr
-                th Cancelled weeks
+                th(colspan=2) Cancelled weeks
             tbody
           p Select a week to cancel:
           input(type="text", id="datepicker")
+          br
+          br
+          input(type='radio', name='actuallyCancelled', value='true', checked='checked')
+          span The dance is actually cancelled
+          br
+          input(type='radio', name='actuallyCancelled', value='false')
+          span The volunteering tool is just not being used for this dance
+          br
+          br
           button#cancelButton(type="button", class="btn btn-primary") Cancel week
         div#template.btnHide
           h3 Modify the shift template
