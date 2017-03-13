@@ -100,6 +100,8 @@ html(lang='en')
           input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons")
           input#details1.btn.btn-default.btnShow(value="See volunteer details")
           input#details2.btn.btn-primary.btnHide(value="Hide volunteer details")
+          input#freq1.btn.btn-default.btnShow(value="Show top volunteers")
+          input#freq2.btn.btn-primary.btnHide(value="Hide top volunteers")
           input#printing1.btn.btn-default.btnShow(value="Change printing text")
           input#printing2.btn.btn-primary.btnHide(value="Hide printing text")
           input#execs1.btn.btn-default.btnShow(value="Manage admins")
@@ -143,6 +145,15 @@ html(lang='en')
                 th Name
                 th Email address
             tbody
+        div#frequent.btnHide
+          p This table shows the top 20 volunteers for the last 12 months
+          table#freqTable
+            thead
+              tr
+                th Volunteer
+                th Shifts
+                th Email address
+          tbody
         div#cancelWeeks.btnHide
           h3 Cancel a week
           table#cancelledWeeks

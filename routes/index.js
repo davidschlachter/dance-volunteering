@@ -285,6 +285,9 @@ router.get('/getExtraText', checkAuth, checkExec, extraText.getextraText);
 /* POST to save text for printing */
 router.post('/setExtraText', checkAuth, checkExec, csrfProtection, extraText.setextraText);
 
+/* GET the list of most frequent volunteers */
+router.get('/getFrequent', checkAuth, checkExec, userController.getFrequent);
+
 /* POST CSP Reports */
 /*var jsonParser = bodyParser.json({
   type: ['json', 'application/csp-report']
