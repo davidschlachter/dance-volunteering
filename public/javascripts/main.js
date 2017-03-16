@@ -73,8 +73,7 @@ $(document).ready(function () {
   });
 });
 
-
-$(window).load(function () {
+$(window).on('load', function () {
   if (shouldWriteStatus === false && getCookie("noShifts") === false) {
     var rightNow = moment();
     if (rightNow.day() === 7 && rightNow.hour() < 12) {
