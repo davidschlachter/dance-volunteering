@@ -299,3 +299,79 @@ exports.updateNewUsers = function () {
     }
   });
 };
+
+
+// List frequent volunteers
+exports.getFrequent = function (req, res, next) {
+
+  var i, j;
+
+  Shift.find({
+    date: {
+      $gte: new Date(new Date().setFullYear(new Date().getFullYear() + -1))
+    }
+  }).populate({
+    path: 'Vol',
+    select: '_id userName email'
+  }).exec(function (err, shiftResults) {
+    if (err) {
+      return console.log(err);
+    }
+    if (!shiftResults.length) {
+      return console.log("No shifts found in getFrequent");
+    }
+
+    var volunteers = [];
+
+    for (j = 0; j < shiftResults.length; j++) {
+      for (i = 0; i < shiftResults[j].Vol.length; i++) {
+        volunteers.push(shiftResults[j].Vol[i].userName + "|" + shiftResults[j].Vol[i].email); // Separate name and email with a pipe
+      }
+    }
+
+    var volCount = compressArray(volunteers);
+
+    volCount.sort(function (a, b) {
+      return b.count - a.count;
+    });
+
+    // Return the top 20 entries
+    var volCountCut = volCount.slice(0, 20)
+    res.json(volCountCut);
+  });
+
+};
+
+
+// Count the unique items in an array
+// via https://gist.github.com/raecoo/4230308
+function compressArray(original) {
+
+  var compressed = [];
+  // make a copy of the input array
+  var copy = original.slice(0);
+
+  // first loop goes over every element
+  for (var i = 0; i < original.length; i++) {
+
+    var myCount = 0;
+    // loop over every element in the copy and see if it's the same
+    for (var w = 0; w < copy.length; w++) {
+      if (original[i] == copy[w]) {
+        // increase amount of times duplicate is found
+        myCount++;
+        // sets item to undefined
+        delete copy[w];
+      }
+    }
+
+    if (myCount > 0) {
+      var a = new Object();
+      a.value = original[i];
+      a.count = myCount;
+      compressed.push(a);
+    }
+  }
+
+  return compressed;
+};

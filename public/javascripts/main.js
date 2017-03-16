@@ -141,7 +141,7 @@ function updateShifts() {
     method: "GET"
   }).done(function (data) {
     if (data.cancelled) {
-      weekCancelled();
+      weekCancelled(data.actuallyCancelled);
     } else {
       displayShifts(data);
     }
@@ -192,7 +192,7 @@ function displayShifts(data) {
       }
       if (data[i].Vol[h] !== null && typeof data[i].Vol[h] === 'object') {
         userName = data[i].Vol[h].firstName + " " + data[i].Vol[h].lastNameInitial;
-        profilePicture = data[i].Vol[h].profilePicture;
+        profilePicture = data[i].Vol[h].profilePicture.replace("http:", "https:");
         if (typeof user === 'object' && user._id.toString() === data[i].Vol[h]._id.toString()) {
           deleteButton = '<input id="del' + delIDCounter + '" type="button" value="✘" ' + delAction + ' class="btn btn-danger btn-xs" />';
           delIDs.push(['del' + delIDCounter, "deleteMyShift()"]);
@@ -241,7 +241,7 @@ function displayShifts(data) {
           deleteButton = ""
         }
         userName = data[i].Exec[h].firstName + " " + data[i].Exec[h].lastNameInitial;
-        profilePicture = data[i].Exec[h].profilePicture;
+        profilePicture = data[i].Exec[h].profilePicture.replace("http:", "https:");
         tableText = '<img alt="' + userName + '" class="user" src="' + profilePicture + '" /> ' + userName + ' ' + deleteButton;
       } else {
         tableText = '<form action="volunteerExec" method="post"><input type="text" name="_csrf" value="' + csrf + '" class="csrf"><input type="text" name="shiftID" class="shiftID" value="' + data[i]._id + '"><span class="execBracket">(</span><input ' + action2 + ' value="Exec" class="execButton ' + execClass + '" /><span class="execBracket">)</span></form>'
@@ -279,12 +279,20 @@ function delIDEvents(delIDs) {
 }
 
 
-var weekCancelled = function () {
+var weekCancelled = function (actuallyCancelled) {
   $("#shifts").hide();
-  $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next week!');
+  if (actuallyCancelled) {
+    $("#date").html('There will be no dance this Friday! Thank you for helping out and see you next time!');
+  } else {
+    $("#date").html('The volunteering tool won\'t be used this week. For more information, go to <a href="http://www.swingottawa.ca/">swingottawa.ca</a> or contact <a href="mailto:osdsvol@gmail.com">osdsvol@gmail.com</a>. Thank you for helping out and see you next time!');
+  }
   $("#date").css('padding', '6em;');
   if (shouldWriteStatus == false && moment().day() !== 5) {
-    $("#date").html('There was no dance last Friday! Thank you for helping out and see you next week!');
+    if (actuallyCancelled) {
+      $("#date").html('There was no dance last Friday! Thank you for helping out and see you next time!');
+    } else {
+      $("#date").html('The volunteering tool wasn\'t used last Friday. For more information, go to <a href="http://www.swingottawa.ca/">swingottawa.ca</a> or contact <a href="mailto:osdsvol@gmail.com">osdsvol@gmail.com</a>. Thank you for helping out and see you next time!');
+    }
   }
 };
 

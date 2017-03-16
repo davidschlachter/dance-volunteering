@@ -103,7 +103,8 @@ exports.getShifts = function (req, res, next) {
       });
     } else {
       var cancelled = {
-        "cancelled": true
+        "cancelled": true,
+        actuallyCancelled: results0.actuallyCancelled
       };
       res.json(cancelled);
     }
@@ -347,11 +348,21 @@ exports.cancelWeek = function (req, res, next) {
   if (date.isValid() !== true || date.day() != 5) {
     return console.log("Date was invalid");
   }
+  if (req.body.hasOwnProperty('actuallyCancelled') && typeof req.body.actuallyCancelled === "string") {
+    if (req.body.actuallyCancelled === "true") {
+      actuallyCancelled = true;
+    } else {
+      actuallyCancelled = false;
+    }
+  } else {
+    actuallyCancelled = false; // By default, a week is not actuallyCancelled
+  }
   // If the week is already cancelled, don't create a duplicate entry
   Cancelled.findOneAndUpdate({
     date: date.startOf('day').toDate()
   }, {
-    date: date.startOf('day').toDate()
+    date: date.startOf('day').toDate(),
+    actuallyCancelled: actuallyCancelled
   }, {
     upsert: true
   }, function (err, result) {

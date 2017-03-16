@@ -69,10 +69,12 @@ function cancelWeek(week) {
   if (typeof week === "undefined" || week === "") {
     return (console.log("No week selected"));
   } else {
+    var actuallyCancelled = $('input[name=actuallyCancelled]:checked').val();
     $.ajax({
       url: "cancelWeek",
       data: {
         week: week,
+        actuallyCancelled: actuallyCancelled,
         _csrf: csrf
       },
       method: "POST"
@@ -102,14 +104,20 @@ function getCancelled() {
     method: "GET",
     cache: false
   }).done(function (data) {
-    var i, tbody = "<tbody>";
+    var i, detail, tbody = "<tbody>";
     if (data.length === 0) {
-      tbody += "<tr><td>No cancelled weeks</td></tr></tbody>";
+      tbody += "<tr><td>(No cancelled weeks)</td></tr></tbody>";
       $("#cancelledWeeks").append(tbody);
       return;
     }
     for (i = 0; i < data.length; i++) {
-      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" id="' + data[i]._id + '" value="✘" class="btn btn-danger btn-xs" /></td></tr>';
+      console.log(data[i]);
+      if (data[i].actuallyCancelled === true) {
+        detail = "(Dance is cancelled)";
+      } else {
+        detail = "(Not using volunteering tool)";
+      }
+      tbody += '<tr><td>' + moment(data[i].date).format("YYYY-MM-DD") + ' <input type="button" id="' + data[i]._id + '" value="✘" class="btn btn-danger btn-xs" /> &nbsp;&nbsp;&nbsp;' + detail + '</td></tr>';
     }
     tbody += "</tbody>"
     $("#cancelledWeeks").append(tbody);
@@ -419,9 +427,59 @@ function getExtraText() {
     cache: false
   }).done(function (data) {
     $("#extraText").html(data.text);
-    $("#printingTextArea").val(data.text.replace(/<br>/g, '\n'));
+    var textBoxText = data.text.replace(/<br>/g, '\n').replace(/\&amp;/g, '&').replace(/\&quot;/g, '"').replace(/\&lt;/g, '<').replace(/\&gt;/g, '>').replace(/\&apos;/g, '\'');
+    $("#printingTextArea").val(textBoxText);
   });
 };
+
+// For admins, show or hide the frequent volunteers section
+function showFrequent() {
+  var i;
+  if ($('#freq1').is(':visible')) {
+    i = true;
+  } else {
+    i = false;
+  }
+  $(".btnHide").hide();
+  $(".btnShow").show();
+  if (i === true) {
+    $("#frequent").show();
+    $("#freq1").hide();
+    $("#freq2").show();
+    getFrequent();
+  } else {
+    $("#frequent").hide();
+    $("#freq1").show();
+    $("#freq2").hide();
+  }
+};
+
+
+function getFrequent() {
+  $.ajax({
+    url: "getFrequent",
+    method: "GET",
+    cache: false
+  }).done(function (data) {
+    console.log(data);
+    $("#freqTable").find("tr:gt(0)").remove();
+
+    var i, line, lines = "";
+    if (typeof data[0] === "undefined") {
+      lines = '<tr><td colspan=3>No volunteers found!</td></tr>';
+      $("#freqTable").append(lines);
+      $("#freqTable").show();
+    } else {
+      for (i = 0; i < data.length; i++) {
+        line = '<tr><td>' + data[i].value.split("|")[0] + '</td><td>' + data[i].count + '</td><td>' + data[i].value.split("|")[1] + '</td></tr>';
+        lines += line;
+      }
+      $("#freqTable").append(lines);
+    }
+
+  });
+}
+
 
 // For admins, show the interface to edit the extra printed text
 function showPrinting() {
@@ -467,6 +525,8 @@ $("#otherDel1").on("click", showDelButtons);
 $("#otherDel2").on("click", showDelButtons);
 $("#details1").on("click", showDetails);
 $("#details2").on("click", showDetails);
+$("#freq1").on("click", showFrequent);
+$("#freq2").on("click", showFrequent);
 $("#printing1").on("click", showPrinting);
 $("#printing2").on("click", showPrinting);
 $("#execs1").on("click", showAdmins);
