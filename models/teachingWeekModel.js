@@ -5,15 +5,13 @@ var Schema = mongoose.Schema;
 // Define the teachingWeek model
 var teachingWeek = new mongoose.Schema({
   date: Date, // The date
-  intermediateTeachers: [{ // An array of teachers 
+  time: String,
+  type: String,
+  teachers: [{ // An array of teachers 
     type: Schema.Types.ObjectId,
     ref: 'User'
   }],
-  intermediateTopic: String, // The topic of the intermediate lesson
-  beginnerTeachers: [{ // An array of teachers 
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  }]
+  topic: String
 });
 
 // Export the Mongoose model

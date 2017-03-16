@@ -533,6 +533,8 @@ $("#execs1").on("click", showAdmins);
 $("#execs2").on("click", showAdmins);
 $("#cancel1").on("click", showCancel);
 $("#cancel2").on("click", showCancel);
+$("#teachingtemplate1").on("click", showTeachingTemplate);
+$("#teachingtemplate2").on("click", showTeachingTemplate);
 $("#template1").on("click", showTemplate);
 $("#template2").on("click", showTemplate);
 $("#printingButton").on("click", setPrintingText);
