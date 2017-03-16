@@ -50,178 +50,180 @@ html(lang='en')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') OK
         
-      
-      #emailPrefs.modal.fade(role='dialog')
-        form(action="emailPrefs",method="post")
-          .modal-dialog
-            .modal-content
-              .modal-header
-                button.close(type='button', data-dismiss='modal') ×
-                h4.modal-title Email preferences
-              .modal-body
-                p Receive an email for:
-                  br
-                  br
-                  strong Signing up for shifts
-                  br
-                  input(type="text", name="_csrf", value=csrfToken, class="csrf")
-                  <input type="checkbox" name="sendChangedShift" id="sendChangedShift" /> I change the time of my volunteering shift
-                  br
-                  <input type="checkbox" name="sendDeletedShift" id="sendDeletedShift" /> I cancel my volunteering shift
-                  br
-                  <input type="checkbox" name="sendNewShift" id="sendNewShift" /> I sign up for a new volunteering shift
-                  br
-                  br
-                  strong When I volunteer
-                  br
-                  <input type="checkbox" name="sendReminder" id="sendReminder" /> A reminder of my volunteering shift (Thursday at 6 PM)
-                  br
-                  <input type="checkbox" name="sendThanks" id="sendThanks" /> A thank you email for volunteering
-                  br
-                  br
-                  strong Each week
-                  br
-                  <input type="checkbox" name="sendVolunteeringCall" id="sendVolunteeringCall" /> A notification when shifts for the coming week are available (Sunday 12 PM)
-                  br
-                  <input type="checkbox" name="sendLastCall" id="sendLastCall" /> A notification if any shifts are still available on Friday morning
-                  br
-                  br
-                  span#adminEmail
-                    strong Exec
+      if typeof user === "object"
+        #emailPrefs.modal.fade(role='dialog')
+          form(action="emailPrefs",method="post")
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  button.close(type='button', data-dismiss='modal') ×
+                  h4.modal-title Email preferences
+                .modal-body
+                  p Receive an email for:
                     br
-                    <input type="checkbox" name="sendSchedule" id="sendSchedule" /> The volunteer schedule each week (Friday at 5 PM)
-              .modal-footer
-                input.btn.btn-default(type='submit', value="Save")
+                    br
+                    strong Signing up for shifts
+                    br
+                    input(type="text", name="_csrf", value=csrfToken, class="csrf")
+                    <input type="checkbox" name="sendChangedShift" id="sendChangedShift" /> I change the time of my volunteering shift
+                    br
+                    <input type="checkbox" name="sendDeletedShift" id="sendDeletedShift" /> I cancel my volunteering shift
+                    br
+                    <input type="checkbox" name="sendNewShift" id="sendNewShift" /> I sign up for a new volunteering shift
+                    br
+                    br
+                    strong When I volunteer
+                    br
+                    <input type="checkbox" name="sendReminder" id="sendReminder" /> A reminder of my volunteering shift (Thursday at 6 PM)
+                    br
+                    <input type="checkbox" name="sendThanks" id="sendThanks" /> A thank you email for volunteering
+                    br
+                    br
+                    strong Each week
+                    br
+                    <input type="checkbox" name="sendVolunteeringCall" id="sendVolunteeringCall" /> A notification when shifts for the coming week are available (Sunday 12 PM)
+                    br
+                    <input type="checkbox" name="sendLastCall" id="sendLastCall" /> A notification if any shifts are still available on Friday morning
+                    br
+                    br
+                    span#adminEmail
+                      strong Exec
+                      br
+                      <input type="checkbox" name="sendSchedule" id="sendSchedule" /> The volunteer schedule each week (Friday at 5 PM)
+                .modal-footer
+                  input.btn.btn-default(type='submit', value="Save")
       div#extraText
-      div#adminTools
-        h2.center <br> Exec tools
-        p.center
-          input#otherDel1.btn.btn-default.btnShow(value="Delete a shift")
-          input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons")
-          input#details1.btn.btn-default.btnShow(value="See volunteer details")
-          input#details2.btn.btn-primary.btnHide(value="Hide volunteer details")
-          input#freq1.btn.btn-default.btnShow(value="Show top volunteers")
-          input#freq2.btn.btn-primary.btnHide(value="Hide top volunteers")
-          input#printing1.btn.btn-default.btnShow(value="Change printing text")
-          input#printing2.btn.btn-primary.btnHide(value="Hide printing text")
-          input#execs1.btn.btn-default.btnShow(value="Manage admins")
-          input#execs2.btn.btn-primary.btnHide(value="Hide admins")
-          input#cancel1.btn.btn-default.btnShow(value="Cancel a week")
-          input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks")
-          input#template1.btn.btn-default.btnShow(value="Modify template")
-          input#template2.btn.btn-primary.btnHide(value="Hide template")
-        table#userDetails.btnHide
-          thead
-            tr
-              th Time
-              th Volunteer
-              th Email address
-          tbody
-        div#printing.btnHide
-          h3 Edit printing text
-          p This text is only shown when this page is printed by an admin:
-          br
-          textarea(id='printingTextArea')
-          br
-          button#printingButton(type="button", class="btn btn-primary") Save
-        div#adminDetails.btnHide
-          h3 Add an admin
-          p To add an admin, search volunteers by their name:
-          input#adminInput
-          span &nbsp;
-          button#adminButton.btn.btn-primary Search
-          br
-          div#tooShort.alert.alert-warning Search query is too short! (minimum four characters)
-          table#adminResults
-            thead
-              tr
-                th Name
-                th Email address
-            tbody
-          h3 Current admins:
-          table#currentAdmins
-            thead
-              tr
-                th Name
-                th Email address
-            tbody
-        div#frequent.btnHide
-          p This table shows the top 20 volunteers for the last 12 months
-          table#freqTable
-            thead
-              tr
-                th Volunteer
-                th Shifts
-                th Email address
-          tbody
-        div#cancelWeeks.btnHide
-          h3 Cancel a week
-          table#cancelledWeeks
-            thead
-              tr
-                th(colspan=2) Cancelled weeks
-            tbody
-          p Select a week to cancel:
-          input(type="text", id="datepicker")
-          br
-          br
-          input(type='radio', name='actuallyCancelled', value='true', checked='checked')
-          span The dance is actually cancelled
-          br
-          input(type='radio', name='actuallyCancelled', value='false')
-          span The volunteering tool is just not being used for this dance
-          br
-          br
-          button#cancelButton(type="button", class="btn btn-primary") Cancel week
-        div#template.btnHide
-          h3 Modify the shift template
-          p To modify the layout of shifts, edit them below and then click 'Save'. &nbsp;
-            span#nextWeekWarning The shifts will take effect starting next week. <br>
-          table#templateTable
-            thead
-              tr
-                th Time
-                th Number of <br>non-exec volunteers
-                th Number of <br>exec volunteers
-                th New volunteers can<br>sign up for this shift
-            tbody
-          button#templateAddRow.btn.btn-primary(type='button') Add a row
-          span &nbsp;
-          button#templateRemoveRow.btn.btn-primary(type='button') Remove last row
-          br
-          br
-          button#templateSaveTemplate.btn.btn-primary(type='button') Save
-        
-        #newTemplate.modal.fade(role='dialog')
-          .modal-dialog
-            .modal-content
-              .modal-header
-                button.close(type='button', data-dismiss='modal') ×
-                h4.modal-title Template saved
-              .modal-body
-                p The template has been saved and will take effect starting this coming week. You'll receive an email confirmation of this change.
-              .modal-footer
-                button.btn.btn-default(type='button', data-dismiss='modal') OK
-        #newExtraText.modal.fade(role='dialog')
-          .modal-dialog
-            .modal-content
-              .modal-header
-                button.close(type='button', data-dismiss='modal') ×
-                h4.modal-title Printing text saved
-              .modal-body
-                p The new printing text has been saved and is now visible when printing the page.
-              .modal-footer
-                button.btn.btn-default(type='button', data-dismiss='modal') OK
-        #delAdmin.modal.fade(role='dialog')
-          .modal-dialog
-            .modal-content
-              .modal-header
-                button.close(type='button', data-dismiss='modal') ×
-                h4.modal-title Admin removed
-              .modal-body
-              .modal-footer
-                button.btn.btn-default(type='button', data-dismiss='modal') OK
-       
+      if typeof user === "object"
+        if user.isAdmin === true
+          div#adminTools
+            h2.center <br> Exec tools
+            p.center
+              input#otherDel1.btn.btn-default.btnShow(value="Delete a shift")
+              input#otherDel2.btn.btn-primary.btnHide(value="Hide delete buttons")
+              input#details1.btn.btn-default.btnShow(value="See volunteer details")
+              input#details2.btn.btn-primary.btnHide(value="Hide volunteer details")
+              input#freq1.btn.btn-default.btnShow(value="Show top volunteers")
+              input#freq2.btn.btn-primary.btnHide(value="Hide top volunteers")
+              input#printing1.btn.btn-default.btnShow(value="Change printing text")
+              input#printing2.btn.btn-primary.btnHide(value="Hide printing text")
+              input#execs1.btn.btn-default.btnShow(value="Manage admins")
+              input#execs2.btn.btn-primary.btnHide(value="Hide admins")
+              input#cancel1.btn.btn-default.btnShow(value="Cancel a week")
+              input#cancel2.btn.btn-primary.btnHide(value="Hide cancelled weeks")
+              input#template1.btn.btn-default.btnShow(value="Modify template")
+              input#template2.btn.btn-primary.btnHide(value="Hide template")
+            table#userDetails.btnHide
+              thead
+                tr
+                  th Time
+                  th Volunteer
+                  th Email address
+              tbody
+            div#printing.btnHide
+              h3 Edit printing text
+              p This text is only shown when this page is printed by an admin:
+              br
+              textarea(id='printingTextArea')
+              br
+              button#printingButton(type="button", class="btn btn-primary") Save
+            div#adminDetails.btnHide
+              h3 Add an admin
+              p To add an admin, search volunteers by their name:
+              input#adminInput
+              span &nbsp;
+              button#adminButton.btn.btn-primary Search
+              br
+              div#tooShort.alert.alert-warning Search query is too short! (minimum four characters)
+              table#adminResults
+                thead
+                  tr
+                    th Name
+                    th Email address
+                tbody
+              h3 Current admins:
+              table#currentAdmins
+                thead
+                  tr
+                    th Name
+                    th Email address
+                tbody
+            div#frequent.btnHide
+              p This table shows the top 20 volunteers for the last 12 months
+              table#freqTable
+                thead
+                  tr
+                    th Volunteer
+                    th Shifts
+                    th Email address
+              tbody
+            div#cancelWeeks.btnHide
+              h3 Cancel a week
+              table#cancelledWeeks
+                thead
+                  tr
+                    th(colspan=2) Cancelled weeks
+                tbody
+              p Select a week to cancel:
+              input(type="text", id="datepicker")
+              br
+              br
+              input(type='radio', name='actuallyCancelled', value='true', checked='checked')
+              span The dance is actually cancelled
+              br
+              input(type='radio', name='actuallyCancelled', value='false')
+              span The volunteering tool is just not being used for this dance
+              br
+              br
+              button#cancelButton(type="button", class="btn btn-primary") Cancel week
+            div#template.btnHide
+              h3 Modify the shift template
+              p To modify the layout of shifts, edit them below and then click 'Save'. &nbsp;
+                span#nextWeekWarning The shifts will take effect starting next week. <br>
+              table#templateTable
+                thead
+                  tr
+                    th Time
+                    th Number of <br>non-exec volunteers
+                    th Number of <br>exec volunteers
+                    th New volunteers can<br>sign up for this shift
+                tbody
+              button#templateAddRow.btn.btn-primary(type='button') Add a row
+              span &nbsp;
+              button#templateRemoveRow.btn.btn-primary(type='button') Remove last row
+              br
+              br
+              button#templateSaveTemplate.btn.btn-primary(type='button') Save
+            
+            #newTemplate.modal.fade(role='dialog')
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title Template saved
+                  .modal-body
+                    p The template has been saved and will take effect starting this coming week. You'll receive an email confirmation of this change.
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') OK
+            #newExtraText.modal.fade(role='dialog')
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title Printing text saved
+                  .modal-body
+                    p The new printing text has been saved and is now visible when printing the page.
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') OK
+            #delAdmin.modal.fade(role='dialog')
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title Admin removed
+                  .modal-body
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') OK
+           
       #privacyPolicy.modal.fade(role='dialog')
         .modal-dialog
           .modal-content
