@@ -82,7 +82,7 @@ exports.newShift = function (userid, uQuery, email) {
           },
           organizer: {
             name: email.name,
-            email: email.user
+            email: email.user.replace("%40", "@")
           },
           attendees: [{
             name: entities.decode(user.userName).replace(/"/g, ''),
