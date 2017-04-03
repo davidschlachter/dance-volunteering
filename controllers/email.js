@@ -29,11 +29,11 @@ exports.welcome = function (user, email) {
 };
 
 exports.cancelled = function (userid, shift, email) {
-  User.findOne({
-    _id: userid
-  }, function (err, user) {
+User.findOne({
+  _id: userid
+}, function (err, user) {
 
-    CalendarID.findOne({
+  CalendarID.findOne({
       userID: userid,
       shiftID: shift._id
     }, function (calerr, calIDResult) {
@@ -92,31 +92,31 @@ exports.cancelled = function (userid, shift, email) {
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Cancelled shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>",
-          alternatives: [{
-            contentType: 'text/calendar',
-            content: icsstring
-          }]
-        };
+          html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+            //          alternatives: [{
+            //            contentType: 'text/calendar',
+            //            content: icsstring
+        }]
+    };
 
-        faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
+    faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
 
-        CalendarID.create({
-          userID: userid,
-          shiftID: shift._id,
-          calID: calGUID,
-          sequenceNumber: sequenceNumber
-        }, function (err, small) {
-          if (err) {
-            console.log("Failed to create CalendarID item:", err)
-          }
-        });
-
+    CalendarID.create({
+      userID: userid,
+      shiftID: shift._id,
+      calID: calGUID,
+      sequenceNumber: sequenceNumber
+    }, function (err, small) {
+      if (err) {
+        console.log("Failed to create CalendarID item:", err)
       }
-
     });
 
-  });
+  }
+
+});
+
+});
 };
 
 exports.newShift = function (userid, uQuery, email) {
