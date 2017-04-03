@@ -5,7 +5,8 @@ var mongoose = require('mongoose');
 var CalendarIDsSchema = new mongoose.Schema({
   userID: String,
   shiftID: String,
-  calID: String
+  calID: String,
+  sequenceNumber: Number
 });
 
 // Export the Mongoose model
