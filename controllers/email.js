@@ -29,11 +29,11 @@ exports.welcome = function (user, email) {
 };
 
 exports.cancelled = function (userid, shift, email) {
-User.findOne({
-  _id: userid
-}, function (err, user) {
+  User.findOne({
+    _id: userid
+  }, function (err, user) {
 
-  CalendarID.findOne({
+    CalendarID.findOne({
       userID: userid,
       shiftID: shift._id
     }, function (calerr, calIDResult) {
@@ -96,27 +96,27 @@ User.findOne({
             //          alternatives: [{
             //            contentType: 'text/calendar',
             //            content: icsstring
-        }]
-    };
+            //}]
+        };
 
-    faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
+        faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
 
-    CalendarID.create({
-      userID: userid,
-      shiftID: shift._id,
-      calID: calGUID,
-      sequenceNumber: sequenceNumber
-    }, function (err, small) {
-      if (err) {
-        console.log("Failed to create CalendarID item:", err)
+        CalendarID.create({
+          userID: userid,
+          shiftID: shift._id,
+          calID: calGUID,
+          sequenceNumber: sequenceNumber
+        }, function (err, small) {
+          if (err) {
+            console.log("Failed to create CalendarID item:", err)
+          }
+        });
+
       }
+
     });
 
-  }
-
-});
-
-});
+  });
 };
 
 exports.newShift = function (userid, uQuery, email) {
