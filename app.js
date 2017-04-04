@@ -22,7 +22,7 @@ var Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 var validator = require('validator');
 var sassMiddleware = require('node-sass-middleware');
-var uuid = require('uuid');
+var uuid = require('node-uuid');
 var minify = require('express-minify');
 var compression = require('compression')
 
