@@ -12,7 +12,6 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var LiveStrategy = require('passport-windowslive').Strategy;
 var User = require('./models/userModel');
-var flash = require('connect-flash');
 var email = require('./controllers/email');
 var userController = require('./controllers/user');
 var shiftController = require('./controllers/shift');
@@ -90,7 +89,6 @@ app.use(session({
   resave: false, // Don't save session if unmodified
   saveUninitialized: false // Don't create session until something stored
 }));
-app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(helmet({
