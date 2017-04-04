@@ -43,11 +43,9 @@ exports.cancelled = function (userid, shift, email) {
       }
       var calGUID;
       if (!calIDResult) {
-        calGUID = uuid.v1();
-        sequenceNumber = 0;
+        calGUID = uuid.v1()
       } else {
-        calGUID = calIDResult.calID;
-        sequenceNumber = calIDResult.sequenceNumber + 1;
+        calGUID = calIDResult.calID
       }
 
       if (user.sendDeletedShift != false) {
@@ -71,7 +69,6 @@ exports.cancelled = function (userid, shift, email) {
           description: 'Volunteering shift at the Ottawa Swing Dance Society',
           location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
           url: 'https://volunteer.swingottawa.ca/',
-          sequence: sequenceNumber,
           status: 'CANCELLED',
           geo: {
             lat: 45.425495,
@@ -100,15 +97,6 @@ exports.cancelled = function (userid, shift, email) {
 
         faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
 
-        CalendarID.create({
-          userID: userid,
-          shiftID: shift._id,
-          calID: calGUID,
-          sequenceNumber: sequenceNumber
-        }, function (err, small) {
-          if (err) return handleError(err);
-          // saved!
-        })
 
       }
 
@@ -137,10 +125,8 @@ exports.newShift = function (userid, uQuery, email) {
           var calGUID;
           if (!calIDResult) {
             calGUID = uuid.v1()
-            sequenceNumber = 0
           } else {
             calGUID = calIDResult.calID
-            sequenceNumber = calIDResult.sequenceNumber + 1
           }
 
           var date = moment(shift.date).format("MMMM D, YYYY");
@@ -163,7 +149,6 @@ exports.newShift = function (userid, uQuery, email) {
             description: 'Volunteering shift at the Ottawa Swing Dance Society',
             location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
             url: 'https://volunteer.swingottawa.ca/',
-            sequence: sequenceNumber,
             status: 'confirmed',
             geo: {
               lat: 45.425495,
@@ -196,8 +181,7 @@ exports.newShift = function (userid, uQuery, email) {
           CalendarID.create({
             userID: userid,
             shiftID: shift._id,
-            calID: calGUID,
-            sequenceNumber: sequenceNumber
+            calID: calGUID
           }, function (err, small) {
             if (err) return handleError(err);
             // saved!
