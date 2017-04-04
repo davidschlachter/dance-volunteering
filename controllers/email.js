@@ -44,7 +44,7 @@ exports.cancelled = function (userid, shift, email) {
       var calGUID;
       if (!calIDResult) {
         calGUID = uuid.v1();
-        sequenceNumber = "0";
+        sequenceNumber = 0;
       } else {
         calGUID = calIDResult.calID;
         sequenceNumber = calIDResult.sequenceNumber + 1;
@@ -86,7 +86,6 @@ exports.cancelled = function (userid, shift, email) {
             email: user.email
           }]
         });
-
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
@@ -107,10 +106,9 @@ exports.cancelled = function (userid, shift, email) {
           calID: calGUID,
           sequenceNumber: sequenceNumber
         }, function (err, small) {
-          if (err) {
-            console.log("Failed to create CalendarID item:", err)
-          }
-        });
+          if (err) return handleError(err);
+          // saved!
+        })
 
       }
 
@@ -139,7 +137,7 @@ exports.newShift = function (userid, uQuery, email) {
           var calGUID;
           if (!calIDResult) {
             calGUID = uuid.v1()
-            sequenceNumber = "0"
+            sequenceNumber = 0
           } else {
             calGUID = calIDResult.calID
             sequenceNumber = calIDResult.sequenceNumber + 1
@@ -201,9 +199,7 @@ exports.newShift = function (userid, uQuery, email) {
             calID: calGUID,
             sequenceNumber: sequenceNumber
           }, function (err, small) {
-            if (err) {
-              console.log("Failed to create CalendarID item:", err)
-            }
+            if (err) return handleError(err);
             // saved!
           })
 
