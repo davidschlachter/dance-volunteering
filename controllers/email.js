@@ -12,7 +12,14 @@ var crypto = require('crypto');
 var ICS = require('ics');
 
 var config = require('../config');
-var transporter = nodemailer.createTransport('smtps://' + config.opt.email.user + ':' + config.opt.email.pass + '@' + config.opt.email.server);
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: config.opt.email.user,
+    pass: config.opt.email.pass
+  },
+  pool: true
+});
 
 exports.welcome = function (user, email) {
   var mailOpts = {
