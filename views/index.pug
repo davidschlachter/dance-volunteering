@@ -12,6 +12,11 @@ html(lang='en')
       if user.isAdmin === true
         link(rel='stylesheet', href="stylesheets/pikaday.css")
     link(rel='stylesheet', href="stylesheets/style.css")
+    // Open Graph tags
+    meta(property="og:title",content=''+title)
+    meta(property="og:type",content="website")
+    meta(property="og:image",content=full_url+"/osds-description-image.jpg")
+    meta(property="og:url",content=''+full_url)
   body
     div.description
       img(src="osds-description-image.jpg", alt="Ottawa Swing Dance Society")
