@@ -51,7 +51,8 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
         if (typeof req.user === "undefined") {
           var shiftsTextVals = shiftsText(shifts, "", csrfToken);
           res.render('index', {
-            title: 'OSDS Volunteering',
+            title: config.opt.title,
+            full_url: config.opt.full_url,
             user: "",
             nonce: res.locals.nonce,
             csrfToken: csrfToken,
@@ -71,7 +72,8 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
             }
             var shiftsTextVals = shiftsText(shifts, user, csrfToken);
             res.render('index', {
-              title: 'OSDS Volunteering',
+              title: config.opt.title,
+              full_url: config.opt.full_url,
               user: user,
               nonce: res.locals.nonce,
               csrfToken: csrfToken,
@@ -87,7 +89,8 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
     } else {
       if (typeof req.user === "undefined") {
         res.render('index', {
-          title: 'OSDS Volunteering',
+          title: config.opt.title,
+          full_url: config.opt.full_url,
           user: "",
           nonce: res.locals.nonce,
           csrfToken: csrfToken,
@@ -102,7 +105,8 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
             return console.log(err1);
           }
           res.render('index', {
-            title: 'OSDS Volunteering',
+            title: config.opt.title,
+            full_url: config.opt.full_url,
             user: user,
             nonce: res.locals.nonce,
             csrfToken: csrfToken,
@@ -117,7 +121,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
 /* GET login page */
 router.get('/login', function (req, res, next) {
   res.render('login', {
-    title: 'OSDS Volunteering - Login'
+    title: config.opt.title + ' - Login'
   });
 });
 

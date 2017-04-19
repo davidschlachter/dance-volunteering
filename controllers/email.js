@@ -25,9 +25,9 @@ exports.welcome = function (user, email) {
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
-    subject: "Welcome to OSDS Volunteering",
-    text: "Welcome to OSDS Volunteering!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nSee you on the dance floor!",
-    html: "<p>Welcome to OSDS Volunteering!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
+    subject: "Welcome to " + config.opt.title,
+    text: "Welcome to " + config.opt.title + "!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nSee you on the dance floor!",
+    html: "<p>Welcome to " + config.opt.title + "!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>See you on the dance floor!</p>"
   };
 
   faultTolerantSend(function (err, info) {}, email, mailOpts, "Welcome message ");
@@ -78,7 +78,7 @@ exports.newShift = function (userid, uQuery, email) {
         var icsstring = ics.buildEvent({
           start: shiftStart.toISOString(),
           end: shiftStart.add(30, "minutes").toISOString(), // Danger: assumes 30 minutes shifts
-          title: 'OSDS Volunteering Shift',
+          title: config.opt.title + ' Shift',
           description: 'Volunteering shift at the Ottawa Swing Dance Society',
           location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
           url: 'https://volunteer.swingottawa.ca/',
@@ -380,9 +380,9 @@ exports.newAdmin = function (user, email) {
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
-    subject: "OSDS Volunteering: You've been added as an admin",
-    text: "Hi " + user.firstName + "!\nYou've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the OSDS Volunteering site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+    subject: config.opt.title + ": You've been added as an admin",
+    text: "Hi " + user.firstName + "!\nYou've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
+    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
   };
 
 
@@ -395,9 +395,9 @@ exports.removedAdmin = function (user, email) {
   var mailOpts = {
     from: '"' + email.name + '" <' + email.user + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
-    subject: "OSDS Volunteering: You've been removed as an admin",
-    text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the OSDS Volunteering site.",
-    html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the OSDS Volunteering site</a>.</p>"
+    subject: config.opt.title + ": You've been removed as an admin",
+    text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the " + config.opt.title + " site.",
+    html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the " + config.opt.title + " site</a>.</p>"
   };
 
 
