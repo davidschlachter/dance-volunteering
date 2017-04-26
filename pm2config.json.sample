@@ -2,6 +2,10 @@
   "apps": [{
     "name": "dance-volunteering",
     "script": "/var/www/dance-vol/bin/www",
-    "watch": ["app.js", "config.js", "bin", "controllers", "models", "package.json", "public", "routes", "views"]
+    "watch": ["app.js", "config.js", "bin", "controllers", "models", "package.json", "public", "routes", "views"],
+    "merge_logs": true,
+    "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS",
+    "out_file": "dance-volunteering.log",
+    "err_file": "dance-volunteering.log"
   }]
 }
