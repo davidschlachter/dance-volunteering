@@ -50,7 +50,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
         // If not logged in,
         if (typeof req.user === "undefined") {
           var shiftsTextVals = shiftsText(shifts, "", csrfToken);
-          console.log("User is not logged in");
+          console.log("User is not logged in from " + req.headers['x-forwarded-for']);
           res.render('index', {
             title: config.opt.title,
             full_url: config.opt.full_url,
@@ -72,7 +72,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
               return console.log(err1);
             }
             var shiftsTextVals = shiftsText(shifts, user, csrfToken);
-            console.log("User is " + user.userName);
+            console.log("User is " + user.userName + " from " + req.headers['x-forwarded-for']);
             res.render('index', {
               title: config.opt.title,
               full_url: config.opt.full_url,
@@ -90,7 +90,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
       // If the week is cancelled...
     } else {
       if (typeof req.user === "undefined") {
-        console.log("User is not logged in");
+        console.log("User is not logged in from " + req.headers['x-forwarded-for']);
         res.render('index', {
           title: config.opt.title,
           full_url: config.opt.full_url,
@@ -107,7 +107,7 @@ router.get('/', shift.checkShifts, csrfProtection, function (req, res, next) {
           if (err1) {
             return console.log(err1);
           }
-          console.log("User is " + user.userName);
+          console.log("User is " + user.userName + " from " + req.headers['x-forwarded-for']);
           res.render('index', {
             title: config.opt.title,
             full_url: config.opt.full_url,
