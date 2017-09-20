@@ -1,12 +1,18 @@
 {
-	"name": "OSDS Vol",
-	"icons": [
-		{
-			"src": "\/android-chrome-192x192.png",
-			"sizes": "192x192",
-			"type": "image\/png"
-		}
-	],
-	"theme_color": "#ffffff",
-	"display": "standalone"
+    "name": "OSDS Volunteering",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png?v=gAajOYbeQr",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png?v=gAajOYbeQr",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#c4a814",
+    "background_color": "#c4a814",
+    "display": "standalone"
 }
