@@ -19,17 +19,17 @@
   "dependencies": {
     "body-parser": "~1",
     "compression": "~1",
-    "connect-mongo": "~1",
+    "connect-mongo": "~2",
     "cookie-parser": "~1",
     "csurf": "~1",
-    "debug": "~2",
+    "debug": "~3",
     "express": "~4",
-    "express-minify": "~0.2",
+    "express-minify": "~1.0",
     "express-session": "~1",
     "helmet": "~3",
     "html-entities": "~1",
-    "ics": "~1",
-    "moment": "~2",
+    "ics": "~2",
+    "moment": "^2.18.x",
     "mongodb": "~2",
     "mongoose": "~4",
     "morgan": "~1",
@@ -40,11 +40,11 @@
     "passport-facebook": "~2",
     "passport-google-oauth20": "~1",
     "passport-windowslive": "~1",
-    "pug": "2.0.0-rc.2",
+    "pug": "2.0.0-rc.4",
     "retry": "~0",
     "serve-favicon": "~2",
     "uuid": "~3",
-    "validator": "~7"
+    "validator": "~9"
   },
   "private": "true"
 }
