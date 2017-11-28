@@ -9,7 +9,7 @@ var retry = require('retry');
 var Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 var crypto = require('crypto');
-var ICS = require('ics');
+var ics = require('ics');
 
 var config = require('../config');
 var transporter = nodemailer.createTransport({
@@ -74,15 +74,14 @@ exports.newShift = function (userid, uQuery, email) {
           shiftStart = moment(moment(shift.date).format("MMMM D, YYYY") + " " + shiftTime.format("h:mm A"), "MMMM D, YYYY h:mm A");
         }
         var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
-        var ics = new ICS();
-        var icsstring = ics.buildEvent({
-          start: shiftStart.toISOString(),
-          end: shiftStart.add(30, "minutes").toISOString(), // Danger: assumes 30 minutes shifts
+        const event = {
+          start: [ shiftStart.year(), shiftStart.month()+1, shiftStart.date(), shiftStart.hour(), shiftStart.minute(), shiftStart.second() ],
+          duration: {minutes: 30}, // Danger: assumes 30 minutes shifts TODO would calculate this somehow
           title: config.opt.title + ' Shift',
           description: 'Volunteering shift at the Ottawa Swing Dance Society',
           location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
           url: 'https://volunteer.swingottawa.ca/',
-          status: 'confirmed',
+          status: 'CONFIRMED',
           geo: {
             lat: 45.425495,
             lon: -75.685101
@@ -95,6 +94,13 @@ exports.newShift = function (userid, uQuery, email) {
             name: entities.decode(user.userName).replace(/"/g, ''),
             email: user.email
           }]
+        };
+        var eventString;
+        ics.createEvent(event, (error, value) => {
+          if (error) {
+            console.log(error);
+          }
+        	eventString = value;
         });
         var mailOpts = {
           from: '"' + email.name + '" <' + email.user + '>',
@@ -104,7 +110,7 @@ exports.newShift = function (userid, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>",
           alternatives: [{
             contentType: 'text/calendar',
-            content: icsstring
+            content: eventString
           }]
         };
 
