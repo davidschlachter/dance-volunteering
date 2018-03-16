@@ -261,7 +261,7 @@ exports.shiftsAvailable = function (email) {
 
         }
       });
-    } else if (results0.actuallyCancelled) {
+    } /*else if (results0.actuallyCancelled) {
       // If the week is actually cancelled, send a different message
       User.find({
         sendVolunteeringCall: true
@@ -284,7 +284,7 @@ exports.shiftsAvailable = function (email) {
           }
         }
       });
-    } else {
+    } */ else {
       // If the volunteering tool isn't being used, don't do anything
       console.log("Skipped sending volunteering call -- not using the tool this week");
     }
