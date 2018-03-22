@@ -44,6 +44,9 @@ img.user {
   @media screen and (max-width: 320px) {
     display: none;
   }
+  color: gray;
+  font-style: italic;
+  font-size: 80%;
 }
 
 .shiftID {
