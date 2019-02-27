@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/davidschlachter/dance-volunteering#readme",
   "dependencies": {
+    "@passport-next/passport-google-oauth2": "^1.0.0",
     "body-parser": "~1",
     "compression": "~1",
     "connect-mongo": "~2",
@@ -38,7 +39,6 @@
     "nodemailer": "~4",
     "passport": "~0",
     "passport-facebook": "~2",
-    "passport-google-oauth20": "~1",
     "passport-windowslive": "~1",
     "pug": "~2",
     "retry": "~0",
