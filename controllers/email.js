@@ -27,7 +27,7 @@ exports.welcome = function (user, email) {
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: "Welcome to " + config.opt.title,
     text: "Welcome to " + config.opt.title + "!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nPlease be sure to read the OSDS Volunteer Handbook before your first shift: http://bit.ly/osdsvolhandbook\nSee you on the dance floor!",
-    html: "<p>Welcome to " + config.opt.title + "!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p><p>Please be sure to read the OSDS Volunteer Handbook before your first shift: <a href=\"http://bit.ly/osdsvolhandbook\">http://bit.ly/osdsvolhandbook</a></p><p>See you on the dance floor!</p>"
+    html: "<p>Welcome to " + config.opt.title + "!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=welcome\">the volunteering website</a>.</p><p>Please be sure to read the OSDS Volunteer Handbook before your first shift: <a href=\"http://bit.ly/osdsvolhandbook\">http://bit.ly/osdsvolhandbook</a></p><p>See you on the dance floor!</p>"
   };
 
   faultTolerantSend(function (err, info) {}, email, mailOpts, "Welcome message ");
@@ -45,7 +45,7 @@ exports.cancelled = function (userid, shift, email) {
         to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+        html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=cancelled\">Configure email preferences</a></p>"
       };
 
       faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
@@ -107,7 +107,7 @@ exports.newShift = function (userid, uQuery, email) {
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nPlease be sure that you have read and are familiar with the OSDS Volunteer Handbook: http://bit.ly/osdsvolhandbook\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p>Please be sure that you have read and are familiar with the OSDS Volunteer Handbook: <a href=\"http://bit.ly/osdsvolhandbook\">http://bit.ly/osdsvolhandbook</a></p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>",
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p>Please be sure that you have read and are familiar with the OSDS Volunteer Handbook: <a href=\"http://bit.ly/osdsvolhandbook\">http://bit.ly/osdsvolhandbook</a></p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=newshift\">Configure email preferences</a></p>",
           alternatives: [{
             contentType: 'text/calendar',
             content: eventString
@@ -137,7 +137,7 @@ exports.newExecShift = function (userid, uQuery, email) {
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've signed up for a shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendNewShift&id=" + user.id + "\">Turn off new shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=execshift\">Configure email preferences</a></p>"
         };
 
 
@@ -162,7 +162,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendChangedShift&id=" + user.id + "\">Turn off changed shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+          html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendChangedShift&id=" + user.id + "\">Turn off changed shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=changedshift\">Configure email preferences</a></p>"
         };
 
         faultTolerantSend(function (err, info) {}, email, mailOpts, "Changed shift message ");
@@ -221,7 +221,7 @@ exports.mailOut = function (email) {
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts for this week",
             text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines.replace(/<\/td><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, ' ').replace(/<\/td><\/tr>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '').replace(/<tr><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, '').replace(/<br>/g, ' ').replace('</tbody></table>', '').replace('<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>', '\n') + "\nYou can print the full schedule on the volunteering website. \n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+            html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/?ref=mailOut\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=mailOut\">Configure email preferences</a></p>"
           };
 
           faultTolerantSend(function (err, info) {}, email, mailOpts, "Mail out message ");
@@ -252,7 +252,7 @@ exports.shiftsAvailable = function (email) {
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts open for this Friday",
             text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit " + config.opt.full_url + "/\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendVolunteeringCall&id=" + results[i].id + "\">Turn off weekly volunteering call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+            html: "<p>Hi " + results[i].firstName + "!</p><p>This is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit <a href=\"" + config.opt.full_url + "/?ref=shiftsAvailable\">" + config.opt.full_url + "/</a></p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendVolunteeringCall&id=" + results[i].id + "\">Turn off weekly volunteering call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=shiftsAvailable\">Configure email preferences</a></p>"
           };
 
           faultTolerantSend(function (err, info) {
@@ -318,7 +318,7 @@ exports.reminderVol = function (email) {
                   to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
                   subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time.replace(/<br>/g, ' '),
                   text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit " + config.opt.full_url + "/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-                  html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendReminder&id=" + shifts[i].Vol[j].id + "\">Turn off weekly reminder emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+                  html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/?ref=reminder\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendReminder&id=" + shifts[i].Vol[j].id + "\">Turn off weekly reminder emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=reminder\">Configure email preferences</a></p>"
                 };
 
 
@@ -365,7 +365,7 @@ exports.thankVol = function (email) {
               to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
               subject: "Thank you for volunteering!",
               text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendThanks&id=" + shifts[i].Vol[j].id + "\">Turn off thank you emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendThanks&id=" + shifts[i].Vol[j].id + "\">Turn off thank you emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=thankyou\">Configure email preferences</a></p>"
             };
 
 
@@ -388,7 +388,7 @@ exports.newAdmin = function (user, email) {
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: config.opt.title + ": You've been added as an admin",
     text: "Hi " + user.firstName + "!\nYou've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+    html: "<p>Hi " + user.firstName + "!</p><p>You've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule by email on Fridays at 5 PM.</p><p>Check it out at <a href=\"" + config.opt.full_url + "/?ref=newadmin\">" + config.opt.full_url + "/</a>!</p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=newadmin\">the volunteering website</a>.</p>"
   };
 
 
@@ -403,7 +403,7 @@ exports.removedAdmin = function (user, email) {
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: config.opt.title + ": You've been removed as an admin",
     text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the " + config.opt.title + " site.",
-    html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/\">the " + config.opt.title + " site</a>.</p>"
+    html: "<p>Hi " + user.firstName + "!</p><p>This is a notification that you're no longer an admin on <a href=\"" + config.opt.full_url + "/?ref=removedadmin\">the " + config.opt.title + " site</a>.</p>"
   };
 
 
@@ -465,7 +465,7 @@ exports.lastCall = function (email) {
               to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
               subject: "Last call: volunteering shifts still available",
               text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/\">the volunteering page</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendLastCall&id=" + results2[i].id + "\">Turn off last call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs\">Configure email preferences</a></p>"
+              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/?ref=lastcall\">the volunteering page</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendLastCall&id=" + results2[i].id + "\">Turn off last call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=lastcall\">Configure email preferences</a></p>"
             };
 
 
@@ -531,7 +531,7 @@ exports.newTemplate = function (email) {
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "New template for volunteering shifts",
             text: "Hi " + results[i].firstName + "!\nStarting next week the volunteering shifts will follow this format:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>Starting next week the volunteering shifts will follow this format:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
+            html: "<p>Hi " + results[i].firstName + "!</p><p>Starting next week the volunteering shifts will follow this format:</p>" + lines + "<p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=newtemplate\">the volunteering website</a>.</p>"
           };
 
 
