@@ -430,7 +430,10 @@ exports.lastCall = function (email) {
         }
 
         var i, j, line, lines = "<table><thead><th>Time</th></thead><tbody>";
+        var linesNewUsers = "<table><thead><th>Time</th></thead><tbody>";
         var shouldSend = false;
+        var shouldSendNewUsers = false;
+        // For regular users
         for (i = 0; i < results1.length; i++) {
           if (results1[i].Vol.length < results1[i].nVol) {
             line = '<tr><td>' + results1[i].time + '</td></tr>';
@@ -440,13 +443,23 @@ exports.lastCall = function (email) {
         }
         lines += "</tbody></table>";
         lines = lines.replace(/<br>/g, ' ');
-
-        if (shouldSend === false) {
-          return console.log("No shifts are available -- not sending lastCall");
+        // For new users
+        for (i = 0; i < results1.length; i++) {
+          if (results1[i].Vol.length < results1[i].nVol && results1[i].newUsers === true) {
+            line = '<tr><td>' + results1[i].time + '</td></tr>';
+            linesNewUsers += line;
+            shouldSendNewUsers = true;
+          }
         }
-
+        linesNewUsers += "</tbody></table>";
+        linesNewUsers = linesNewUsers.replace(/<br>/g, ' ');
+        
+        if (shouldSend === false) {
+          return console.log("No shifts are available -- not sending any lastCall");
+        }
         User.find({
-          sendLastCall: true
+          sendLastCall: true,
+          isNewUser: false
         }, function (err, results2) {
           var i, j, k, l, mailOpts, link;
           for (j = 0; j < results2.length; j++) {
@@ -466,6 +479,41 @@ exports.lastCall = function (email) {
               subject: "Last call: volunteering shifts still available",
               text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
               html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + lines + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/?ref=lastcall\">the volunteering page</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendLastCall&id=" + results2[i].id + "\">Turn off last call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=lastcall\">Configure email preferences</a></p>"
+            };
+
+
+            faultTolerantSend(function (err, info) {}, email, mailOpts, "Last call message ");
+
+          }
+        });
+        
+        
+        // Repeat of the sending routine, just for the new users email!
+        if (shouldSendNewUsers === false) {
+          return console.log("No shifts available for new users -- not sending them the lastCall");
+        }
+        User.find({
+          sendLastCall: true,
+          isNewUser: false
+        }, function (err, results2) {
+          var i, j, k, l, mailOpts, link;
+          for (j = 0; j < results2.length; j++) {
+            for (k = 0; k < results1.length; k++) {
+              for (l = 0; l < results1[k].Vol.length; l++) {
+                if (results1[k] && results1[k].Vol && results1[k].Vol.length > 0 && results2[j] && results2[j]._id && results2[j]._id.toString().indexOf(results1[k].Vol[l]) === 0) {
+                  results2.splice(j, 1);
+                }
+              }
+            }
+          }
+          for (i = 0; i < results2.length; i++) {
+            link = crypto.createHmac('sha1', config.opt.linkSecret).update(results2[i].id).digest('hex');
+            mailOpts = {
+              from: '"' + email.name + '" <' + email.user + '>',
+              to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
+              subject: "Last call: volunteering shifts still available",
+              text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + linesNewUsers + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
+              html: "<p>Hi " + results2[i].firstName + "!</p><p>These volunteering shifts still available for tonight's dance:</p>" + linesNewUsers + "<p>You can sign up for a shift today until 5 PM on <a href=\"" + config.opt.full_url + "/?ref=lastcall\">the volunteering page</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendLastCall&id=" + results2[i].id + "\">Turn off last call emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=lastcall\">Configure email preferences</a></p>"
             };
 
 
