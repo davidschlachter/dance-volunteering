@@ -6,7 +6,6 @@ var userSchema = new mongoose.Schema({
   // UserIDs from OAuth
   facebookID: String,
   googleID: String,
-  liveID: String,
   // Biographical
   userName: String,
   firstName: String,

@@ -224,36 +224,6 @@ router.get('/auth/google/callback',
     });
   });
 
-router.get('/loginLive', passport.authenticate('windowslive', {
-  scope: ['wl.signin', 'wl.emails'],
-  successRedirect: config.opt.base_url + '/',
-  failureRedirect: config.opt.base_url + '/login',
-  failureFlash: true
-}));
-router.get('/auth/live/callback',
-  passport.authenticate('windowslive', {
-    failureRedirect: config.opt.base_url + '/'
-  }),
-  function (req, res) {
-    User.findById(req.user._id, function (err, user) {
-      if (err) {
-        console.log(err);
-        res.redirect(config.opt.base_url + '/');
-      } else {
-        console.log("Microsoft log-in from", req.user.userName);
-        res.cookie('authMethod', "Microsoft", {
-          path: '/',
-          expires: cookieExpiryDate
-        });
-        res.cookie('userName', user.firstName, {
-          path: '/',
-          expires: cookieExpiryDate
-        });
-        res.redirect(config.opt.base_url + '/');
-      }
-    });
-  });
-
 /* GET the shifts */
 router.get('/getShifts', shift.getShifts);
 

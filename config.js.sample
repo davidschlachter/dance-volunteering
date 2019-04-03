@@ -30,12 +30,6 @@ var opt = {
     clientSecret: 'g_clientsecret',
     callbackURL: full_url + '/auth/google/callback'
   },
-  // For passport-windowslive
-  live: {
-    clientID: 'live_clientid',
-    clientSecret: 'live_clientsecret',
-    callbackURL: full_url + '/auth/live/callback'
-  },
   // For sending email
   email: {
     user: 'user%40gmail.com',

@@ -39,7 +39,6 @@
     "nodemailer": "~4",
     "passport": "~0",
     "passport-facebook": "~2",
-    "passport-windowslive": "~1",
     "pug": "~2",
     "retry": "~0",
     "serve-favicon": "~2",
