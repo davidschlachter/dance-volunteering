@@ -129,6 +129,13 @@ router.get('/login', function (req, res, next) {
   });
 });
 
+/* GET can't log in page */
+router.get('/cant-login', function (req, res, next) {
+  res.render('cant-login', {
+    title: config.opt.title + ' - Can\'t log in!'
+  });
+});
+
 /* GET logout */
 router.get('/logout', function (req, res) {
   req.logout();
@@ -167,12 +174,11 @@ router.get('/unsubscribe', userController.unsubscribe);
 router.get('/loginFacebook', passport.authenticate('facebook', {
   scope: ['email'],
   successRedirect: config.opt.base_url + '/',
-  failureRedirect: config.opt.base_url + '/login',
-  failureFlash: true
+  failureRedirect: config.opt.base_url + '/cant-login'
 }));
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook', {
-    failureRedirect: config.opt.base_url + '/login',
+    failureRedirect: config.opt.base_url + '/cant-login',
   }),
   function (req, res) {
     User.findById(req.user._id, function (err, user) {
@@ -197,12 +203,11 @@ router.get('/auth/facebook/callback',
 router.get('/loginGoogle', passport.authenticate('google', {
   scope: ['profile', 'email'],
   successRedirect: config.opt.base_url + '/',
-  failureRedirect: config.opt.base_url + '/login',
-  failureFlash: true
+  failureRedirect: config.opt.base_url + '/cant-login'
 }));
 router.get('/auth/google/callback',
   passport.authenticate('google', {
-    failureRedirect: config.opt.base_url + '/login',
+    failureRedirect: config.opt.base_url + '/cant-login',
   }),
   function (req, res) {
     User.findById(req.user._id, function (err, user) {

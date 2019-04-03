@@ -1,0 +1,20 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title
+    link(rel='stylesheet', href='stylesheets/style.css')
+    link(rel='stylesheet', href="bootstrap/bootstrap+theme.min.css")
+    script(src="bootstrap/bootstrap.min.js")
+  body
+    div.container
+      p <br> An error occurred when trying to log in!
+      p Maybe try 
+	  	a(href="/login") logging in again?
+	  p If you're still having trouble, contact us at 
+	  	a(href="mailto:osdsvol@gmail.com") osdsvol@gmail.com
+      div#footer
+        br
+        a#showPrivacyPolicy(href="#") Privacy policy
