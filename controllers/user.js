@@ -343,6 +343,71 @@ exports.getFrequent = function (req, res, next) {
 };
 
 
+// Don't send volunteering call or lastCall to users who haven't
+// volunteered in the previous year, as long as they haven't signed
+// up in the past month(?)
+exports.tidyEmailList = function () {
+  var i, j;
+
+  Shift.find({
+    date: {
+      $gte: new Date(new Date().setFullYear(new Date().getFullYear() + -1))
+    }
+  }).populate({
+    path: 'Vol',
+    select: '_id userName email isNewUser'
+  }).exec(function (err, shiftResults) {
+    if (err) {return console.log(err);}
+    if (!shiftResults.length) {return console.log("No shifts found in tidyEmailList");}
+
+    var volunteers = [];
+
+    for (j = 0; j < shiftResults.length; j++) {
+      for (i = 0; i < shiftResults[j].Vol.length; i++) {
+        volunteers.push(shiftResults[j].Vol[i]._id); // Separate name and email with a pipe
+      }
+    }
+
+    var uniqVolunteers = uniq(volunteers);
+
+    // Iterate over all users (who have volunteered at least once
+    // and are not admins, check if they have volunteered in
+    // the past year
+    User.find({
+      isNewUser: false,
+      isAdmin: false,
+      $or: [ { sendVolunteeringCall: true}, { sendLastCall: true } ]
+    }).select('_id firstName lastName userName email profilePicture sendVolunteeringCall sendLastCall').exec(function (err, result) {
+      if (err) {return console.log(err);}
+      var hasVolunteered = false;
+      for (i=0; i < result.length; i++) { // For all users who are not new users
+        hasVolunteered = false;
+        for (j=0; j < uniqVolunteers.length; j++) { // For those who have volunteered
+          if (result[i]._id.toString() === uniqVolunteers[j].toString()) {
+            hasVolunteered = true;
+          }
+        }
+        if (hasVolunteered === false) {
+          console.log("Removing user from the volunteering call: "+result[i].userName)
+          console.log("  Previous email preferences: sendVolunteeringCall "+result[i].sendVolunteeringCall+" sendLastCall: "+result[i].sendLastCall)
+          User.findOneAndUpdate({
+            _id: result[i]._id
+          }, {
+            $set: {
+              sendVolunteeringCall: false, sendLastCall: false}
+          }, function (err, result) {
+            if (err) {return console.log(err);}
+            return console.log("Updated email preferences for " + result.userName);
+          });
+        } // done modifying email preferences
+      } // on to the next user
+    });
+
+  });
+
+};
+
+
 // Count the unique items in an array
 // via https://gist.github.com/raecoo/4230308
 function compressArray(original) {
@@ -375,3 +440,9 @@ function compressArray(original) {
 
   return compressed;
 };
+
+// Remove duplicates from array
+// https://stackoverflow.com/a/9229821/3380815
+function uniq(a) {
+   return Array.from(new Set(a));
+}

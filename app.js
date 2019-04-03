@@ -338,6 +338,10 @@ cron.schedule('0 23 * * 6', function () {
   console.log('Updating isNewUser');
   userController.updateNewUsers();
 });
+cron.schedule('0 30 * * 6', function () {
+  console.log('Tidying email list');
+  userController.tidyEmailList();
+});
 // Sunday 12 PM -- create shifts, notify users
 cron.schedule('1 0 12 * * 7', function () {
   console.log("Running checkShifts from cron");
