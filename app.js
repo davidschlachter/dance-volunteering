@@ -338,7 +338,7 @@ cron.schedule('0 23 * * 6', function () {
   console.log('Updating isNewUser');
   userController.updateNewUsers();
 });
-cron.schedule('0 30 * * 6', function () {
+cron.schedule('5 23 * * 6', function () {
   console.log('Tidying email list');
   userController.tidyEmailList();
 });
