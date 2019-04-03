@@ -10,11 +10,8 @@ var linkSecret = crypto.randomBytes(64).toString('hex');
 var opt = {
   db: 'mongodb://127.0.0.1:27017/osdsvol',
   mongoose: {
-    db: {
-      native_parser: true
-    },
-    user: 'mongo_user',
-    pass: 'mongo_passwd'
+    useMongoClient: true,
+    keepAlive: 120
   },
   base_url: base_url,
   full_path: full_path,
