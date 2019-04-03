@@ -1,7 +1,7 @@
 # dance-volunteering
 Volunteering system for the Ottawa Swing Dance Society. Live at https://volunteer.swingottawa.ca.
 
-Shifts are generated from a template Sundays at 12:00 PM (noon). Volunteers can log in with Google, Facebook, or Microsoft and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
+Shifts are generated from a template Sundays at 12:00 PM (noon). Volunteers can log in with Google or Facebook and sign up for a shift. Admins can see contact information for volunteers and receive an automatic email at 17:00 on Friday with the volunteering schedule.
 
 
 ## List of features (with current status):
@@ -11,7 +11,6 @@ Accounts
 (An account is only required to volunteer for a shift)
 - [X] A user can log in with Facebook
 - [X] A user can log in with Google
-- [X] A user can log in with Microsoft
 
 Volunteering
 ------------
