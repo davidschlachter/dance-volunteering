@@ -354,7 +354,7 @@ exports.tidyEmailList = function () {
     }
   }).populate({
     path: 'Vol',
-    select: '_id userName email isNewUser'
+    select: '_id'
   }).exec(function (err, shiftResults) {
     if (err) {return console.log(err);}
     if (!shiftResults.length) {return console.log("No shifts found in tidyEmailList");}
@@ -375,8 +375,8 @@ exports.tidyEmailList = function () {
     User.find({
       isNewUser: false,
       isAdmin: false,
-      $or: [ { sendVolunteeringCall: true}, { sendLastCall: true } ]
-    }).select('_id firstName lastName userName email profilePicture sendVolunteeringCall sendLastCall').exec(function (err, result) {
+      sendVolunteeringCall: true
+    }).select('_id userName sendVolunteeringCall sendLastCall').exec(function (err, result) {
       if (err) {return console.log(err);}
       var hasVolunteered = false;
       for (i=0; i < result.length; i++) { // For all users who are not new users
@@ -396,7 +396,6 @@ exports.tidyEmailList = function () {
               sendVolunteeringCall: false, sendLastCall: false}
           }, function (err, result) {
             if (err) {return console.log(err);}
-            return console.log("  New email preferences: sendVolunteeringCall "+result.sendVolunteeringCall+" sendLastCall: "+result.sendLastCall);
           });
         } // done modifying email preferences
       } // on to the next user
