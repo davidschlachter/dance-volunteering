@@ -207,8 +207,7 @@ passport.use(new FacebookStrategy({
             facebookID: profile.id
           }, {
             $set: {
-              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
-              email: profile.emails[0].value
+              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture')
             }
           }, function (err, doc) {
             if (err) {
@@ -289,8 +288,7 @@ passport.use(new GoogleStrategy({
             googleID: profile.id
           }, {
             $set: {
-              profilePicture: encodeURI(profile.photos[0].value),
-              email: profile.emails[0].value
+              profilePicture: encodeURI(profile.photos[0].value)
             }
           }, function (err, doc) {
             if (err) {
