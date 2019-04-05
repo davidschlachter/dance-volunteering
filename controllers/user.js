@@ -344,8 +344,7 @@ exports.getFrequent = function (req, res, next) {
 
 
 // Don't send volunteering call or lastCall to users who haven't
-// volunteered in the previous year, as long as they haven't signed
-// up in the past month(?)
+// volunteered in the previous year
 exports.tidyEmailList = function () {
   var i, j;
 
@@ -364,7 +363,7 @@ exports.tidyEmailList = function () {
 
     for (j = 0; j < shiftResults.length; j++) {
       for (i = 0; i < shiftResults[j].Vol.length; i++) {
-        volunteers.push(shiftResults[j].Vol[i]._id); // Separate name and email with a pipe
+        volunteers.push(shiftResults[j].Vol[i]._id);
       }
     }
 
@@ -397,7 +396,7 @@ exports.tidyEmailList = function () {
               sendVolunteeringCall: false, sendLastCall: false}
           }, function (err, result) {
             if (err) {return console.log(err);}
-            return console.log("Updated email preferences for " + result.userName);
+            return console.log("  New email preferences: sendVolunteeringCall "+result.sendVolunteeringCall+" sendLastCall: "+result.sendLastCall);
           });
         } // done modifying email preferences
       } // on to the next user
