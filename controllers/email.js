@@ -494,7 +494,7 @@ exports.lastCall = function (email) {
         }
         User.find({
           sendLastCall: true,
-          isNewUser: false
+          isNewUser: true
         }, function (err, results2) {
           var i, j, k, l, mailOpts, link;
           for (j = 0; j < results2.length; j++) {
