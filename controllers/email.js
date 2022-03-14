@@ -13,7 +13,8 @@ var ics = require('ics');
 
 var config = require('../config');
 var transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  host: config.opt.email.server,
+  secure: true,
   auth: {
     user: config.opt.email.user,
     pass: config.opt.email.pass
@@ -23,7 +24,7 @@ var transporter = nodemailer.createTransport({
 
 exports.welcome = function (user, email) {
   var mailOpts = {
-    from: '"' + email.name + '" <' + email.user + '>',
+    from: '"' + email.name + '" <' + email.from + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: "Welcome to " + config.opt.title,
     text: "Welcome to " + config.opt.title + "!\nEach week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift.\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs\nPlease be sure to read the OSDS Volunteer Handbook before your first shift: http://bit.ly/osdsvolhandbook\nSee you on the dance floor!",
@@ -41,7 +42,7 @@ exports.cancelled = function (userid, shift, email) {
       var date = moment(query.date).format("MMMM D, YYYY");
       var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
       var mailOpts = {
-        from: '"' + email.name + '" <' + email.user + '>',
+        from: '"' + email.name + '" <' + email.from + '>',
         to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
         subject: "Cancelled shift on " + date,
         text: "Hi " + user.firstName + "!\nYou've cancelled your shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -103,7 +104,7 @@ exports.newShift = function (userid, uQuery, email) {
         	eventString = value;
         });
         var mailOpts = {
-          from: '"' + email.name + '" <' + email.user + '>',
+          from: '"' + email.name + '" <' + email.from + '>',
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nPlease be sure that you have read and are familiar with the OSDS Volunteer Handbook: http://bit.ly/osdsvolhandbook\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -133,7 +134,7 @@ exports.newExecShift = function (userid, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         var mailOpts = {
-          from: '"' + email.name + '" <' + email.user + '>',
+          from: '"' + email.name + '" <' + email.from + '>',
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Exec volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've signed up for a shift at " + shift.time + " on " + date + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -158,7 +159,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
         var date = moment(shift.date).format("MMMM D, YYYY");
         var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         var mailOpts = {
-          from: '"' + email.name + '" <' + email.user + '>',
+          from: '"' + email.name + '" <' + email.from + '>',
           to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
           subject: "Changed time: Volunteer shift on " + date,
           text: "Hi " + user.firstName + "!\nYou've changed your volunteer shift on " + date + " from " + oldShift.time + " to " + shift.time + ".\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -217,7 +218,7 @@ exports.mailOut = function (email) {
         for (i = 0; i < results.length; i++) {
           link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
           mailOpts = {
-            from: '"' + email.name + '" <' + email.user + '>',
+            from: '"' + email.name + '" <' + email.from + '>',
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts for this week",
             text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines.replace(/<\/td><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, ' ').replace(/<\/td><\/tr>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '').replace(/<tr><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, '').replace(/<br>/g, ' ').replace('</tbody></table>', '').replace('<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>', '\n') + "\nYou can print the full schedule on the volunteering website. \n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -248,7 +249,7 @@ exports.shiftsAvailable = function (email) {
         for (i = 0; i < results.length; i++) {
           link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
           mailOpts = {
-            from: '"' + email.name + '" <' + email.user + '>',
+            from: '"' + email.name + '" <' + email.from + '>',
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "Volunteering shifts open for this Friday",
             text: "Hi " + results[i].firstName + "!\nThis is an automatic reminder that volunteering shifts for this Friday are now open. To sign up, visit " + config.opt.full_url + "/\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -271,7 +272,7 @@ exports.shiftsAvailable = function (email) {
           for (i = 0; i < users.length; i++) {
             console.log("We have:", users[i].userName.replace(/"/g, ''), users[i].email, users[i].firstName, users[i].userName);
             mailOpts = {
-              from: '"' + email.name + '" <' + email.user + '>',
+              from: '"' + email.name + '" <' + email.from + '>',
               to: '"' + users[i].userName.replace(/"/g, '') + '" <' + users[i].email + '>',
               subject: "No dance this Friday",
               text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next time! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -314,7 +315,7 @@ exports.reminderVol = function (email) {
               if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendReminder === true) {
                 link = crypto.createHmac('sha1', config.opt.linkSecret).update(shifts[i].Vol[j].id).digest('hex');
                 mailOpts = {
-                  from: '"' + email.name + '" <' + email.user + '>',
+                  from: '"' + email.name + '" <' + email.from + '>',
                   to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
                   subject: "Reminder: volunteer shift tomorrow, " + shifts[i].time.replace(/<br>/g, ' '),
                   text: "Hi " + shifts[i].Vol[j].firstName + "!\nThis is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit " + config.opt.full_url + "/. See you on the dance floor!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -361,7 +362,7 @@ exports.thankVol = function (email) {
           if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendThanks === true) {
             link = crypto.createHmac('sha1', config.opt.linkSecret).update(shifts[i].Vol[j].id).digest('hex');
             mailOpts = {
-              from: '"' + email.name + '" <' + email.user + '>',
+              from: '"' + email.name + '" <' + email.from + '>',
               to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
               subject: "Thank you for volunteering!",
               text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -384,7 +385,7 @@ exports.thankVol = function (email) {
 exports.newAdmin = function (user, email) {
 
   var mailOpts = {
-    from: '"' + email.name + '" <' + email.user + '>',
+    from: '"' + email.name + '" <' + email.from + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: config.opt.title + ": You've been added as an admin",
     text: "Hi " + user.firstName + "!\nYou've been made an admin on the " + config.opt.title + " site. You can now see contact details for volunteers, and you'll receive the volunteering schedule for each week on Fridays at 5 PM.\nCheck it out at " + config.opt.full_url + "/!\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -399,7 +400,7 @@ exports.newAdmin = function (user, email) {
 exports.removedAdmin = function (user, email) {
 
   var mailOpts = {
-    from: '"' + email.name + '" <' + email.user + '>',
+    from: '"' + email.name + '" <' + email.from + '>',
     to: '"' + entities.decode(user.userName).replace(/"/g, '') + '" <' + user.email + '>',
     subject: config.opt.title + ": You've been removed as an admin",
     text: "Hi " + user.firstName + "!\nThis is a notification that you're no longer an admin on the " + config.opt.title + " site.",
@@ -474,7 +475,7 @@ exports.lastCall = function (email) {
           for (i = 0; i < results2.length; i++) {
             link = crypto.createHmac('sha1', config.opt.linkSecret).update(results2[i].id).digest('hex');
             mailOpts = {
-              from: '"' + email.name + '" <' + email.user + '>',
+              from: '"' + email.name + '" <' + email.from + '>',
               to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
               subject: "Last call: volunteering shifts still available",
               text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + lines + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -509,7 +510,7 @@ exports.lastCall = function (email) {
           for (i = 0; i < results2.length; i++) {
             link = crypto.createHmac('sha1', config.opt.linkSecret).update(results2[i].id).digest('hex');
             mailOpts = {
-              from: '"' + email.name + '" <' + email.user + '>',
+              from: '"' + email.name + '" <' + email.from + '>',
               to: '"' + results2[i].userName.replace(/"/g, '') + '" <' + results2[i].email + '>',
               subject: "Last call: volunteering shifts still available",
               text: "Hi " + results2[i].firstName + "!\nThese volunteering shifts still available for tonight's dance:\n" + linesNewUsers + "\nYou can sign up for a shift today until 5 PM on the volunteering page: " + config.opt.full_url + "/\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
@@ -575,7 +576,7 @@ exports.newTemplate = function (email) {
         var i, mailOpts;
         for (i = 0; i < results.length; i++) {
           mailOpts = {
-            from: '"' + email.name + '" <' + email.user + '>',
+            from: '"' + email.name + '" <' + email.from + '>',
             to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
             subject: "New template for volunteering shifts",
             text: "Hi " + results[i].firstName + "!\nStarting next week the volunteering shifts will follow this format:\n" + lines + "\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",

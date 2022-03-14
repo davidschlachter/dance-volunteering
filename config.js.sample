@@ -32,6 +32,7 @@ var opt = {
   },
   // For sending email
   email: {
+	from: 'user@gmail.com',
     user: 'user%40gmail.com',
     pass: 'app_password',
     server: 'smtp.gmail.com', // SMTP
