@@ -1,0 +1,14 @@
+[Unit]
+Description=dance-volunteering
+Documentation=https://volunteer.swingottawa.ca/
+After=network.target
+
+[Service]
+Type=simple
+User=volunteer
+ExecStart=/usr/bin/node /usr/local/www/dance-volunteering/app.js serve
+WorkingDirectory=/usr/local/www/dance-volunteering
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
