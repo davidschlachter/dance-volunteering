@@ -19,7 +19,9 @@ var transporter = nodemailer.createTransport({
     user: config.opt.email.user,
     pass: config.opt.email.pass
   },
-  pool: true
+  pool: true,
+  rateDelta: 1000, // ms
+  rateLimit: 12
 });
 
 exports.welcome = function (user, email) {
