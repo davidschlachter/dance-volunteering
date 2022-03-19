@@ -31,19 +31,19 @@
     "html-entities": "~1",
     "ics": "~2",
     "moment": "^2.18.x",
-    "mongodb": "~2",
-    "mongoose": "~4",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.7",
     "morgan": "~1",
     "node-cron": "~1",
     "node-sass-middleware": "~0",
-    "nodemailer": "~4",
+    "nodemailer": "^6.7.2",
     "passport": "~0",
-    "passport-facebook": "~2",
-    "pug": "~2",
+    "passport-facebook": "~3",
+    "pug": "^3.0.2",
     "retry": "~0",
     "serve-favicon": "~2",
     "uuid": "~3",
-    "validator": "~9"
+    "validator": "^13.7.0"
   },
   "private": "true"
 }
