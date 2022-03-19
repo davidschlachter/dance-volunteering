@@ -1,0 +1,24 @@
+@media (prefers-color-scheme: dark) {
+  body,html {
+    background-color: #080912!important;
+    color: #edeef7!important;
+  }
+  #date {
+    background-color: #14151f;
+    color: #edeef7;
+  }
+  input {
+    background-color: #14151f;
+  }
+  #nextWeekWarning {
+    background-color: #360000!important;
+  }
+  .modal-content {
+    background-color: #14151f;
+    color: #edeef7;
+  }
+  .close {
+    color: white!important;
+    text-shadow: none;
+  }
+}
