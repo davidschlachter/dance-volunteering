@@ -78,8 +78,8 @@ exports.newShift = function (userid, uQuery, email) {
         }
         var link = crypto.createHmac('sha1', config.opt.linkSecret).update(user.id).digest('hex');
         const event = {
-          start: [ shiftStart.year(), shiftStart.month()+1, shiftStart.date(), shiftStart.hour(), shiftStart.minute(), shiftStart.second() ],
-          duration: {minutes: 30}, // Danger: assumes 30 minutes shifts TODO would calculate this somehow
+          start: [shiftStart.year(), shiftStart.month() + 1, shiftStart.date(), shiftStart.hour(), shiftStart.minute(), shiftStart.second()],
+          duration: { minutes: 45 }, // Danger: assumes 45 minute shifts TODO would calculate this somehow
           title: config.opt.title + ' Shift',
           description: 'Volunteering shift at the Ottawa Swing Dance Society',
           location: '174 Wilbrod St, Ottawa, ON K1N 6N8',
@@ -91,7 +91,7 @@ exports.newShift = function (userid, uQuery, email) {
           },
           organizer: {
             name: email.name,
-            email: email.user.replace("%40", "@")
+            email: email.from
           },
           attendees: [{
             name: entities.decode(user.userName).replace(/"/g, ''),
