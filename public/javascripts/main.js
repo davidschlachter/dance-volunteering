@@ -71,6 +71,11 @@ $(document).ready(function () {
     $('#privacyPolicy').modal('show');
     return false;
   });
+  // Open the Privacy Policy if needed
+  if (window.location.href.indexOf('#privacyPolicy') !== -1) {
+    $('#privacyPolicy').modal('show');
+  }
+
 });
 
 $(window).on('load', function () {
