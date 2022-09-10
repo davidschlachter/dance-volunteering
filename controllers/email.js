@@ -175,63 +175,71 @@ exports.switching = function (userid, oldShift, uQuery, email) {
 };
 
 
-
 exports.mailOut = function (email) {
   var query = shift.getFriday(moment());
-  var shifts = Shift.find(query, null, {
-    sort: {
-      index: 1
+  Cancelled.findOne(query, function (err0, results0) {
+    if (err0) {
+      return console.log(err0);
     }
-  }).populate({
-    path: 'Vol',
-    select: '_id firstName lastNameInitial email isNewUser'
-  }).populate({
-    path: 'Exec',
-    select: '_id userName firstName lastNameInitial email'
-  }).exec(function (err, results) {
-    if (err) {
-      return console.log(err);
-    }
-    if (results.length) {
-      var i, j, newUser, line, lines = '<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>';
-      for (i = 0; i < results.length; i++) {
-        if (results[i].Vol.length === 0) {
-          line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;"><strong>No volunteers</strong></td></tr>';
-          lines += line;
-        } else {
-          for (j = 0; j < results[i].Vol.length; j++) {
-            if (results[i].Vol[j].isNewUser === true) {
-              newUser = ' <em>(New volunteer)</em>';
-            } else {
-              newUser = '';
-            }
-            line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastNameInitial + newUser + '</td></tr>';
-            lines += line;
-          }
+    // If the week isn't cancelled, send the list of volunteers
+    if (!results0) {
+      Shift.find(query, null, {
+        sort: {
+          index: 1
         }
-      }
-      lines += "</tbody></table>";
+      }).populate({
+        path: 'Vol',
+        select: '_id firstName lastNameInitial email isNewUser'
+      }).populate({
+        path: 'Exec',
+        select: '_id userName firstName lastNameInitial email'
+      }).exec(function (err, results) {
+        if (err) {
+          return console.log(err);
+        }
+        if (results.length) {
+          var i, j, newUser, line, lines = '<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>';
+          for (i = 0; i < results.length; i++) {
+            if (results[i].Vol.length === 0) {
+              line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;"><strong>No volunteers</strong></td></tr>';
+              lines += line;
+            } else {
+              for (j = 0; j < results[i].Vol.length; j++) {
+                if (results[i].Vol[j].isNewUser === true) {
+                  newUser = ' <em>(New volunteer)</em>';
+                } else {
+                  newUser = '';
+                }
+                line = '<tr><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].time + '</td><td style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">' + results[i].Vol[j].firstName + ' ' + results[i].Vol[j].lastNameInitial + newUser + '</td></tr>';
+                lines += line;
+              }
+            }
+          }
+          lines += "</tbody></table>";
 
-      User.find({
-        isAdmin: true,
-        sendSchedule: true
-      }, function (err, results) {
-        var i, mailOpts, link;
-        for (i = 0; i < results.length; i++) {
-          link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
-          mailOpts = {
-            from: '"' + email.name + '" <' + email.from + '>',
-            to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
-            subject: "Volunteering shifts for this week",
-            text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines.replace(/<\/td><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, ' ').replace(/<\/td><\/tr>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '').replace(/<tr><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, '').replace(/<br>/g, ' ').replace('</tbody></table>', '').replace('<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>', '\n') + "\nYou can print the full schedule on the volunteering website. \n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-            html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/?ref=mailOut\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=mailOut\">Configure email preferences</a></p>"
-          };
+          User.find({
+            isAdmin: true,
+            sendSchedule: true
+          }, function (err, results) {
+            var i, mailOpts, link;
+            for (i = 0; i < results.length; i++) {
+              link = crypto.createHmac('sha1', config.opt.linkSecret).update(results[i].id).digest('hex');
+              mailOpts = {
+                from: '"' + email.name + '" <' + email.from + '>',
+                to: '"' + results[i].userName.replace(/"/g, '') + '" <' + results[i].email + '>',
+                subject: "Volunteering shifts for this week",
+                text: "Hi " + results[i].firstName + "!\nThe shifts for this week are:\n" + lines.replace(/<\/td><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, ' ').replace(/<\/td><\/tr>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '').replace(/<tr><td style\="padding\: 0\.2em 1em 0\.2em 0\.2em;border-bottom\: 1px solid gray;">/g, '').replace(/<br>/g, ' ').replace('</tbody></table>', '').replace('<table style="border-collapse: collapse;"><thead><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Time</th><th style="padding: 0.2em 1em 0.2em 0.2em;border-bottom: 1px solid gray;">Volunteer</th></thead><tbody>', '\n') + "\nYou can print the full schedule on the volunteering website. \n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
+                html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/?ref=mailOut\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=mailOut\">Configure email preferences</a></p>"
+              };
 
-          faultTolerantSend(function (err, info) { }, email, mailOpts, "Mail out message ");
-
-
+              faultTolerantSend(function (err, info) { }, email, mailOpts, "Mail out message ");
+            }
+          });
         }
       });
+    } else {
+      // If the week is cancelled, don't do anything
+      return;
     }
   });
 };
