@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -46,8 +45,6 @@ db.once('open', function () {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -162,13 +159,13 @@ app.use(function (err, req, res, next) {
 // Passport login strategies
 //
 passport.use(new FacebookStrategy({
-    clientID: config.opt.facebook.clientID,
-    clientSecret: config.opt.facebook.clientSecret,
-    callbackURL: config.opt.facebook.callbackURL,
-    enableProof: true,
-    passReqToCallback: true,
-    profileFields: ['emails', 'name', 'picture', 'displayName']
-  },
+  clientID: config.opt.facebook.clientID,
+  clientSecret: config.opt.facebook.clientSecret,
+  callbackURL: config.opt.facebook.callbackURL,
+  enableProof: true,
+  passReqToCallback: true,
+  profileFields: ['emails', 'name', 'picture', 'displayName']
+},
   function (req, accessToken, refreshToken, profile, done) {
     User.findOne({
       facebookID: profile.id
@@ -246,10 +243,10 @@ passport.use(new FacebookStrategy({
   }
 ));
 passport.use(new GoogleStrategy({
-    clientID: config.opt.google.clientID,
-    clientSecret: config.opt.google.clientSecret,
-    callbackURL: config.opt.google.callbackURL
-  },
+  clientID: config.opt.google.clientID,
+  clientSecret: config.opt.google.clientSecret,
+  callbackURL: config.opt.google.callbackURL
+},
   function (accessToken, refreshToken, profile, done) {
     User.findOne({
       googleID: profile.id

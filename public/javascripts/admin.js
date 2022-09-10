@@ -391,9 +391,9 @@ function addRow() {
 // Save the new templates
 function newTemplate() {
   var templates = {
-      d: [],
-      _csrf: csrf
-    },
+    d: [],
+    _csrf: csrf
+  },
     check, i, table = $("#templateTable tbody")[0];
   for (i = 0; i < table.rows.length; i++) {
     if ($(table.rows[i].cells[3]).find('input').is(':checked')) {

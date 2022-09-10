@@ -1,6 +1,5 @@
 // Load required packages
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
 // Define the Shift schema
 var CancelledSchema = new mongoose.Schema({

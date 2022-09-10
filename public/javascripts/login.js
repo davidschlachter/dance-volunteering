@@ -1,5 +1,5 @@
 
-$(document).ready(function() {
+$(document).ready(function () {
   // Description
   var authMethod = getCookie("authMethod");
   var userName = decodeURIComponent(getCookie("userName"));
@@ -7,16 +7,16 @@ $(document).ready(function() {
     $("#Welcome").html("<br>Welcome back " + userName + "!");
     $("#Welcome").show();
     $("#newUser").hide();
-    
-    $(".btn").each(function() {
+
+    $(".btn").each(function () {
       $(this).hide();
     });
-    
+
     $("#" + authMethod).show();
     $("#" + authMethod).removeClass("btn-default");
     $("#" + authMethod).addClass("btn-primary btn-lg");
     $("#" + authMethod).parent().parent().prepend($("#" + authMethod).parent());
-    
+
     $("#secondThoughts").show();
     $("#secondThoughts").html('<br><a href="login" onclick="clearCookies()">Not ' + userName + '?</a>');
     $("#secondThoughts").click(function (e) {
@@ -24,14 +24,14 @@ $(document).ready(function() {
       return true;
     });
   }
-  
+
   // Add an event listener for the Privacy Policy
   $("a#showPrivacyPolicy").click(function (e) {
     e.preventDefault();
     $('#privacyPolicy').modal('show');
     return false;
   });
-  
+
 });
 
 
@@ -40,13 +40,14 @@ function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) {
-    return parts.pop().split(";").shift();} else {return false;}
+    return parts.pop().split(";").shift();
+  } else { return false; }
 };
 
 // Function to clear the cookies
 function clearCookies() {
-  document.cookie = "authMethod" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
-  document.cookie = "userName" +'=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
+  document.cookie = "authMethod" + '=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
+  document.cookie = "userName" + '=null; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path= /';
   return true;
 };
 
@@ -54,8 +55,8 @@ function clearCookies() {
 $('a[data-loading-text]').click(function () {
   var btn = $(this);
   btn.button('loading');
-  
-  $(".btn").each(function() {
+
+  $(".btn").each(function () {
     $(this).hide();
   });
   $("#loading").show();

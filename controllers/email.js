@@ -33,7 +33,7 @@ exports.welcome = function (user, email) {
     html: "<p>Welcome to " + config.opt.title + "!</p><p>Each week you'll get an email reminding you when volunteering shifts open on Sunday at 12 PM. When you volunteer, you'll receive a confirmation email each time you volunteer, cancel your shift or change your shift's time. You'll also get a reminder email the Thursday afternoon before your shift. You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=welcome\">the volunteering website</a>.</p><p>Please be sure to read the OSDS Volunteer Handbook before your first shift: <a href=\"http://bit.ly/osdsvolhandbook\">http://bit.ly/osdsvolhandbook</a></p><p>See you on the dance floor!</p>"
   };
 
-  faultTolerantSend(function (err, info) {}, email, mailOpts, "Welcome message ");
+  faultTolerantSend(function (err, info) { }, email, mailOpts, "Welcome message ");
 };
 
 exports.cancelled = function (userid, shift, email) {
@@ -51,7 +51,7 @@ exports.cancelled = function (userid, shift, email) {
         html: "<p>Hi " + user.firstName + "!</p><p>You've cancelled your shift at " + shift.time + " on " + date + ".</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendDeletedShift&id=" + user.id + "\">Turn off cancelled shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=cancelled\">Configure email preferences</a></p>"
       };
 
-      faultTolerantSend(function (err, info) {}, email, mailOpts, "Cancelled shift message ");
+      faultTolerantSend(function (err, info) { }, email, mailOpts, "Cancelled shift message ");
 
 
     }
@@ -103,7 +103,7 @@ exports.newShift = function (userid, uQuery, email) {
           if (error) {
             console.log(error);
           }
-        	eventString = value;
+          eventString = value;
         });
         var mailOpts = {
           from: '"' + email.name + '" <' + email.from + '>',
@@ -118,7 +118,7 @@ exports.newShift = function (userid, uQuery, email) {
         };
 
 
-        faultTolerantSend(function (err, info) {}, email, mailOpts, "New shift message ");
+        faultTolerantSend(function (err, info) { }, email, mailOpts, "New shift message ");
 
       }
     });
@@ -144,7 +144,7 @@ exports.newExecShift = function (userid, uQuery, email) {
         };
 
 
-        faultTolerantSend(function (err, info) {}, email, mailOpts, "New exec shift message ");
+        faultTolerantSend(function (err, info) { }, email, mailOpts, "New exec shift message ");
       }
     });
   });
@@ -168,7 +168,7 @@ exports.switching = function (userid, oldShift, uQuery, email) {
           html: "<p>Hi " + user.firstName + "!</p><p>You've changed your volunteer shift on " + date + " from " + oldShift.time + " to <strong>" + shift.time + "</strong>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendChangedShift&id=" + user.id + "\">Turn off changed shift emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=changedshift\">Configure email preferences</a></p>"
         };
 
-        faultTolerantSend(function (err, info) {}, email, mailOpts, "Changed shift message ");
+        faultTolerantSend(function (err, info) { }, email, mailOpts, "Changed shift message ");
       }
     });
   });
@@ -227,7 +227,7 @@ exports.mailOut = function (email) {
             html: "<p>Hi " + results[i].firstName + "!</p><p>The shifts for this week are:</p>" + lines + "<p>You can print the full schedule on <a href=\"" + config.opt.full_url + "/?ref=mailOut\">the volunteering website</a>.</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendSchedule&id=" + results[i].id + "\">Turn off weekly schedule emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=mailOut\">Configure email preferences</a></p>"
           };
 
-          faultTolerantSend(function (err, info) {}, email, mailOpts, "Mail out message ");
+          faultTolerantSend(function (err, info) { }, email, mailOpts, "Mail out message ");
 
 
         }
@@ -264,30 +264,7 @@ exports.shiftsAvailable = function (email) {
 
         }
       });
-    } /*else if (results0.actuallyCancelled) {
-      // If the week is actually cancelled, send a different message
-      User.find({
-        sendVolunteeringCall: true
-      }, function (err, users) {
-        var i, mailOpts, link;
-        if (users) {
-          for (i = 0; i < users.length; i++) {
-            console.log("We have:", users[i].userName.replace(/"/g, ''), users[i].email, users[i].firstName, users[i].userName);
-            mailOpts = {
-              from: '"' + email.name + '" <' + email.from + '>',
-              to: '"' + users[i].userName.replace(/"/g, '') + '" <' + users[i].email + '>',
-              subject: "No dance this Friday",
-              text: "Hi " + users[i].firstName + "!\nThis is an automatic reminder that there will be no dance this Friday. See you next time! \nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + users[i].firstName + "!</p><p>This is an automatic reminder that there will be no dance this Friday. See you next time! </p><p style=\"font-size: 80%\"><br>You can configure your email preferences on <a href=\"" + config.opt.full_url + "/#emailPrefs\">the volunteering website</a>.</p>"
-            };
-
-            faultTolerantSend(function (err, info) {}, email, mailOpts, "No dance message ");
-
-
-          }
-        }
-      });
-    } */ else {
+    } else {
       // If the volunteering tool isn't being used, don't do anything
       console.log("Skipped sending volunteering call -- not using the tool this week");
     }
@@ -324,9 +301,7 @@ exports.reminderVol = function (email) {
                   html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>This is reminder for your volunteering shift tomorrow (" + date + "), " + shifts[i].time + ". If you need to make any changes to your shift, visit <a href=\"" + config.opt.full_url + "/?ref=reminder\">" + config.opt.full_url + "/</a>. See you on the dance floor!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendReminder&id=" + shifts[i].Vol[j].id + "\">Turn off weekly reminder emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=reminder\">Configure email preferences</a></p>"
                 };
 
-
-
-                faultTolerantSend(function (err, info) {}, email, mailOpts, "Reminder message ");
+                faultTolerantSend(function (err, info) { }, email, mailOpts, "Reminder message ");
 
               }
             }
@@ -354,7 +329,7 @@ exports.newAdmin = function (user, email) {
   };
 
 
-  faultTolerantSend(function (err, info) {}, email, mailOpts, "New admin message ");
+  faultTolerantSend(function (err, info) { }, email, mailOpts, "New admin message ");
 
 };
 
@@ -369,7 +344,7 @@ exports.removedAdmin = function (user, email) {
   };
 
 
-  faultTolerantSend(function (err, info) {}, email, mailOpts, "Removed admin message ");
+  faultTolerantSend(function (err, info) { }, email, mailOpts, "Removed admin message ");
 
 };
 
@@ -415,7 +390,7 @@ exports.lastCall = function (email) {
         }
         linesNewUsers += "</tbody></table>";
         linesNewUsers = linesNewUsers.replace(/<br>/g, ' ');
-        
+
         if (shouldSend === false) {
           return console.log("No shifts are available -- not sending any lastCall");
         }
@@ -444,12 +419,12 @@ exports.lastCall = function (email) {
             };
 
 
-            faultTolerantSend(function (err, info) {}, email, mailOpts, "Last call message ");
+            faultTolerantSend(function (err, info) { }, email, mailOpts, "Last call message ");
 
           }
         });
-        
-        
+
+
         // Repeat of the sending routine, just for the new users email!
         if (shouldSendNewUsers === false) {
           return console.log("No shifts available for new users -- not sending them the lastCall");
@@ -479,7 +454,7 @@ exports.lastCall = function (email) {
             };
 
 
-            faultTolerantSend(function (err, info) {}, email, mailOpts, "Last call message ");
+            faultTolerantSend(function (err, info) { }, email, mailOpts, "Last call message ");
 
           }
         });
@@ -545,7 +520,7 @@ exports.newTemplate = function (email) {
           };
 
 
-          faultTolerantSend(function (err, info) {}, email, mailOpts, "New template message ");
+          faultTolerantSend(function (err, info) { }, email, mailOpts, "New template message ");
 
 
         }

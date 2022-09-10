@@ -6,7 +6,6 @@ var Shift = require('../models/shiftModel');
 var Cancelled = require('../models/cancelledModel');
 var moment = require('moment');
 var csrf = require('csurf');
-//var bodyParser = require('body-parser');
 
 // Get options from config file
 var config = require('../config');
@@ -271,22 +270,6 @@ router.post('/setExtraText', checkAuth, checkExec, csrfProtection, extraText.set
 /* GET the list of most frequent volunteers */
 router.get('/getFrequent', checkAuth, checkExec, userController.getFrequent);
 
-/* POST CSP Reports */
-/*var jsonParser = bodyParser.json({
-  type: ['json', 'application/csp-report']
-  });
-router.post('/csp_reports', jsonParser, function (req, res) {
-  if (req.body) {
-    console.log('CSP Violation: ', req.body)
-  } else {
-    console.log('CSP Violation: No data received!')
-  }
-  res.status(204).end()
-});*/
-
-/* GET one's own user profile */
-//router.get('/getUser', checkAuth, userController.getUser);
-
 /* Check if authenticated */
 function checkAuth(req, res, next) {
   if (req.user) {
@@ -447,20 +430,6 @@ function shiftsText(data, user, csrf) {
   values.friday = friday;
   values.delIDs = delIDs;
   return values;
-
-  /*
-  $("#shifts").append(lines);
-  // Add the event handlers
-  for (var k = 0; k < delIDs.length; k++) {
-    if (delIDs[k][1] === "deleteMyShift()") {
-      $('#del' + k).on('click', deleteMyShift);
-    } else {
-      $('#del' + k).on('click', function () {
-        deleteAnyShift($(this)[0].attributes['data-shift'].value, $(this)[0].attributes['data-user'].value);
-      });
-    }
-  }
-  */
 };
 
 

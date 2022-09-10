@@ -1,5 +1,6 @@
-body, html {
-  width:100%;
+body,
+html {
+  width: 100%;
   margin: 0;
 }
 
@@ -22,7 +23,7 @@ body, html {
     width: 100%;
     left: 0px;
     text-align: left;
-    }
+  }
 }
 
 #adminEmail {
@@ -30,7 +31,7 @@ body, html {
 }
 
 #dropdown {
-  color:white;
+  color: white;
 }
 
 a {
@@ -41,9 +42,11 @@ img.user {
   vertical-align: middle;
   height: 50px;
   width: 50px;
+
   @media screen and (max-width: 320px) {
     display: none;
   }
+
   color: gray;
   font-style: italic;
   font-size: 80%;
@@ -52,6 +55,7 @@ img.user {
 .shiftID {
   display: none;
 }
+
 .csrf {
   display: none;
 }
@@ -64,7 +68,7 @@ table {
   max-width: 100%;
   margin-bottom: 20px;
   background-color: transparent;
-  
+
   th {
     border-top: 0;
     vertical-align: bottom;
@@ -73,12 +77,13 @@ table {
     line-height: 1.42857143;
     text-align: left;
   }
-  
+
   td {
     vertical-align: middle;
     padding: 8px;
     line-height: 1.42857143;
     border-top: 1px solid #ddd;
+
     @media screen and (max-width: 375px) {
       padding: 8px 3px;
     }
@@ -103,20 +108,23 @@ input[type=checkbox] {
   .btnHide {
     display: none;
   }
+
   .btn {
     margin: 2px;
   }
-  
+
   #tooShort {
     display: none;
   }
+
   #adminResults {
     display: none;
   }
+
   #nextWeekWarning {
     background-color: yellow;
   }
-  
+
   textarea {
     width: 28em;
     height: 10em;
@@ -128,13 +136,13 @@ input[type=checkbox] {
 }
 
 #footer {
-  font-size:80%;
+  font-size: 80%;
   text-align: center;
   margin-top: 5em;
-  
+
   #gthublogo {
-    width:16px;
-    height:16px;
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -153,43 +161,55 @@ h2#friday {
   body {
     color: black;
   }
+
   h1 {
     display: none;
   }
+
   h2#friday {
     display: block;
   }
+
   #date {
     display: none;
   }
+
   div#extraText {
     display: block !important;
     font-size: 130%;
     margin: 2em 0 2em 0;
   }
+
   #adminTools {
     margin-top: 2em;
   }
-  #adminTools > h2 {
+
+  #adminTools>h2 {
     display: none;
   }
-  #adminTools > p {
+
+  #adminTools>p {
     display: none;
   }
+
   .btnHide {
     display: none !important;
   }
+
   .btn {
     visibility: hidden;
   }
+
   .volButton {
     visibility: hidden;
   }
+
   .volForm {
     border: none;
     border-bottom: dashed 1px black;
     width: 16em;
   }
+
   .execButton {
     visibility: visible;
     background-color: white;
@@ -199,11 +219,14 @@ h2#friday {
     text-shadow: none;
     padding: 0;
   }
+
   .execBracket {
     display: inline;
   }
+
   #footer {
     opacity: 0.5;
+
     a {
       color: black;
     }
@@ -212,9 +235,10 @@ h2#friday {
 }
 
 p#Welcome {
-  display:none;
-  font-size:125%;
+  display: none;
+  font-size: 125%;
 }
+
 p#secondThoughts {
-  display:none;
+  display: none;
 }

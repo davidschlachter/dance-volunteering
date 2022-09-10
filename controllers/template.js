@@ -1,8 +1,5 @@
 var Template = require('../models/templateModel');
 var email = require('./email');
-var moment = require('moment');
-var mongoose = require('mongoose');
-var ObjectID = require('mongodb').ObjectID;
 var Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 

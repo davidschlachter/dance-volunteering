@@ -1,22 +1,12 @@
 // Load the Shift model
 var User = require('../models/userModel');
 var mongoose = require('mongoose');
-var ObjectID = require('mongodb').ObjectID;
 var email = require('./email');
 var Shift = require('../models/shiftModel');
 var shift = require('../controllers/shift');
 var moment = require('moment');
 var config = require('../config');
 var crypto = require('crypto');
-
-
-// Get the current user
-//exports.getUser = function (req, res, next) {
-//  User.findOne({_id : req.user._id}, function (err, result) {
-//    if (err) {return console.log(err);}
-//    res.json(result);
-//  });
-//};
 
 // Get a list of admins
 exports.getAdmins = function (req, res, next) {
@@ -345,8 +335,8 @@ exports.tidyEmailList = function () {
     path: 'Vol',
     select: '_id'
   }).exec(function (err, shiftResults) {
-    if (err) {return console.log(err);}
-    if (!shiftResults.length) {return console.log("No shifts found in tidyEmailList");}
+    if (err) { return console.log(err); }
+    if (!shiftResults.length) { return console.log("No shifts found in tidyEmailList"); }
 
     var volunteers = [];
 
@@ -366,25 +356,26 @@ exports.tidyEmailList = function () {
       isAdmin: false,
       sendVolunteeringCall: true
     }).select('_id userName sendVolunteeringCall sendLastCall').exec(function (err, result) {
-      if (err) {return console.log(err);}
+      if (err) { return console.log(err); }
       var hasVolunteered = false;
-      for (i=0; i < result.length; i++) { // For all users who are not new users
+      for (i = 0; i < result.length; i++) { // For all users who are not new users
         hasVolunteered = false;
-        for (j=0; j < uniqVolunteers.length; j++) { // For those who have volunteered
+        for (j = 0; j < uniqVolunteers.length; j++) { // For those who have volunteered
           if (result[i]._id.toString() === uniqVolunteers[j].toString()) {
             hasVolunteered = true;
           }
         }
         if (hasVolunteered === false) {
-          console.log("Removing user from the volunteering call: "+result[i].userName)
-          console.log("  Previous email preferences: sendVolunteeringCall "+result[i].sendVolunteeringCall+" sendLastCall: "+result[i].sendLastCall)
+          console.log("Removing user from the volunteering call: " + result[i].userName)
+          console.log("  Previous email preferences: sendVolunteeringCall " + result[i].sendVolunteeringCall + " sendLastCall: " + result[i].sendLastCall)
           User.findOneAndUpdate({
             _id: result[i]._id
           }, {
             $set: {
-              sendVolunteeringCall: false, sendLastCall: false}
+              sendVolunteeringCall: false, sendLastCall: false
+            }
           }, function (err, result) {
-            if (err) {return console.log(err);}
+            if (err) { return console.log(err); }
           });
         } // done modifying email preferences
       } // on to the next user
@@ -431,5 +422,5 @@ function compressArray(original) {
 // Remove duplicates from array
 // https://stackoverflow.com/a/9229821/3380815
 function uniq(a) {
-   return Array.from(new Set(a));
+  return Array.from(new Set(a));
 }
