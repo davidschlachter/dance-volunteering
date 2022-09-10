@@ -34,7 +34,6 @@ $(document).ready(function () {
     $("#sendDeletedShift").prop('checked', user.sendDeletedShift);
     $("#sendNewShift").prop('checked', user.sendNewShift);
     $("#sendReminder").prop('checked', user.sendReminder);
-    $("#sendThanks").prop('checked', user.sendThanks);
     $("#sendVolunteeringCall").prop('checked', user.sendVolunteeringCall);
     $("#sendLastCall").prop('checked', user.sendLastCall);
     $("#sendSchedule").prop('checked', user.sendSchedule);

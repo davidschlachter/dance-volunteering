@@ -368,13 +368,6 @@ cron.schedule('0 17 * * 5', function () {
   email.mailOut(config.opt.email);
 });
 
-// Saturday 9 AM -- send thank you emails to this week's volunteers
-cron.schedule('0 9 * * 6', function () {
-  console.log('Sending out thank you emails');
-  email.thankVol(config.opt.email);
-});
-
-
 
 // Serialize and deserialize
 passport.serializeUser(function (user, done) {

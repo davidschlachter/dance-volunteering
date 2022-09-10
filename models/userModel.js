@@ -42,10 +42,6 @@ var userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  sendThanks: {
-    type: Boolean,
-    default: false
-  },
   sendVolunteeringCall: {
     type: Boolean,
     default: true

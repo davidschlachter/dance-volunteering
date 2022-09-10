@@ -343,47 +343,6 @@ exports.reminderVol = function (email) {
 };
 
 
-// Send each volunteer a thank you note on Saturday morning
-exports.thankVol = function (email) {
-  var query = shift.getFriday(moment());
-  Shift.find(query).populate({
-    path: 'Vol',
-    select: 'userName firstName lastName email sendThanks'
-  }).exec(function (err, shifts) {
-    if (err) {
-      return console.log(err);
-    }
-    if (!shifts.length) {
-      return console.log("No shifts this week -- not sending thank you emails");
-    }
-    var date = moment(shifts[0].date).format("MMMM D, YYYY");
-    var i, j, mailOpts, link;
-    for (i = 0; i < shifts.length; i++) {
-      if (shifts[i].Vol && shifts[i].Vol.constructor === Array) {
-        for (j = 0; j < shifts[i].Vol.length; j++) {
-          if (shifts[i].Vol[j] !== null && typeof shifts[i].Vol[j] === 'object' && shifts[i].Vol[j].sendThanks === true) {
-            link = crypto.createHmac('sha1', config.opt.linkSecret).update(shifts[i].Vol[j].id).digest('hex');
-            mailOpts = {
-              from: '"' + email.name + '" <' + email.from + '>',
-              to: '"' + shifts[i].Vol[j].userName.replace(/"/g, '') + '" <' + shifts[i].Vol[j].email + '>',
-              subject: "Thank you for volunteering!",
-              text: "Hi " + shifts[i].Vol[j].firstName + "!\nJust a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!\n\nYou can configure your email preferences on the volunteering website: " + config.opt.full_url + "/#emailPrefs",
-              html: "<p>Hi " + shifts[i].Vol[j].firstName + "!</p><p>Just a quick note to say thank you for volunteering this week! Shifts for next Friday open on Sunday at 12 PM. Hope to see you again soon!</p><p style=\"font-size: 85%\"><br><a href=\"" + config.opt.full_url + "/unsubscribe?hmac=" + link + "&param=sendThanks&id=" + shifts[i].Vol[j].id + "\">Turn off thank you emails</a> - <a href=\"" + config.opt.full_url + "/#emailPrefs?ref=thankyou\">Configure email preferences</a></p>"
-            };
-
-
-            faultTolerantSend(function (err, info) {}, email, mailOpts, "Thank you message ");
-
-
-          }
-        }
-      }
-    }
-
-  });
-};
-
-
 exports.newAdmin = function (user, email) {
 
   var mailOpts = {
