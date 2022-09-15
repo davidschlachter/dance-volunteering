@@ -52,16 +52,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser(config.opt.sessionsecret));
 app.use(compression());
-app.use(sassMiddleware({
-  src: path.join(__dirname, 'public/stylesheets'),
-  dest: path.join(__dirname, 'public/stylesheets'),
-  force: false,
-  response: true,
-  outputStyle: 'compressed',
-  indentedSyntax: false,
-  sourceMap: false,
-  prefix: '/stylesheets',
-}));
 app.use(minify({
   cache: path.join(__dirname, 'cache')
 }));

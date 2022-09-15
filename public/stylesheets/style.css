@@ -1,0 +1,166 @@
+body,
+html {
+  width: 100%;
+  margin: 0; }
+
+.description {
+  display: none; }
+
+#date {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 1em;
+  color: black;
+  width: calc(100% + 30px);
+  left: -15px;
+  text-align: center; }
+
+@media (min-width: 768px) {
+  #date {
+    width: 100%;
+    left: 0px;
+    text-align: left; } }
+
+#adminEmail {
+  display: none; }
+
+#dropdown {
+  color: white; }
+
+a {
+  color: #00B7FF; }
+
+img.user {
+  vertical-align: middle;
+  height: 50px;
+  width: 50px;
+  color: gray;
+  font-style: italic;
+  font-size: 80%; }
+  @media screen and (max-width: 320px) {
+    img.user {
+      display: none; } }
+.shiftID {
+  display: none; }
+
+.csrf {
+  display: none; }
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  background-color: transparent; }
+  table th {
+    border-top: 0;
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    padding: 8px;
+    line-height: 1.42857143;
+    text-align: left; }
+  table td {
+    vertical-align: middle;
+    padding: 8px;
+    line-height: 1.42857143;
+    border-top: 1px solid #ddd; }
+    @media screen and (max-width: 375px) {
+      table td {
+        padding: 8px 3px; } }
+input[type=checkbox] {
+  padding-left: 1em; }
+
+#extraText {
+  display: none; }
+
+.execBracket {
+  display: none; }
+
+#adminTools {
+  display: none; }
+  #adminTools .btnHide {
+    display: none; }
+  #adminTools .btn {
+    margin: 2px; }
+  #adminTools #tooShort {
+    display: none; }
+  #adminTools #adminResults {
+    display: none; }
+  #adminTools #nextWeekWarning {
+    background-color: yellow; }
+  #adminTools textarea {
+    width: 28em;
+    height: 10em; }
+
+.otherDel {
+  display: none; }
+
+#footer {
+  font-size: 80%;
+  text-align: center;
+  margin-top: 5em; }
+  #footer #gthublogo {
+    width: 16px;
+    height: 16px; }
+
+.center {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; }
+
+h2#friday {
+  display: none; }
+
+@media print {
+  body {
+    color: black; }
+  h1 {
+    display: none; }
+  h2#friday {
+    display: block; }
+  #date {
+    display: none; }
+  div#extraText {
+    display: block !important;
+    font-size: 130%;
+    margin: 2em 0 2em 0; }
+  #adminTools {
+    margin-top: 2em; }
+  #adminTools > h2 {
+    display: none; }
+  #adminTools > p {
+    display: none; }
+  .btnHide {
+    display: none !important; }
+  .btn {
+    visibility: hidden; }
+  .volButton {
+    visibility: hidden; }
+  .volForm {
+    border: none;
+    border-bottom: dashed 1px black;
+    width: 16em; }
+  .execButton {
+    visibility: visible;
+    background-color: white;
+    border: none;
+    color: black !important;
+    opacity: 1 !important;
+    text-shadow: none;
+    padding: 0; }
+  .execBracket {
+    display: inline; }
+  #footer {
+    opacity: 0.5; }
+    #footer a {
+      color: black; } }
+
+p#Welcome {
+  display: none;
+  font-size: 125%; }
+
+p#secondThoughts {
+  display: none; }

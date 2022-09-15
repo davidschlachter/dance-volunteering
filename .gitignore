@@ -45,10 +45,5 @@ config.js
 # PM2 config
 pm2config.json
 
-# Don't track the compiled style.css
-.sass-cache
-style.css
-style.css.map
-
 # Don't track the minifier's cache
 cache/*
