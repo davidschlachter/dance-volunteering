@@ -137,8 +137,7 @@ router.get('/cant-login', function (req, res, next) {
 
 /* GET logout */
 router.get('/logout', function (req, res) {
-  req.logout();
-  res.redirect(config.opt.base_url + '/');
+  req.logout(function (err) { res.redirect(config.opt.base_url + '/') });
 });
 
 /* POST to volunteer for a shift */
