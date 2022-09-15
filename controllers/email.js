@@ -1,17 +1,17 @@
-var nodemailer = require('nodemailer');
-var moment = require('moment');
-var User = require('../models/userModel');
-var Shift = require('../models/shiftModel');
-var Template = require('../models/templateModel');
-var shift = require('../controllers/shift');
-var Cancelled = require('../models/cancelledModel');
-var retry = require('retry');
-var Entities = require('html-entities').Html5Entities;
+const nodemailer = require('nodemailer');
+const moment = require('moment');
+const User = require('../models/userModel');
+const Shift = require('../models/shiftModel');
+const Template = require('../models/templateModel');
+const shift = require('../controllers/shift');
+const Cancelled = require('../models/cancelledModel');
+const retry = require('retry');
+const Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
-var crypto = require('crypto');
-var ics = require('ics');
+const crypto = require('crypto');
+const ics = require('ics');
 
-var config = require('../config');
+const config = require('../config');
 var transporter = nodemailer.createTransport({
   host: config.opt.email.server,
   secure: true,

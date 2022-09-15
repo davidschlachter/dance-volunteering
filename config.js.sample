@@ -4,7 +4,7 @@ var base_url = '/dance-volunteering';
 var full_url = 'https://schlachter.ca' + base_url;
 var full_path = '/var/www/schl/dance-volunteering';
 
-var crypto = require('crypto');
+const crypto = require('crypto');
 var linkSecret = crypto.randomBytes(64).toString('hex');
 
 var opt = {

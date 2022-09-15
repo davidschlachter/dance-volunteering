@@ -1,5 +1,5 @@
-var extraText = require('../models/extraTextModel');
-var Entities = require('html-entities').XmlEntities;
+const extraText = require('../models/extraTextModel');
+const Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 
 // Return the current extraText

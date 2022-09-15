@@ -1,12 +1,12 @@
 // Load the Shift model
-var User = require('../models/userModel');
-var mongoose = require('mongoose');
-var email = require('./email');
-var Shift = require('../models/shiftModel');
-var shift = require('../controllers/shift');
-var moment = require('moment');
-var config = require('../config');
-var crypto = require('crypto');
+const User = require('../models/userModel');
+const mongoose = require('mongoose');
+const email = require('./email');
+const Shift = require('../models/shiftModel');
+const shift = require('../controllers/shift');
+const moment = require('moment');
+const config = require('../config');
+const crypto = require('crypto');
 
 // Get a list of admins
 exports.getAdmins = function (req, res, next) {

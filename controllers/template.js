@@ -1,10 +1,10 @@
-var Template = require('../models/templateModel');
-var email = require('./email');
-var Entities = require('html-entities').Html5Entities;
+const Template = require('../models/templateModel');
+const email = require('./email');
+const Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
 
 // Get options from config file
-var config = require('../config');
+const config = require('../config');
 
 // Return the current template
 exports.getTemplate = function (req, res, next) {

@@ -1,19 +1,19 @@
-var express = require('express');
+const express = require('express');
 var router = express.Router();
-var passport = require('passport');
-var User = require('../models/userModel');
-var Shift = require('../models/shiftModel');
-var Cancelled = require('../models/cancelledModel');
-var moment = require('moment');
-var csrf = require('csurf');
+const passport = require('passport');
+const User = require('../models/userModel');
+const Shift = require('../models/shiftModel');
+const Cancelled = require('../models/cancelledModel');
+const moment = require('moment');
+const csrf = require('csurf');
 
 // Get options from config file
-var config = require('../config');
+const config = require('../config');
 
-var shift = require('../controllers/shift');
-var template = require('../controllers/template');
-var userController = require('../controllers/user');
-var extraText = require('../controllers/extraText');
+const shift = require('../controllers/shift');
+const template = require('../controllers/template');
+const userController = require('../controllers/user');
+const extraText = require('../controllers/extraText');
 var csrfProtection = csrf({
   cookie: false
 });

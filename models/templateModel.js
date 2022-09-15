@@ -1,5 +1,5 @@
 // Load required packages
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // Define the Template schema
 var TemplateSchema = new mongoose.Schema({

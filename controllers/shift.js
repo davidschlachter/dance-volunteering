@@ -1,15 +1,15 @@
 // Load the Shift model
-var Shift = require('../models/shiftModel');
-var Template = require('../models/templateModel');
-var Cancelled = require('../models/cancelledModel');
-var User = require('../models/userModel');
-var email = require('./email');
-var moment = require('moment');
-var mongoose = require('mongoose');
-var ObjectID = require('mongodb').ObjectID;
+const Shift = require('../models/shiftModel');
+const Template = require('../models/templateModel');
+const Cancelled = require('../models/cancelledModel');
+const User = require('../models/userModel');
+const email = require('./email');
+const moment = require('moment');
+const mongoose = require('mongoose');
+const ObjectID = require('mongodb').ObjectID;
 
 // Get options from config file
-var config = require('../config');
+const config = require('../config');
 
 // Check if shifts have been created for the current week
 exports.checkShifts = function (req, res, next) {

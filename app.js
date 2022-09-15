@@ -1,34 +1,33 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
-var FacebookStrategy = require('passport-facebook').Strategy;
-var GoogleStrategy = require('@passport-next/passport-google-oauth2').Strategy;
-var User = require('./models/userModel');
-var email = require('./controllers/email');
-var userController = require('./controllers/user');
-var shiftController = require('./controllers/shift');
-var cron = require('node-cron');
-var helmet = require('helmet');
-var Entities = require('html-entities').Html5Entities;
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('@passport-next/passport-google-oauth2').Strategy;
+const User = require('./models/userModel');
+const email = require('./controllers/email');
+const userController = require('./controllers/user');
+const shiftController = require('./controllers/shift');
+const cron = require('node-cron');
+const helmet = require('helmet');
+const Entities = require('html-entities').Html5Entities;
 var entities = new Entities();
-var validator = require('validator');
-var sassMiddleware = require('node-sass-middleware');
-var uuid = require('uuid');
-var minify = require('express-minify');
-var compression = require('compression')
+const validator = require('validator');
+const uuid = require('uuid');
+const minify = require('express-minify');
+const compression = require('compression')
 
-var routes = require('./routes/index');
+const routes = require('./routes/index');
 
 var app = express();
 
 // Get options from config file
-var config = require('./config');
+const config = require('./config');
 
 // Connect to the database
 mongoose.connect(config.opt.db, config.opt.mongoose);
