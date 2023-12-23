@@ -23,7 +23,7 @@
     "connect-mongo": "~2",
     "cookie-parser": "~1",
     "csurf": "~1",
-    "debug": "~3",
+    "debug": "~4",
     "express": "~4",
     "express-minify": "~1.0",
     "express-session": "~1",
