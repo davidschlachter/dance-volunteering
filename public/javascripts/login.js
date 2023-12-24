@@ -8,14 +8,10 @@ $(document).ready(function () {
     $("#Welcome").show();
     $("#newUser").hide();
 
-    $(".btn").each(function () {
+    $(".loginBtn").each(function () {
       $(this).hide();
     });
-
     $("#" + authMethod).show();
-    $("#" + authMethod).removeClass("btn-default");
-    $("#" + authMethod).addClass("btn-primary btn-lg");
-    $("#" + authMethod).parent().parent().prepend($("#" + authMethod).parent());
 
     $("#secondThoughts").show();
     $("#secondThoughts").html('<br><a href="login" onclick="clearCookies()">Not ' + userName + '?</a>');
