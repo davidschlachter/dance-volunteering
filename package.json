@@ -29,7 +29,7 @@
     "express-session": "~1",
     "helmet": "~3",
     "html-entities": "~1",
-    "ics": "~2",
+    "ics": "~3",
     "moment": "^2.18.x",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.7",
