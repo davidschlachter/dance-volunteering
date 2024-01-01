@@ -27,7 +27,7 @@
     "express": "~4",
     "express-minify": "~1.0",
     "express-session": "~1",
-    "helmet": "~3",
+    "helmet": "~7",
     "html-entities": "~1",
     "ics": "~3",
     "moment": "^2.18.x",
