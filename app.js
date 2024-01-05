@@ -8,6 +8,7 @@ const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const FacebookStrategy = require('passport-facebook').Strategy;
+const MagicLoginStrategy = require('passport-magic-login').Strategy;
 const GoogleStrategy = require('@passport-next/passport-google-oauth2').Strategy;
 const User = require('./models/userModel');
 const email = require('./controllers/email');
@@ -312,6 +313,38 @@ passport.use(new GoogleStrategy({
     });
   }
 ));
+
+passport.use(new MagicLoginStrategy({
+  secret: config.opt.sessionsecret,
+  callbackUrl: "/auth/email/callback",
+  sendMagicLink: async (destination, href) => {
+    await sendEmail({ // TODO put the real function here!
+      to: destination,
+      body: `Click this link to finish logging in: ${config.opt.full_url}${href}`
+    })
+  },
+
+  // Once the user clicks on the magic link and verifies their login attempt,
+  // you have to match their email to a user record in the database.
+  // If it doesn't exist yet they are trying to sign up so you have to create a new one.
+  // "payload" contains { "destination": "email" }
+  // In standard passport fashion, call callback with the error as the first argument (if there was one)
+  // and the user data as the second argument!
+  verify: (payload, done) => {
+    // Get or create a user with the provided email from the database
+
+    User.findOne({
+      email: payload.destination
+    }, function (err, user) {
+      if (err) {
+        return console.log(err);
+      }
+      if (!err && user != null) {
+        done(null, user)
+      } else { return console.log(`No user exists for ${payload.destination}`) }
+    })
+  }
+}))
 
 //
 // Scheduled tasks
