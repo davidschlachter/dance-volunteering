@@ -8,11 +8,6 @@ $(document).ready(function () {
     $("#Welcome").show();
     $("#newUser").hide();
 
-    $(".loginBtn").each(function () {
-      $(this).hide();
-    });
-    $("#" + authMethod).show();
-
     $("#secondThoughts").show();
     $("#secondThoughts").html('<br><a href="login" onclick="clearCookies()">Not ' + userName + '?</a>');
     $("#secondThoughts").click(function (e) {

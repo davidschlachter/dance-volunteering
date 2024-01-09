@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('@passport-next/passport-google-oauth2').Strategy;
 const User = require('./models/userModel');
 const email = require('./controllers/email');
@@ -147,90 +146,6 @@ app.use(function (err, req, res, next) {
 
 // Passport login strategies
 //
-passport.use(new FacebookStrategy({
-  clientID: config.opt.facebook.clientID,
-  clientSecret: config.opt.facebook.clientSecret,
-  callbackURL: config.opt.facebook.callbackURL,
-  enableProof: true,
-  passReqToCallback: true,
-  profileFields: ['emails', 'name', 'picture', 'displayName']
-},
-  function (req, accessToken, refreshToken, profile, done) {
-    User.findOne({
-      facebookID: profile.id
-    }, function (err, user) {
-      if (err) {
-        return console.log(err);
-      }
-      if (!err && user != null) {
-        // Quit if the email is invalid
-        if (!validator.isEmail(profile.emails[0].value)) {
-          return console.log("Email address invalid: ", profile.emails[0].value);
-        }
-        // Update the user if necessary
-        if (user.autoUpdateDetails) {
-          User.update({
-            facebookID: profile.id
-          }, {
-            $set: {
-              userName: entities.encode(profile.displayName),
-              firstName: entities.encode(profile.name.givenName),
-              lastName: entities.encode(profile.name.familyName),
-              lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
-              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
-              email: profile.emails[0].value
-            }
-          }, function (err, doc) {
-            if (err) {
-              return console.log(err);
-            } else {
-              console.log("Updated user");
-              done(null, user);
-            }
-          });
-        } else {
-          User.update({
-            facebookID: profile.id
-          }, {
-            $set: {
-              profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture')
-            }
-          }, function (err, doc) {
-            if (err) {
-              return console.log(err);
-            } else {
-              console.log("Updated user");
-              done(null, user);
-            }
-          });
-        }
-      } else {
-        // Quit if the email is invalid
-        if (!validator.isEmail(profile.emails[0].value)) {
-          return console.log("Email address invalid: ", profile.emails[0].value);
-        }
-        var user = new User({
-          facebookID: profile.id,
-          userName: entities.encode(profile.displayName),
-          firstName: entities.encode(profile.name.givenName),
-          lastName: entities.encode(profile.name.familyName),
-          lastNameInitial: entities.encode(profile.name.familyName).charAt(0) + '.',
-          profilePicture: encodeURI('https://graph.facebook.com/' + profile.id + '/picture'),
-          email: profile.emails[0].value
-        });
-        user.save(function (err) {
-          if (err) {
-            return console.log(err);
-          } else {
-            console.log("Added new user", profile.displayName);
-            email.welcome(user, config.opt.email);
-            done(null, user);
-          };
-        });
-      };
-    });
-  }
-));
 passport.use(new GoogleStrategy({
   clientID: config.opt.google.clientID,
   clientSecret: config.opt.google.clientSecret,

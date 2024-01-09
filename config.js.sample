@@ -17,12 +17,6 @@ var opt = {
   full_url: full_url,
   title: 'OSDS Volunteering',
   linkSecret: linkSecret,
-  // For passport-facebook
-  facebook: {
-    clientID: 'fb_clientid',
-    clientSecret: 'fb_clientsecret',
-    callbackURL: full_url + '/auth/facebook/callback'
-  },
   // For passport-google-oauth20
   google: {
     clientID: 'g_clientid',

@@ -88,15 +88,6 @@ $(window).on('load', function () {
     $('#noShifts').modal('show');
     document.cookie = "noShifts=shown";
   }
-  // Check if Firefox tracking protection might be blocking Facebook profile pictures
-  var fbpics = $("img[src^='https://graph.facebook.com']");
-  if (fbpics.length > 0 && (fbpics[0].complete === false || fbpics[0].naturalWidth === 0)) {
-    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-      $("#user").html("<i>Note: The tracking protection feature in Firefox prevents Facebook profile pictures from loading on this page. Alt text is displayed instead. For more details see: <a href=\"https://support.mozilla.org/en-US/kb/tracking-protection\">https://support.mozilla.org/en-US/kb/tracking-protection</a></i>");
-      $("#user").css('background-color', 'rgb(255, 248, 220)');
-      $("#user").css('padding', '1em');
-    }
-  }
 });
 
 // Client-side version of the server's logic for whether shifts are open. If it's Friday evening, Saturday, or Sunday, disable the volunteering buttons.

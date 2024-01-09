@@ -169,35 +169,6 @@ router.post('/emailPrefs', checkAuth, csrfProtection, userController.emailPrefs,
 router.get('/unsubscribe', userController.unsubscribe);
 
 /* GET logins to various services */
-router.get('/loginFacebook', passport.authenticate('facebook', {
-  scope: ['email'],
-  successRedirect: config.opt.base_url + '/',
-  failureRedirect: config.opt.base_url + '/cant-login'
-}));
-router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', {
-    failureRedirect: config.opt.base_url + '/cant-login',
-  }),
-  function (req, res) {
-    User.findById(req.user._id, function (err, user) {
-      if (err) {
-        console.log(err);
-        res.redirect(config.opt.base_url + '/');
-      } else {
-        console.log("Facebook log-in from", req.user.userName);
-        res.cookie('authMethod', "Facebook", {
-          path: '/',
-          expires: cookieExpiryDate
-        });
-        res.cookie('userName', user.firstName, {
-          path: '/',
-          expires: cookieExpiryDate
-        });
-        res.redirect(config.opt.base_url + '/');
-      }
-    });
-  });
-
 router.get('/loginGoogle', passport.authenticate('google', {
   scope: ['profile', 'email'],
   successRedirect: config.opt.base_url + '/',
